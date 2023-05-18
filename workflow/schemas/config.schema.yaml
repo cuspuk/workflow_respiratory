@@ -1,1 +1,75 @@
-# schema for the config
+"$schema": http://json-schema.org/draft-06/schema#
+"$ref": "#/definitions/Respiratory"
+definitions:
+  Respiratory:
+    type: object
+    additionalProperties: false
+    properties:
+      sample_names_regex:
+        type: string
+      reference_panel_dirpath:
+        type: string
+      threads:
+        type: integer
+        description: "Number of threads"
+        Minimum: 1
+      kraken_db:
+        type: string
+        description: "Tag for the kraken database which will be used"
+      reads__trimming:
+        type: object
+        "$ref": "#/definitions/ReadsTrimming"
+    required:
+      - sample_names_regex
+      - reference_panel_dirpath
+      - threads
+      - kraken_db
+    title: Respiratory
+  ReadsTrimming:
+    type: object
+    additionalProperties: false
+    properties:
+      quality_threshold:
+        type: integer
+        description: "Minimal average quality of read bases to keep (inside sliding window of length 5)"
+      lead_trim:
+        type: integer
+        description: "Remove leading low quality or N bases below this quality threshold"
+      trail_trim:
+        type: integer
+        description: "Remove trailing low quality or N bases below this quality threshold"
+      crop_to_fixed_length:
+        type: integer
+        description: "The number of bases to keep, from the start of the read."
+      head_crop:
+        type: integer
+        description: "Number of bases to remove from the start of read"
+      min_length_filter:
+        type: integer
+        description: "Minimal length after trimming. Shorter reads would be removed."
+      illumina_clip:
+        type: object
+        "$ref": "#/definitions/IlluminaClipping"
+    title: ReadsTrimming
+  IlluminaClipping:
+    type: object
+    additionalProperties: false
+    properties:
+      path_adapters:
+        type: string
+        description: "Specifies the path to a fasta file containing all the adapters"
+      seed_mismatches:
+        type: integer
+        description: "Specifies the maximum mismatch count which will still allow a full match to be performed"
+      palindrome_clip_threshold:
+        type: integer
+        description: "Specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment."
+      simple_clip_threshold:
+        type: integer
+        description: "Specifies how accurate the match between any adapter etc. sequence must be against a read."
+    required:
+      - path_adapters
+      - seed_mismatches
+      - palindrome_clip_threshold
+      - simple_clip_threshold
+    title: IlluminaClipping

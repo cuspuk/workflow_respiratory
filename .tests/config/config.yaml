@@ -1,1 +1,19 @@
-# this config will be used for e2e test
+sample_names_regex: ".*"
+reference_panel_dirpath: "resources/test_reference_panel/" # directory with reference fasta sequences
+
+threads: 2
+
+kraken_db: k2_viral_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
+
+reads__trimming: # Define one or more of the following trimmers
+  quality_threshold: 20 # Minimal average quality of read bases to keep (inside sliding window of length 5)
+  lead_trim: 0 # Remove leading low quality or N bases below this quality threshold
+  trail_trim: 0 # Remove trailing low quality or N bases below this quality threshold
+  crop_to_fixed_length: 300 # The number of bases to keep, from the start of the read
+  head_crop: 0 # "Number of bases to remove from the start of read
+  min_length_filter: 35 # Minimal length after trimming. Shorter reads would be removed
+  illumina_clip: # Define to trim adapters, else remove from the config
+    path_adapters: "resources/adapters/artic.fa" # Specifies the path to a fasta file containing all the adapters
+    seed_mismatches: 2 # Specifies the maximum mismatch count which will still allow a full match to be performed
+    palindrome_clip_threshold: 30 # Specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment
+    simple_clip_threshold: 10 # Specifies how accurate the match between any adapter etc. sequence must be against a read
