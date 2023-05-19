@@ -54,7 +54,7 @@ rule pigz__compress_decontaminated:
     conda:
         "../envs/pigz.yaml"
     shell:
-        "pigz -{params.level} -c -p {threads} > {output} 2> {log}"
+        "pigz {input} -{params.level} -c -p {threads} > {output} 2> {log}"
 
 
 rule fastqc__quality_report:
