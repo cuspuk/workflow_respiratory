@@ -1,9 +1,9 @@
 rule bwa__build_index:
     input:
-        f"{config['reference_panel_dirpath']}/{{reference}}.fa",
+        "{reference_panel_dir}/{reference}.fa",
     output:
         idx=multiext(
-            f"{config['reference_panel_dirpath']}/bwa_index/{{reference}}/{{reference}}",
+            "{reference_panel_dir}/bwa_index/{reference}/{reference}",
             ".amb",
             ".ann",
             ".bwt",
@@ -14,7 +14,7 @@ rule bwa__build_index:
         prefix=lambda wildcards, output: os.path.splitext(output.idx[0])[0],
         approach="bwtsw",
     log:
-        "logs/bwa/build_index/{reference}.log",
+        "{reference_panel_dir}/bwa_index/logs/{reference}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/bwa/index"
 
@@ -38,14 +38,7 @@ rule bwa__map_reads_to_reference:
             "results/reads/%s/{sample}_R1.fastq.gz" % MAPPING_INPUT_STEP,
             "results/reads/%s/{sample}_R2.fastq.gz" % MAPPING_INPUT_STEP,
         ],
-        index=multiext(
-            f"{config['reference_panel_dirpath']}/bwa_index/{{reference}}/{{reference}}",
-            ".amb",
-            ".ann",
-            ".bwt",
-            ".pac",
-            ".sa",
-        ),
+        index=get_bwa_index,
         read_group="results/reads/%s/read_group/{sample}.txt" % MAPPING_INPUT_STEP,
     output:
         bam=temp("results/mapping/{reference}/mapped/{sample}.bam"),
@@ -60,7 +53,7 @@ rule bwa__map_reads_to_reference:
 
 rule samtools__sort_mapped_reads:
     input:
-        ref=f"{config['reference_panel_dirpath']}/{{reference}}.fa",
+        ref=get_reference_fasta,
         bam="results/mapping/{reference}/mapped/{sample}.bam",
     output:
         bam=temp("results/mapping/{reference}/sorted/{sample}.bam"),

@@ -37,6 +37,25 @@ def get_constraints():
     }
 
 
+#### COMMON STUFF #################################################################
+
+
+def get_bwa_index(wildcards):
+    base_dir = os.path.join(config["reference_panel_dirpath"], "bwa_index", wildcards.reference, wildcards.reference)
+    return multiext(
+        base_dir,
+        ".amb",
+        ".ann",
+        ".bwt",
+        ".pac",
+        ".sa",
+    )
+
+
+def get_reference_fasta(wildcards):
+    return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa")
+
+
 #### OUTPUTS #################################################################
 
 

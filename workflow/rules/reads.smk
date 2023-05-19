@@ -33,4 +33,4 @@ rule fastqc__quality_report:
     log:
         "logs/fastqc/{step}/{fastq}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/fastqc/quality"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.3/wrappers/fastqc/quality"

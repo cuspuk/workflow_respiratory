@@ -1,5 +1,0 @@
-channels:
-  - conda-forge
-  - nodefaults
-dependencies:
-  - gzip=1.12
