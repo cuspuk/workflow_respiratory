@@ -23,6 +23,7 @@ rule kraken__decontaminate:
         r1="results/reads/trimmed/{sample}_R1.fastq.gz",
         r2="results/reads/trimmed/{sample}_R2.fastq.gz",
         kraken_output="results/kraken/{sample}.kraken",
+        kraken_report="results/kraken/{sample}.kreport2",
     output:
         r1="results/reads/decontaminated/{sample}_R1.fastq.gz",
         r2="results/reads/decontaminated/{sample}_R2.fastq.gz",
@@ -36,8 +37,8 @@ rule kraken__decontaminate:
     conda:
         "../envs/krakentools.yaml"
     shell:
-        "extract_kraken_reads.py --kraken {input.kraken_output} -s1 {input.r1} -s {input.r2}"
-        " -o {output.r1} -o2 {output.r2} --taxid {params.taxid} --exclude"
+        "extract_kraken_reads.py -k {input.kraken_output} -r {input.kraken_report} -s {input.r1} -s2 {input.r2}"
+        " -o {output.r1} -o2 {output.r2} -t {params.taxid} --exclude"
 
 
 rule fastqc__quality_report:
