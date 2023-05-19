@@ -21,9 +21,9 @@ rule bwa__build_index:
 
 rule custom__infer_and_store_read_group:
     input:
-        "results/reads/%s/{sample}_R1.fastq.gz" % MAPPING_INPUT_STEP,
+        "results/reads/original/{sample}_R1.fastq.gz",
     output:
-        read_group="results/reads/%s/read_group/{sample}.txt" % MAPPING_INPUT_STEP,
+        read_group="results/reads/original/read_group/{sample}.txt",
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     conda:
@@ -39,7 +39,7 @@ rule bwa__map_reads_to_reference:
             "results/reads/%s/{sample}_R2.fastq.gz" % MAPPING_INPUT_STEP,
         ],
         index=get_bwa_index,
-        read_group="results/reads/%s/read_group/{sample}.txt" % MAPPING_INPUT_STEP,
+        read_group="results/reads/original/read_group/{sample}.txt",
     output:
         bam=temp("results/mapping/{reference}/mapped/{sample}.bam"),
     log:
