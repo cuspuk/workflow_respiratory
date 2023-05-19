@@ -38,7 +38,7 @@ rule kraken__decontaminate:
         "../envs/krakentools.yaml"
     shell:
         "extract_kraken_reads.py -k {input.kraken_output} -r {input.kraken_report} -s {input.r1} -s2 {input.r2}"
-        " -o {output.r1} -o2 {output.r2} -t {params.taxid} --exclude"
+        " -o {output.r1} -o2 {output.r2} -t {params.taxid} --exclude --fastq-output > {log} 2>&1"
 
 
 rule fastqc__quality_report:
