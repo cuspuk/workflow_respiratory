@@ -59,6 +59,6 @@ rule krona__create_chart:
     params:
         extra="-m 3 -t 5",
     conda:
-        "../../envs/kraken2.yaml"
+        "../envs/kraken2.yaml"
     shell:
         "ktImportTaxonomy {params.extra} -tax {input.tax_db} -o {output} {input.kraken_output} 1> {log} 2>&1"

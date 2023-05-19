@@ -9,7 +9,6 @@ localrules:
     krona__update_taxonomy,
     custom__infer_and_store_read_group,
     custom__create_wgs_bed_file,
-    gzip__decompress_reference,
 
 
 include: "rules/common.smk"
