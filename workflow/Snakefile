@@ -8,7 +8,6 @@ localrules:
     curl__download_kraken_db,
     krona__update_taxonomy,
     custom__infer_and_store_read_group,
-    custom__create_wgs_bed_file,
 
 
 include: "rules/common.smk"

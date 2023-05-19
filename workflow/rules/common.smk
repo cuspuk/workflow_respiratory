@@ -10,7 +10,7 @@ validate(config, "../schemas/config.schema.yaml")
 
 ## GLOBAL SPACE #################################################################
 
-MAPPING_INPUT_STEP = "trimmed"  # TODO
+MAPPING_INPUT_STEP = "decontaminated"
 
 
 def glob_samples(regex: str):
@@ -61,7 +61,7 @@ def get_reference_fasta(wildcards):
 
 def get_fastqc_reports():
     # steps = ["original", "trimmed", "decontaminated"] #TODO
-    steps = ["original", "trimmed"]
+    steps = ["original", "trimmed", "decontaminated"]
 
     return {
         "fastqc_report": expand(

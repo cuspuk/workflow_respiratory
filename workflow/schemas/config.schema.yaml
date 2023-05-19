@@ -19,12 +19,34 @@ definitions:
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
+      reads__decontamination:
+        type: object
+        "$ref": "#/definitions/ReadsDecontamination"
     required:
       - sample_names_regex
       - reference_panel_dirpath
       - threads
       - kraken_db
     title: Respiratory
+  ReadsDecontamination:
+    type: object
+    additionalProperties: false
+    properties:
+      exclude_taxa_ids:
+        type: array
+        description: "list of taxonomy IDs to exclude"
+        items:
+          type: integer
+      exclude_children:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at more specific levels than specified taxonomy ID levels"
+      exclude_ancestors:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels"
+      required:
+        - exclude_taxa_ids
   ReadsTrimming:
     type: object
     additionalProperties: false
