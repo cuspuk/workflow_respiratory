@@ -27,3 +27,4 @@ rule all:
         **get_bam_outputs(),
         **get_qualimap_reports(),
         **get_krona_reports(),
+        **get_consensus_files(),

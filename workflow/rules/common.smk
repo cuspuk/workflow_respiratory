@@ -60,19 +60,20 @@ def get_reference_faidx(wildcards):
     return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa.fai")
 
 
-def get_passed_references(wildcards):
+def get_consensus_for_passed_references_only(wildcards):
     passed_refs = []
 
-    with checkpoints.mapping_quality_evaluation.get(wildcards.sample).output[0].open() as f:
+    with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
         passed_refs = f.read().splitlines()
 
-    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=passed_refs)
+    ref_prefix = "results/mapping/"
+    ref_suffix = f"deduplicated/bamqc/{wildcards.sample}/genome_results.txt"
+    reference_names = [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
+    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=reference_names)
 
 
-def prepare_dict(wildcards):
-    sample = wildcards.sample
-    dct = {reference: f"results/mapping/{reference}/deduplicated/bamqc/{sample}" for reference in REFERENCES}
-    return dct
+def get_all_qualimap_dirs(wildcards):
+    return expand(f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}", reference=REFERENCES)
 
 
 #### OUTPUTS #################################################################
@@ -114,6 +115,10 @@ def get_krona_reports():
     return {
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=SAMPLES),
     }
+
+
+def get_consensus_files():
+    return {"consensus": expand("results/summary/{sample}/aggr_result.txt", sample=SAMPLES)}
 
 
 ## PARAMETERS PARSING #################################################################

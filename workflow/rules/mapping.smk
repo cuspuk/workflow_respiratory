@@ -121,7 +121,7 @@ rule qualimap__mapping_quality_report:
 
 checkpoint mapping_quality_evaluation:
     input:
-        prepare_dict,
+        get_all_qualimap_dirs,
     output:
         passed_refs="results/mapping/passed_references/{sample}.txt",
     params:
@@ -207,7 +207,7 @@ rule fake__create_consensus:
 
 rule aggregate_consensus:
     input:
-        get_passed_references,
+        get_consensus_for_passed_references_only,
     output:
         "results/summary/{sample}/aggr_result.txt",
     log:

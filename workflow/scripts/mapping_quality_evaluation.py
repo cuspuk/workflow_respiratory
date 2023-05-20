@@ -68,10 +68,6 @@ class QualimapProcessor:
         return [filename for filename in existing_files if self._evaluate_file_by_parsers(filename)]
 
 
-def get_passed_references(qualimap_dirs: list[str], criterions: list[str]) -> list[str]:
-    return [""]
-
-
 def build_parsers(criteria: dict[str, float | int]) -> list[AbstractQualimapParser]:
     # parser_mappings: dict[str, Type[AbstractQualimapParser]] = {
     #    'min_mean_coverage': MeanCoverageParser,
@@ -91,9 +87,9 @@ def evaluate_mapping_quality(qualimap_dirs: list[str], criteria: dict[str, float
     passed_files = processor.evaluate_files()
 
     print(passed_files)
-    # with open(output_file, 'w') as out_file:
-    #     for passed_ref in passed_refs:
-    #         out_file.write(passed_ref)
+    with open(output_file, "w") as out_file:
+        for passed_ref in passed_files:
+            out_file.write(passed_ref)
 
 
 if __name__ == "__main__":
@@ -112,7 +108,3 @@ if __name__ == "__main__":
     # }
     # evaluate_mapping_quality(files, criteria, "test")
     evaluate_mapping_quality(snakemake.input, snakemake.params, snakemake.output.passed_refs)
-
-    REFERENCES = ["test"]
-    sample = "test"
-    dct = {"reference": f"results/mapping/{reference}/deduplicated/bamqc/{sample}" for reference in REFERENCES}
