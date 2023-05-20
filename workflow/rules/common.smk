@@ -56,6 +56,25 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa")
 
 
+def get_reference_faidx(wildcards):
+    return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa.fai")
+
+
+def get_passed_references(wildcards):
+    passed_refs = []
+
+    with checkpoints.mapping_quality_evaluation.get(wildcards.sample).output[0].open() as f:
+        passed_refs = f.read().splitlines()
+
+    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=passed_refs)
+
+
+def prepare_dict(wildcards):
+    sample = wildcards.sample
+    dct = {reference: f"results/mapping/{reference}/deduplicated/bamqc/{sample}" for reference in REFERENCES}
+    return dct
+
+
 #### OUTPUTS #################################################################
 
 
