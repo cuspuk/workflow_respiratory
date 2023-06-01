@@ -76,6 +76,17 @@ def get_all_qualimap_dirs(wildcards):
     return expand(f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}", reference=REFERENCES)
 
 
+def get_consensus_per_reference_segment(wildcards):
+    # segments = ... # TODO
+    reference_fai = os.path.join(wildcards.reference, ".fai")
+    segments = []
+    with open(reference_fai, "r") as f:
+        segments.append(f.read().split[0])
+    print("Found segments: ", segments)
+
+    return (expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments),)
+
+
 #### OUTPUTS #################################################################
 
 
@@ -155,3 +166,27 @@ def get_trimmers_from_config() -> list[str]:
         trimmers.append("MINLEN:%s" % config["reads__trimming"]["min_length_filter"])
 
     return trimmers
+
+
+def parse_samtools_params():
+    samtools_params = []
+    if config["consensus_params"]["count_orphans"]:
+        samtools_params.append("--count-orphans")
+    if config["consensus_params"]["no_base_alignment_quality"]:
+        samtools_params.append("--no-BAQ")
+
+    samtools_params.append("--max-depth {value}".format(value=config["consensus_params"]["max_read_depth"]))
+    samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))
+    samtools_params.append("--min-BQ {value}".format(value=config["consensus_params"]["min_base_quality"]))
+
+    return " ".join(samtools_params)
+
+
+def parse_ivar_params():
+    ivar_params = []
+
+    ivar_params.append("-q {value}".format(value=config["consensus_params"]["consensus_base_quality_threshold"]))
+    ivar_params.append("-t {value}".format(value=config["consensus_params"]["consensus_frequency_threshold"]))
+    ivar_params.append("-m {value}".format(value=config["consensus_params"]["min_consensus_depth"]))
+
+    return " ".join(ivar_params)

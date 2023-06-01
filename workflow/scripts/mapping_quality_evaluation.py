@@ -90,6 +90,7 @@ def evaluate_mapping_quality(qualimap_dirs: list[str], criteria: dict[str, float
     with open(output_file, "w") as out_file:
         for passed_ref in passed_files:
             out_file.write(passed_ref)
+            out_file.write("\n")
 
 
 if __name__ == "__main__":
