@@ -79,9 +79,11 @@ def get_all_qualimap_dirs(wildcards):
 def get_consensus_per_reference_segment(wildcards):
     segments = []
     with checkpoints.faidx_reference_segments.get(reference=wildcards.reference).output[0].open() as f:
-        segments.append(f.read().split[0])
+        for line in f.readlines():
+            segments.append(line.split()[0])
+
     print("Found segments: ", segments)
-    return (expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments),)
+    return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
 #### OUTPUTS #################################################################
