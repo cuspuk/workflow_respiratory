@@ -13,8 +13,8 @@ localrules:
 include: "rules/common.smk"
 include: "rules/reads.smk"
 include: "rules/mapping.smk"
-include: "rules/reference.smk"
 include: "rules/kraken.smk"
+include: "rules/consensus.smk"
 
 
 wildcard_constraints:

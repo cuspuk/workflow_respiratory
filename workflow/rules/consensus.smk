@@ -32,10 +32,20 @@ rule ivar__create_consensus_per_segment:
         " | ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}) > {log}"
 
 
+checkpoint faidx_reference_segments:
+    input:
+        reference=get_reference_fasta,
+    output:
+        f"{config['reference_panel_dirpath']}/{{reference}}.fa.fai",
+    log:
+        "logs/checkpoints/reference_segments/{reference}.log",
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/faidx"
+
+
 rule ivar__aggregate_consensus_from_segments:
     input:
-        faidx=get_reference_faidx,
-        consensus_lst=get_consensus_per_reference_segment,
+        get_consensus_per_reference_segment,
     output:
         "results/consensus/{sample}/{reference}.fa",
     log:
@@ -45,16 +55,6 @@ rule ivar__aggregate_consensus_from_segments:
     shell:
         "cat {input.consensus_lst} > {output} 2> {log}"
 
-
-# def parse_samtools_params():
-#     count_orphans = '--count-orphans' if config["ivar_consensus_params"]['count_orphans'] else '', # , False) else '',
-#     max_depth = config["ivar_consensus_params"]['max_read_depth'], #, 1000),
-#     min_mapping_quality = config["ivar_consensus_params"]['min_mapping_quality'], # 0, 0),
-#     min_base_quality = config["ivar_consensus_params"]['min_base_quality'], # 13
-#     no_base_alignment_quality = '--no-BAQ' if config["ivar_consensus_params"]['no_base_alignment_quality'] else '', #, False) else '',
-#     ivar_quality_threshold = config["ivar_consensus_params"]['consensus_base_quality_threshold'], # 20),
-#     ivar_frequency_threshold = config["ivar_consensus_params"]['consensus_frequency_threshold'], # 0),
-#     ivar_min_depth = config["ivar_consensus_params"]['min_consensus_depth',] #  10),
 
 # rule ivar__create_consensus_fasta_segment:
 #     input:
