@@ -16,5 +16,5 @@ if __name__ == "__main__":
         others_csv=snakemake.input.others,
         nextclade_files=snakemake.input.nextclade,
         passed_references=snakemake.input.passed_references,
-        out_summary=snakemake.output,
+        out_summary=snakemake.output[0],
     )

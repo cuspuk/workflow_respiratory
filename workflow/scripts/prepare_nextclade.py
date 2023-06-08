@@ -1,7 +1,7 @@
 import sys
 
 
-def summarize_results(references: list[str], nextclade_out: str, others_out: str):
+def summarize_results(references_file: str, nextclade_out: str, others_out: str):
     mapping = {
         "sars_cov_2": ("sars-cov-2", "default"),  # ???
         "rsv_a_2017": ("rsv_a", "default"),
@@ -15,6 +15,12 @@ def summarize_results(references: list[str], nextclade_out: str, others_out: str
 
     nextclades: dict[str, tuple[str, str]] = {}
     others: list[str] = []
+
+    references: list[str] = []
+    with open(references_file, "r") as f:
+        for line in f.readlines():
+            references.append(line.strip())
+
     for reference in references:
         if reference in mapping:
             nextclades[reference] = mapping[reference]
