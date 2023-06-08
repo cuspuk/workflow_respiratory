@@ -42,7 +42,7 @@ rule nextclade__run_nextclade:
 rule aggregate__nextclade_results:
     input:
         nextclade=get_nextclade_results,
-        passed_references="results/mapping/passed_references/{sample}.txt",
+        nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
     output:
         "results/summary/{sample}/aggr_result.txt",
