@@ -3,7 +3,7 @@ import sys
 
 def summarize_results(others_csv: str, nextclade_files: list[str], passed_references: list[str], out_summary: str):
     lines = []
-    with open(input.others, "r") as f:
+    with open(others_csv, "r") as f:
         lines = f.readlines()
     with open(out_summary, "w") as f:
         for line in lines:
