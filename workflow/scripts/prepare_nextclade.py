@@ -38,4 +38,4 @@ def summarize_results(references_file: str, nextclade_out: str, others_out: str)
 
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    summarize_results(snakemake.input, snakemake.output.nextclade, snakemake.output.others)
+    summarize_results(snakemake.input[0], snakemake.output.nextclade, snakemake.output.others)
