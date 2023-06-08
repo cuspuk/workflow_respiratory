@@ -92,7 +92,7 @@ def get_nextclade_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output[0].open() as f:
         for line in f.readlines():
             ref, name, tag = line.split()
-            results.append(f"results/consensus/{wildcards.sample}/nextclade/{ref}/{name}_{tag}.tsv")
+            results.append(f"results/consensus/{wildcards.sample}/nextclade/{ref}/{name}_{tag}/nextclade.tsv")
     return results
 
 

@@ -28,7 +28,7 @@ rule nextclade__run_nextclade:
         fa=get_reference_fasta,
         nextclade_data="resources/nextclade/{reference}/{name}_{tag}",
     output:
-        "results/consensus/{sample}/nextclade/{reference}/{name}_{tag}.tsv",
+        "results/consensus/{sample}/nextclade/{reference}/{name}_{tag}/nextclade.tsv",
     params:
         outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
