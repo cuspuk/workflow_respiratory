@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -19,8 +20,11 @@ def summarize_results(references_file: str, nextclade_out: str, others_out: str)
     references: list[str] = []
     with open(references_file, "r") as f:
         for line in f.readlines():
-            references.append(line.strip())
+            reference = line.strip()
+            name = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(reference)))))
+            references.append(name)
 
+    print(f"Found {len(references)} references", file=sys.stderr)
     for reference in references:
         if reference in mapping:
             nextclades[reference] = mapping[reference]
