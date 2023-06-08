@@ -41,7 +41,7 @@ rule nextclade__run_nextclade:
 
 rule aggregate__nextclade_results:
     input:
-        nextclade=get_nextclade_results,
+        nextclade_tsv=get_nextclade_results,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
     output:
