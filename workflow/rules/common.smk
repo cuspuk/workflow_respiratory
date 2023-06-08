@@ -60,7 +60,7 @@ def get_reference_faidx(wildcards):
     return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa.fai")
 
 
-def get_consensus_for_passed_references_only(wildcards):
+def get_passed_references(wildcards):  # TODO better way
     passed_refs = []
 
     with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
@@ -68,8 +68,11 @@ def get_consensus_for_passed_references_only(wildcards):
 
     ref_prefix = "results/mapping/"
     ref_suffix = f"deduplicated/bamqc/{wildcards.sample}/genome_results.txt"
-    reference_names = [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
-    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=reference_names)
+    return [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
+
+
+def get_consensus_for_passed_references_only(wildcards):
+    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
 
 
 def get_all_qualimap_dirs(wildcards):
@@ -78,27 +81,31 @@ def get_all_qualimap_dirs(wildcards):
 
 def get_consensus_per_reference_segment(wildcards):
     segments = []
-    with checkpoints.faidx_reference_segments.get(reference=wildcards.reference).output[0].open() as f:
+    with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
         for line in f.readlines():
             segments.append(line.split()[0])
-
-    print("Found segments: ", segments)
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
+
+
+def get_nextclade_results(wildcards):
+    results = []
+    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output[0].open() as f:
+        for line in f.readlines():
+            ref, name, tag = line.split()
+            results.append(f"results/consensus/{wildcards.sample}/nextclade/{ref}/{name}_{tag}.tsv")
+    return results
 
 
 #### OUTPUTS #################################################################
 
 
 def get_fastqc_reports():
-    # steps = ["original", "trimmed", "decontaminated"] #TODO
-    steps = ["original", "trimmed", "decontaminated"]
-
     return {
         "fastqc_report": expand(
             "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
             sample=SAMPLES,
             orientation=[1, 2],
-            step=steps,
+            step=["original"],  # TODO
         )
     }
 

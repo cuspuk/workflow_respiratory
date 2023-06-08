@@ -69,22 +69,21 @@ class QualimapProcessor:
 
 
 def build_parsers(criteria: dict[str, float | int]) -> list[AbstractQualimapParser]:
-    # parser_mappings: dict[str, Type[AbstractQualimapParser]] = {
-    #    'min_mean_coverage': MeanCoverageParser,
-    # }
     parsers: list[AbstractQualimapParser] = []
 
     for criterion_name, threshold in criteria.items():
         if criterion_name == "min_mean_coverage":
             parsers.append(MeanCoverageParser(threshold))
+        else:
+            raise ValueError(f"Unknown criterion: {criterion_name}")
 
     return parsers
 
 
 def evaluate_mapping_quality(qualimap_dirs: list[str], criteria: dict[str, float | int], output_file: str):
     parsers = build_parsers(criteria)
-    processor = QualimapProcessor(qualimap_dirs, parsers)
-    passed_files = processor.evaluate_files()
+    qualimap_processor = QualimapProcessor(qualimap_dirs, parsers)
+    passed_files = qualimap_processor.evaluate_files()
 
     print(passed_files)
     with open(output_file, "w") as out_file:
@@ -94,18 +93,5 @@ def evaluate_mapping_quality(qualimap_dirs: list[str], criteria: dict[str, float
 
 
 if __name__ == "__main__":
-    # files = [
-    #     "mapping/yamagata_2013/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3030",
-    #     "mapping/human_astrovirus/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3031",
-    #     "mapping/human_astrovirus/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3030",
-    #     "mapping/rotavirus_I/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3031",
-    #     "mapping/rotavirus_I/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3030",
-    #     "mapping/monkeypox/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3031",
-    #     "mapping/monkeypox/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3030",
-    #     "mapping/hepatitis_C_virus/deduplicated/bamqc/run230403_UVZ_BA_23-vsp-3031",
-    # ]
-    # criteria = {
-    #     "min_mean_coverage": 0.5,
-    # }
-    # evaluate_mapping_quality(files, criteria, "test")
+    sys.stderr = open(snakemake.log[0], "w")
     evaluate_mapping_quality(snakemake.input, snakemake.params, snakemake.output.passed_refs)

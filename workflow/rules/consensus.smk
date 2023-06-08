@@ -20,7 +20,7 @@ rule ivar__create_consensus_per_segment:
     output:
         consensus=temp("results/consensus/{sample}/{reference}/{segment}.fa"),
     params:
-        out_prefix=lambda wildcards, output: os.path.splitext(output.idx[0])[0],
+        out_prefix=lambda wildcards, output: os.path.splitext(output.consensus)[0],
         samtools_params=parse_samtools_params(),
         ivar_params=parse_ivar_params(),
     log:
@@ -32,7 +32,7 @@ rule ivar__create_consensus_per_segment:
         " | ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}) > {log}"
 
 
-checkpoint faidx_reference_segments:
+checkpoint index_passed_references:
     input:
         reference=get_reference_fasta,
     output:
@@ -45,7 +45,7 @@ checkpoint faidx_reference_segments:
 
 rule ivar__aggregate_consensus_from_segments:
     input:
-        get_consensus_per_reference_segment,
+        consensuses=get_consensus_per_reference_segment,
     output:
         "results/consensus/{sample}/{reference}.fa",
     log:
@@ -53,46 +53,4 @@ rule ivar__aggregate_consensus_from_segments:
     conda:
         "../envs/ivar.yaml"
     shell:
-        "cat {input.consensus_lst} > {output} 2> {log}"
-
-
-# rule ivar__create_consensus_fasta_segment:
-#     input:
-#         bam="results/mapping/{reference}/deduplicated/{sample}.bam",
-#         bai="results/mapping/{reference}/deduplicated/{sample}.bam.bai",
-#         fai   = get_reference_faidx,
-#     output:
-#         consensus = 'results/consensus/{sample}/{reference}.fa'
-#     params:
-#         out_prefix = 'results/consensus/{sample}/{reference}'
-#         samtools_params = parse_samtools_params(),
-#         ivar_params = parse_ivar_params(),
-#     log:
-#         out = 'consensus/{reference}-{panel}/log/{sample}.fa.out',
-#         err = 'consensus/{reference}-{panel}/log/{sample}.fa.err'
-#     conda:
-#         '../envs/ivar.yaml'
-#     shell:
-#         "rm {log}; "
-#         "for REF in `cut -f 1 {input.fai}`; do"
-#         " samtools mpileup --region $REF {params.samtools_params} {input.bam} 2>> {log}"
-#         " |"
-#         " ivar consensus -p {params.out_prefix}_$REF -i {wildcards.sample}_$REF {params.ivar} 1>> {log} 2>>&1"
-#         " OUT_FILE='{params.out_prefix}_$REF'.fa;"
-#         " QUAL_FILE='{params.out_prefix}_$REF'.qual.txt;"
-#         " cat $OUT_FILE >> {output.fasta} 2>> {log.err};"
-#         " rm $OUT_FILE; rm $QUAL_FILE;"
-#         " done 2>> {log.err};"
-
-
-rule aggregate_consensus:
-    input:
-        get_consensus_for_passed_references_only,
-    output:
-        "results/summary/{sample}/aggr_result.txt",
-    log:
-        "logs/test/{sample}.log",
-    conda:
-        "../envs/python.yaml"
-    shell:
-        "touch {output} > {log} 2>&1"
+        "cat {input.consensuses} > {output} 2> {log}"
