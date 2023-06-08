@@ -30,7 +30,7 @@ rule nextclade__run_nextclade:
     output:
         "results/consensus/{sample}/nextclade/{reference}/{name}_{tag}.tsv",
     params:
-        outdir=lambda wildcards, output: os.path.dirname(output[0])[0],
+        outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
         "../envs/nextclade.yaml"
     log:
