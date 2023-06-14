@@ -42,28 +42,18 @@ rule bwa__map_reads_to_reference:
         read_group="results/reads/original/read_group/{sample}.txt",
     output:
         bam=temp("results/mapping/{reference}/mapped/{sample}.bam"),
+    params:
+        filter="-F 4",  # discard unmapped reads
+    threads: 2
+    resources:
+        mem_mb=4096,
     log:
         "logs/bwa/mapping/{reference}/{sample}.log",
     benchmark:
         "benchmarks/bwa/map_reads_to_reference/{reference}/{sample}.benchmark"
     threads: config["threads"]
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/bwa/map"
-
-
-rule samtools__sort_mapped_reads:
-    input:
-        ref=get_reference_fasta,
-        bam="results/mapping/{reference}/mapped/{sample}.bam",
-    output:
-        bam=temp("results/mapping/{reference}/sorted/{sample}.bam"),
-    log:
-        "logs/samtools/sorting/{reference}/{sample}.log",
-    benchmark:
-        "benchmarks/samtools/sort_mapped_reads/{reference}/{sample}.benchmark"
-    threads: config["threads"]
-    wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/sort"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.7/wrappers/bwa/map"
 
 
 rule samtools__bam_index:
@@ -82,8 +72,8 @@ rule samtools__bam_index:
 
 rule picard__mark_duplicates:
     input:
-        bam="results/mapping/{reference}/sorted/{sample}.bam",
-        bai="results/mapping/{reference}/sorted/{sample}.bam.bai",
+        bam="results/mapping/{reference}/mapped/{sample}.bam",
+        bai="results/mapping/{reference}/mapped/{sample}.bam.bai",
     output:
         bam="results/mapping/{reference}/deduplicated/{sample}.bam",
         stat="results/mapping/{reference}/deduplicated/{sample}.stats",

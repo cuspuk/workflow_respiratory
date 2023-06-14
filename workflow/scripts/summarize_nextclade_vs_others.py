@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -15,7 +16,7 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs:
         for ref in nextclade_references:
             for tsv in nextclade_tsv:
                 if ref in tsv:
-                    f.write("nextclade\t{}\t{}\n".format(ref, tsv))
+                    f.write("nextclade\t{}\t{}\n".format(ref, os.path.dirname(tsv)))
                     break
         for ref in other_references:
             f.write(f"other\t{ref}\n")
