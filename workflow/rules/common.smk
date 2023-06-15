@@ -75,6 +75,13 @@ def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
 
 
+def get_mixed_positions_for_passed_references_only(wildcards):
+    return expand(
+        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions_count.tsv",
+        reference=get_passed_references(wildcards),
+    )
+
+
 def get_all_qualimap_dirs(wildcards):
     return expand(f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}", reference=REFERENCES)
 
@@ -135,7 +142,7 @@ def get_krona_reports():
 
 
 def get_consensus_files():
-    return {"consensus": expand("results/summary/{sample}/aggr_result.txt", sample=SAMPLES)}
+    return {"consensus": expand("results/summary/{sample}/reference_summary.json", sample=SAMPLES)}
 
 
 ## PARAMETERS PARSING #################################################################
@@ -178,8 +185,6 @@ def parse_samtools_params():
     samtools_params = []
     if config["consensus_params"]["count_orphans"]:
         samtools_params.append("--count-orphans")
-    if config["consensus_params"]["no_base_alignment_quality"]:
-        samtools_params.append("--no-BAQ")
 
     samtools_params.append("--max-depth {value}".format(value=config["consensus_params"]["max_read_depth"]))
     samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))

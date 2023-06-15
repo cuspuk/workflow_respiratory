@@ -28,8 +28,11 @@ rule ivar__create_consensus_per_segment:
     conda:
         "../envs/ivar.yaml"
     shell:
-        "(samtools mpileup --region {wildcards.segment} {params.samtools_params} {input.bam}"
-        " | ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}) > {log}"
+        "("
+        " samtools mpileup --no-BAQ --region {wildcards.segment} {params.samtools_params} {input.bam}"
+        " |"
+        " ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}"
+        ") 1> {log} 2>&1"
 
 
 checkpoint index_passed_references:
@@ -53,4 +56,4 @@ rule ivar__aggregate_consensus_from_segments:
     conda:
         "../envs/ivar.yaml"
     shell:
-        "cat {input.consensuses} > {output} 2> {log}"
+        "cat {input.consensuses} 1> {output} 2> {log}"

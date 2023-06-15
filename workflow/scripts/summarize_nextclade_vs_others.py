@@ -1,8 +1,16 @@
+import json
 import os
 import sys
+from typing import TypedDict
 
 
-def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs: str, out_summary: str):
+class ConsensusResult(TypedDict):
+    category: str
+    reference_name: str
+    relative_path_to_nextclade_dir: str | None
+
+
+def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs: str, out_summary_json: str):
     nextclade_references = []
     with open(nextclade_refs, "r") as f:
         nextclade_references = [line.strip().split()[0] for line in f.readlines()]
@@ -11,15 +19,23 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs:
     with open(others_csv, "r") as f:
         other_references = [line.strip() for line in f.readlines()]
 
-    with open(out_summary, "w") as f:
-        f.write("category\treference_name\tnextclade_dir\n")
-        for ref in nextclade_references:
-            for tsv in nextclade_tsv:
-                if ref in tsv:
-                    f.write("nextclade\t{}\t{}\n".format(ref, os.path.dirname(tsv)))
-                    break
-        for ref in other_references:
-            f.write(f"other\t{ref}\n")
+    results: list[ConsensusResult] = []
+    for ref in nextclade_references:
+        for tsv in nextclade_tsv:
+            if ref in tsv:
+                results.append(
+                    {
+                        "category": "nextclade",
+                        "reference_name": ref,
+                        "relative_path_to_nextclade_dir": os.path.relpath(os.path.dirname(tsv), ref),
+                    }
+                )
+                break
+    for ref in other_references:
+        results.append({"category": "other", "reference_name": ref, "relative_path_to_nextclade_dir": None})
+
+    with open(out_summary_json, "w") as f:
+        json.dump(results, f, indent=2)
 
 
 if __name__ == "__main__":
@@ -28,5 +44,5 @@ if __name__ == "__main__":
         others_csv=snakemake.input.others,
         nextclade_tsv=snakemake.input.nextclade_tsv,
         nextclade_refs=snakemake.input.nextclade_refs,
-        out_summary=snakemake.output[0],
+        out_summary_json=snakemake.output[0],
     )

@@ -31,7 +31,7 @@ rule kraken__analysis:
         "../envs/kraken2.yaml"
     shell:
         "(kraken2 --db {input.db} --threads {threads} --paired {params.extra}"
-        " --memory-mapping --report {output.report} {input.r1} {input.r2} > {output.kraken_output}) 2> {log}"
+        " --memory-mapping --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
 
 
 rule krona__update_taxonomy:

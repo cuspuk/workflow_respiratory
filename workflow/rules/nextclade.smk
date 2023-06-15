@@ -45,7 +45,7 @@ rule aggregate__nextclade_results:
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
     output:
-        "results/summary/{sample}/aggr_result.txt",
+        "results/summary/{sample}/reference_summary.json",
     conda:
         "../envs/python.yaml"
     log:

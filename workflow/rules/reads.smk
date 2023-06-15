@@ -33,7 +33,7 @@ rule kraken__decontaminate:
         parents="--include-parents" if config["reads__decontamination"]["exclude_ancestors"] else "",
     threads: config["threads"]
     log:
-        "logs/kraken/decontamination/{sample}.log",
+        "logs/kraken/decontaminate/{sample}.log",
     conda:
         "../envs/krakentools.yaml"
     shell:

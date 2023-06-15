@@ -110,10 +110,6 @@ definitions:
         type: boolean
         default: false
         description: "Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set."
-      no_base_alignment_quality:
-        type: boolean
-        default: false
-        description: "Set to true to disable base alignment quality computation."
       max_read_depth:
         type: integer
         default: 1000
