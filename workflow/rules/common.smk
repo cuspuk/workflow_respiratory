@@ -95,6 +95,10 @@ def get_all_qualimap_dirs(wildcards):
     )
 
 
+def get_read_counts_for_references(wildcards):
+    return expand(f"results/mapping/{{reference}}/deduplicated/{wildcards.sample}_counter.txt", reference=REFERENCES)
+
+
 def get_consensus_per_reference_segment(wildcards):
     segments = []
     with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
