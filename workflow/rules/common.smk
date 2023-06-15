@@ -97,7 +97,7 @@ def get_all_qualimap_dirs(wildcards):
 
 def get_read_counts_for_references(wildcards):
     print("getting read counts for ", wildcards.sample)
-    prnit("references:", REFERENCES)
+    print("references:", REFERENCES)
     result = expand(f"results/mapping/{{reference}}/deduplicated/{wildcards.sample}_counter.txt", reference=REFERENCES)
     print("result:", result)
     return result
