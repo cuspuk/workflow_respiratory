@@ -100,7 +100,7 @@ rule samtools__view_number_of_reads:
 
 checkpoint nonempty_bams:
     input:
-        expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
+        counters=expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
     output:
         "results/checkpoints/nonempty_bams/{sample}.tsv",
     log:

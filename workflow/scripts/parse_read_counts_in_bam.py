@@ -23,4 +23,4 @@ def parse_read_counts_in_bams(*, filepaths: list[str], output_file: str):
 
 
 if __name__ == "__main__":
-    parse_read_counts_in_bams(filepaths=snakemake.input[0], output_file=snakemake.output[0])
+    parse_read_counts_in_bams(filepaths=snakemake.input.counters, output_file=snakemake.output[0])
