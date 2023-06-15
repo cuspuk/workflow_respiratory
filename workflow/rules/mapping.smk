@@ -85,6 +85,32 @@ rule picard__mark_duplicates:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/picard/markduplicates"
 
 
+rule samtools__view_number_of_reads:
+    input:
+        "results/mapping/{reference}/deduplicated/{sample}.bam",
+    output:
+        temp("results/mapping/{reference}/deduplicated/{sample}_counter.txt"),
+    log:
+        "logs/samtools/count_reads/{reference}/{sample}.log",
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "samtools view -c {input} > {output} 2> {log}"
+
+
+checkpoint nonempty_bams:
+    input:
+        expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
+    output:
+        "results/checkpoints/nonempty_bams/{sample}.tsv",
+    log:
+        "logs/checkpoints/nonempty_bams/{sample}.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/parse_read_counts_in_bam.py"
+
+
 rule qualimap__mapping_quality_report:
     input:
         bam="results/mapping/{reference}/{step}/{sample}.bam",

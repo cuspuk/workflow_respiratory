@@ -26,6 +26,5 @@ rule all:
     input:
         **get_fastqc_reports(),
         **get_bam_outputs(),
-        **get_qualimap_reports(),
         **get_krona_reports(),
         **get_consensus_files(),

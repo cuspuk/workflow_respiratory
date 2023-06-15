@@ -52,6 +52,12 @@ def get_bwa_index(wildcards):
     )
 
 
+def get_references_with_non_empty_bams(wildcards):
+    with checkpoints.nonempty_bams.get(sample=wildcards.sample).output[0].open() as f:
+        non_empty_references = f.read().splitlines()
+        return non_empty_references
+
+
 def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa")
 
@@ -83,7 +89,10 @@ def get_mixed_positions_for_passed_references_only(wildcards):
 
 
 def get_all_qualimap_dirs(wildcards):
-    return expand(f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}", reference=REFERENCES)
+    return expand(
+        f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}",
+        reference=get_references_with_non_empty_bams(wildcards),
+    )
 
 
 def get_consensus_per_reference_segment(wildcards):
@@ -123,14 +132,6 @@ def get_bam_outputs():
             "results/mapping/{reference}/deduplicated/{sample}.bam",
             sample=SAMPLES,
             reference=REFERENCES,
-        )
-    }
-
-
-def get_qualimap_reports():
-    return {
-        "qualimap_reports": expand(
-            "results/mapping/{reference}/deduplicated/bamqc/{sample}", sample=SAMPLES, reference=REFERENCES
         )
     }
 
