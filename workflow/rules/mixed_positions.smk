@@ -39,7 +39,7 @@ rule custom__compute_mixed_positions:
 
 rule custom__concatenate_mixed_positions:
     input:
-        get_mixed_positions_for_passed_references_only(),
+        get_mixed_positions_for_passed_references_only,
     output:
         "results/variants/{sample}/mixed_positions_summary.tsv",
     log:
