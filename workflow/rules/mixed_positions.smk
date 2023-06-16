@@ -4,7 +4,7 @@ rule ivar__get_variants:
         bai="results/mapping/{reference}/deduplicated/{sample}.bam.bai",
         ref=get_reference_fasta,
     output:
-        "results/variants/{sample}/{reference}/original.tsv",
+        "results/variants/{sample}/{reference}.tsv",
     params:
         out_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
         samtools_params=parse_samtools_params_for_variants(),
