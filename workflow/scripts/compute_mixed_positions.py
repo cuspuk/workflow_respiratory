@@ -35,7 +35,7 @@ def load_ivar_variants(ivar_tsv: str):
         ivar_rows = list(ivar_reader)
 
         if ["REGION", "POS", "ALT_DP", "ALT_FREQ", "TOTAL_DP"] not in ivar_header:
-            raise UnknownIvarHeaderFormat()
+            raise UnknownIvarHeaderFormat("Header: %s" % ivar_header)
     return ivar_rows, ivar_header
 
 
