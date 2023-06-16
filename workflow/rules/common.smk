@@ -83,7 +83,7 @@ def get_consensus_for_passed_references_only(wildcards):
 
 def get_mixed_positions_for_passed_references_only(wildcards):
     return expand(
-        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions_count.tsv",
+        f"results/variants/{wildcards.sample}/mixed_positions/{{reference}}_count.tsv",
         reference=get_passed_references(wildcards),
     )
 
