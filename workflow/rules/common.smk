@@ -95,14 +95,6 @@ def get_all_qualimap_dirs(wildcards):
     )
 
 
-def get_read_counts_for_references(wildcards):
-    print("getting read counts for ", wildcards.sample)
-    print("references:", REFERENCES)
-    result = expand(f"results/mapping/{{reference}}/deduplicated/{wildcards.sample}_counter.txt", reference=REFERENCES)
-    print("result:", result)
-    return result
-
-
 def get_consensus_per_reference_segment(wildcards):
     segments = []
     with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
@@ -152,6 +144,10 @@ def get_krona_reports():
 
 def get_consensus_files():
     return {"consensus": expand("results/summary/{sample}/reference_summary.json", sample=SAMPLES)}
+
+
+def get_mixed_positions_result():
+    return {"mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.tsv", sample=SAMPLES)}
 
 
 ## PARAMETERS PARSING #################################################################

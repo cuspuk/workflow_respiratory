@@ -23,14 +23,12 @@ rule kraken__analysis:
         kraken_output=temp("results/kraken/{sample}.kraken"),
         report="results/kraken/{sample}.kreport2",
     threads: config["threads"]
-    params:
-        extra="--gzip-compressed",
     log:
         "logs/kraken/analysis/{sample}.log",
     conda:
         "../envs/kraken2.yaml"
     shell:
-        "(kraken2 --db {input.db} --threads {threads} --paired {params.extra}"
+        "(kraken2 --db {input.db} --threads {threads} --paired --gzip-compressed"
         " --memory-mapping --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
 
 
