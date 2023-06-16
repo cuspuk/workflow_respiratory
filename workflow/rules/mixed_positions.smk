@@ -27,7 +27,8 @@ rule custom__compute_mixed_positions:
         readcount=temp("results/variants/{sample}/mixed_positions/{reference}_count.tsv"),
     params:
         alt_depth=config["mixed_positions_params"]["filtering"]["min_alt_depth"],
-        alt_freq=config["mixed_positions_params"]["filtering"]["min_alt_freq"],
+        min_alt_freq=config["mixed_positions_params"]["filtering"]["min_alt_freq"],
+        max_alt_freq=config["mixed_positions_params"]["filtering"]["max_alt_freq"],
         total_depth=config["mixed_positions_params"]["filtering"]["min_total_depth"],
     log:
         "logs/variants/{sample}/variants/{reference}.log",

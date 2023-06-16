@@ -48,4 +48,5 @@ mixed_positions_params:
   filtering:
     min_alt_depth: 2 # mixed positions must have at least this ALT_DP value
     min_alt_freq: 0.1 # mixed positions must have at least this ALT_FREQ value
+    max_alt_freq: 0.9 # mixed positions cannot have ALT_FREQ value equal or larger than this
     min_total_depth: 10 # mixed positions must have at least this TOTAL_DP value

@@ -37,7 +37,7 @@ consensus_params:
   min_consensus_depth: 10 # Minimum depth to call consensus
 
 mixed_positions_params:
-  count_orphans: false # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
+  count_orphans: true # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
   max_read_depth: 600000 # limits the number of reads to load in memory per input file
   min_base_quality: 13 # minimum base quality for a base to be considered. Setting to 0 make the overlapping bases reappear, albeit with 0 quality.
   min_mapping_quality: 0 # minimum mapping quality for an alignment to be used.
@@ -48,4 +48,5 @@ mixed_positions_params:
   filtering:
     min_alt_depth: 2 # mixed positions must have at least this ALT_DP value
     min_alt_freq: 0.1 # mixed positions must have at least this ALT_FREQ value
+    max_alt_freq: 0.9 # mixed positions cannot have ALT_FREQ value equal or larger than this
     min_total_depth: 10 # mixed positions must have at least this TOTAL_DP value

@@ -204,6 +204,10 @@ definitions:
         type: number
         default: 0.1
         description: "Mixed positions must have at least this ALT_FREQ value to be counted"
+      max_alt_freq:
+        type: number
+        default: 0.9
+        description: "Mixed positions cannot have ALT_FREQ equal or greater than this value"
       min_total_depth:
         type: integer
         default: 10

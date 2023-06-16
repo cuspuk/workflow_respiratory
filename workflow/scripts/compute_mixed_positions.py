@@ -11,18 +11,21 @@ class UnknownIvarHeaderFormat(Exception):
 
 class MixedPositionDeterminator:
     alt_depth: int
-    alt_freq: float
+    min_alt_freq: float
+    max_alt_freq: float
     total_depth: int
 
-    def __init__(self, *, alt_depth: int, alt_freq: float, total_depth: int):
+    def __init__(self, *, alt_depth: int, min_alt_freq: float, max_alt_freq: float, total_depth: int):
         self.alt_depth = alt_depth
-        self.alt_freq = alt_freq
+        self.min_alt_freq = min_alt_freq
+        self.max_alt_freq = max_alt_freq
         self.total_depth = total_depth
 
     def _is_row_a_mixed_position(self, row: dict[str | Any, str | Any]):
         return (
             int(row["ALT_DP"]) >= self.alt_depth
-            and float(row["ALT_FREQ"]) >= self.alt_freq
+            and float(row["ALT_FREQ"]) >= self.min_alt_freq
+            and float(row["ALT_FREQ"]) < self.max_alt_freq
             and int(row["TOTAL_DP"]) >= self.total_depth
         )
 
@@ -68,7 +71,8 @@ def compute_mixed_positions(
 if __name__ == "__main__":
     mixed_position_determinator = MixedPositionDeterminator(
         alt_depth=int(snakemake.params["alt_depth"]),
-        alt_freq=float(snakemake.params["alt_freq"]),
+        min_alt_freq=float(snakemake.params["min_alt_freq"]),
+        max_alt_freq=float(snakemake.params["max_alt_freq"]),
         total_depth=int(snakemake.params["total_depth"]),
     )
     compute_mixed_positions(
