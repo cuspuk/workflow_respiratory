@@ -206,3 +206,23 @@ def parse_ivar_params():
     ivar_params.append("-m {value}".format(value=config["consensus_params"]["min_consensus_depth"]))
 
     return " ".join(ivar_params)
+
+
+def parse_samtools_params_for_variants():
+    samtools_params = []
+    if config["mixed_positions_params"]["count_orphans"]:
+        samtools_params.append("--count-orphans")
+
+    samtools_params.append("--max-depth {value}".format(value=config["mixed_positions_params"]["max_read_depth"]))
+    samtools_params.append("--min-MQ {value}".format(value=config["mixed_positions_params"]["min_mapping_quality"]))
+    samtools_params.append("--min-BQ {value}".format(value=config["mixed_positions_params"]["min_base_quality"]))
+    return " ".join(samtools_params)
+
+
+def parse_ivar_params_for_variants():
+    ivar_params = []
+
+    ivar_params.append("-q {value}".format(value=config["mixed_positions_params"]["min_base_quality_threshold"]))
+    ivar_params.append("-t {value}".format(value=config["mixed_positions_params"]["min_frequency_threshold"]))
+    ivar_params.append("-m {value}".format(value=config["mixed_positions_params"]["min_read_depth"]))
+    return " ".join(ivar_params)

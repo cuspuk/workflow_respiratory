@@ -69,7 +69,7 @@ if __name__ == "__main__":
     compute_mixed_positions(
         ivar_tsv=snakemake.input[0],
         out_mixed_positions_tsv=snakemake.output.mixed_positions,
-        out_count_file=snakemake.output.count,
+        out_count_file=snakemake.output.readcount,
         mixed_position_determinator=mixed_position_determinator,
         reference_name=snakemake.wildcards.reference,
     )

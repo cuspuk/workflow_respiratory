@@ -25,12 +25,16 @@ definitions:
       consensus_params:
         type: object
         "$ref": "#/definitions/ConsensusParams"
+      mixed_positions_params:
+        type: object
+        "$ref": "#/definitions/MixedPositionsParams"
     required:
       - sample_names_regex
       - reference_panel_dirpath
       - threads
       - kraken_db
       - consensus_params
+      - mixed_positions_params
     title: Respiratory
   ReadsDecontamination:
     type: object
@@ -125,10 +129,12 @@ definitions:
       consensus_base_quality_threshold:
         type: integer
         default: 20
-        description: "Minimum quality score threshold to count base."
+        description: "Minimum quality score threshold to count base in ivar consensus"
       consensus_frequency_threshold:
         type: integer
         default: 0
+        Minimum: 0
+        Maximum: 1
         description: "Minimum frequency threshold to call consensus."
       min_consensus_depth:
         type: integer
@@ -147,3 +153,59 @@ definitions:
     required:
       - min_mean_coverage
     title: ReferenceCriteria
+
+  MixedPositionsParams:
+    type: object
+    additionalProperties: false
+    properties:
+      count_orphans:
+        type: boolean
+        default: false
+        description: "Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set."
+      max_read_depth:
+        type: integer
+        default: 600000
+        description: "This limits the number of reads to load in memory per input file. Decreases needed memory but increases running time."
+      min_base_quality:
+        type: integer
+        default: 13
+        description: "Minimum base quality for a base to be considered. Setting to 0 make the overlapping bases reappear, albeit with 0 quality."
+      min_mapping_quality:
+        type: integer
+        default: 0
+        description: "Minimum mapping quality for an alignment to be used."
+      min_base_quality_threshold:
+        type: integer
+        default: 20
+        description: "Minimum quality score threshold to count base in ivar variants"
+      min_frequency_threshold:
+        type: number
+        default: 0
+        Minimum: 0
+        Maximum: 1
+        description: "Minimum frequency threshold to call variants."
+      min_read_depth:
+        type: integer
+        default: 10
+        description: "Minimum read depth to call variants"
+      filtering:
+        type: object
+        "$ref": "#/definitions/MixedPositionsCriteria"
+    title: MixedPositionsParams
+  MixedPositionsCriteria:
+    type: object
+    additionalProperties: false
+    properties:
+      min_alt_depth:
+        type: integer
+        default: 2
+        description: "Mixed positions must have at least this ALT_DP value to be counted"
+      min_alt_freq:
+        type: number
+        default: 0.1
+        description: "Mixed positions must have at least this ALT_FREQ value to be counted"
+      min_total_depth:
+        type: integer
+        default: 10
+        description: "Mixed positions must have at least this TOTAL_DP value to be counted"
+    title: MixedPositionsCriteria

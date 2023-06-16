@@ -35,3 +35,17 @@ consensus_params:
   consensus_base_quality_threshold: 20 # Minimum quality score threshold to count base.
   consensus_frequency_threshold: 0 # Minimum frequency threshold to call consensus.
   min_consensus_depth: 10 # Minimum depth to call consensus
+
+mixed_positions_params:
+  count_orphans: false # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
+  max_read_depth: 600000 # limits the number of reads to load in memory per input file
+  min_base_quality: 13 # minimum base quality for a base to be considered. Setting to 0 make the overlapping bases reappear, albeit with 0 quality.
+  min_mapping_quality: 0 # minimum mapping quality for an alignment to be used.
+  min_base_quality_threshold: 20 # Minimum quality score threshold to count base
+  min_frequency_threshold: 0.03 # Minimum frequency threshold(0 - 1) to call variants
+  min_read_depth: 0 # Minimum read depth to call variants
+
+  filtering:
+    min_alt_depth: 2 # mixed positions must have at least this ALT_DP value
+    min_alt_freq: 0.1 # mixed positions must have at least this ALT_FREQ value
+    min_total_depth: 10 # mixed positions must have at least this TOTAL_DP value

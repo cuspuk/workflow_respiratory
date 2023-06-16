@@ -16,6 +16,7 @@ include: "rules/mapping.smk"
 include: "rules/kraken.smk"
 include: "rules/consensus.smk"
 include: "rules/nextclade.smk"
+include: "rules/mixed_positions.smk"
 
 
 wildcard_constraints:
@@ -28,3 +29,4 @@ rule all:
         **get_bam_outputs(),
         **get_krona_reports(),
         **get_consensus_files(),
+        **get_mixed_positions_result(),
