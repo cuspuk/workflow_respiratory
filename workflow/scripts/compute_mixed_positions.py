@@ -21,7 +21,9 @@ class MixedPositionDeterminator:
 
     def _is_row_a_mixed_position(self, row: dict[str | Any, str | Any]):
         return (
-            row["ALT_DP"] >= self.alt_depth and row["ALT_FREQ"] >= self.alt_freq and row["TOTAL_DP"] >= self.total_depth
+            int(row["ALT_DP"]) >= self.alt_depth
+            and float(row["ALT_FREQ"]) >= self.alt_freq
+            and int(row["TOTAL_DP"]) >= self.total_depth
         )
 
     def process_rows(self, rows: list[dict[str | Any, str | Any]]):
