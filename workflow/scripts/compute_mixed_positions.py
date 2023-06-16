@@ -31,10 +31,13 @@ class MixedPositionDeterminator:
 def load_ivar_variants(ivar_tsv: str):
     with open(ivar_tsv, "r") as ivar_file:
         ivar_reader = csv.DictReader(ivar_file, delimiter="\t")
-        ivar_header = ivar_reader.fieldnames
+        ivar_header: list[str] = ivar_reader.fieldnames
         ivar_rows = list(ivar_reader)
 
-        if ["REGION", "POS", "ALT_DP", "ALT_FREQ", "TOTAL_DP"] not in ivar_header:
+        if any(
+            required_column not in ivar_header
+            for required_column in ["REGION", "POS", "ALT_DP", "ALT_FREQ", "TOTAL_DP"]
+        ):
             raise UnknownIvarHeaderFormat("Header: %s" % ivar_header)
     return ivar_rows, ivar_header
 
