@@ -50,7 +50,7 @@ rule ivar__aggregate_consensus_from_segments:
     input:
         consensuses=get_consensus_per_reference_segment,
     output:
-        "results/consensus/{sample}/{reference}.fa",
+        report("results/consensus/{sample}/{reference}.fa", category="{reference}"),
     log:
         "logs/consensus/{sample}/{reference}.log",
     conda:

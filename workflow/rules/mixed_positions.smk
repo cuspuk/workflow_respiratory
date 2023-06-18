@@ -23,7 +23,13 @@ rule report__ivar_variants_to_html:
     input:
         "results/variants/{sample}/{reference}.tsv",
     output:
-        report("results/variants/{sample}/{reference}.html"),
+        report(
+            "results/variants/{sample}/{reference}.html",
+            category="variants",
+            labels={
+                "reference": "{reference}",
+            },
+        ),
     log:
         "logs/report/{sample}/ivar_variants/{reference}.log",
     conda:
@@ -55,7 +61,7 @@ rule report__mixed_positions_to_html:
     input:
         "results/variants/{sample}/mixed_positions/{reference}.tsv",
     output:
-        report("results/variants/{sample}/mixed_positions/{reference}.html"),
+        report("results/variants/{sample}/mixed_positions/{reference}.html", category="{reference}"),
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
     conda:
@@ -66,7 +72,7 @@ rule report__mixed_positions_to_html:
 
 rule custom__concatenate_mixed_positions:
     input:
-        mixed_positinos=get_mixed_positions_for_passed_references_only,
+        mixed_positions=get_mixed_positions_for_passed_references_only,
         reports=get_variant_reports_for_passed_references_only,
     output:
         "results/variants/{sample}/mixed_positions_summary.tsv",
@@ -75,4 +81,4 @@ rule custom__concatenate_mixed_positions:
     conda:
         "../envs/coreutils.yaml"
     shell:
-        "cat {input} > {output} 2>&1"
+        "cat {input.mixed_positions} > {output} 2>&1"
