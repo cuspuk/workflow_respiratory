@@ -102,7 +102,12 @@ checkpoint nonempty_bams:
     input:
         read_counts=expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
     output:
-        "results/checkpoints/nonempty_bams/{sample}.tsv",
+        report(
+            "results/checkpoints/nonempty_bams/{sample}.tsv",
+            labels={
+                "Name": "List of non empty BAMs",
+            },
+        ),
     log:
         "logs/checkpoints/nonempty_bams/{sample}.log",
     conda:
@@ -120,7 +125,7 @@ rule qualimap__mapping_quality_report:
             directory("results/mapping/{reference}/{step}/bamqc/{sample}"),
             category="Qualimaps",
             labels={
-                "reference": "{reference}",
+                "Reference": "{reference}",
             },
             htmlindex="qualimapReport.html",
         ),

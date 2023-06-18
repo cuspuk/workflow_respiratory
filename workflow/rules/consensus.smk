@@ -2,7 +2,12 @@ checkpoint mapping_quality_evaluation:
     input:
         get_all_qualimap_dirs,
     output:
-        passed_refs="results/mapping/passed_references/{sample}.txt",
+        passed_refs=report(
+            "results/mapping/passed_references/{sample}.txt",
+            labels={
+                "Name": "List of passed references",
+            },
+        ),
     params:
         min_mean_coverage=config["consensus_params"]["reference_criteria"]["min_mean_coverage"],
     log:

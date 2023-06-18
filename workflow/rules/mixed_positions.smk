@@ -25,9 +25,10 @@ rule report__ivar_variants_to_html:
     output:
         report(
             "results/variants/{sample}/{reference}.html",
-            category="variants",
+            category="mixed positions",
             labels={
                 "reference": "{reference}",
+                "step": "all variants",
             },
         ),
     log:
@@ -61,7 +62,14 @@ rule report__mixed_positions_to_html:
     input:
         "results/variants/{sample}/mixed_positions/{reference}.tsv",
     output:
-        report("results/variants/{sample}/mixed_positions/{reference}.html", category="{reference}"),
+        report(
+            "results/variants/{sample}/mixed_positions/{reference}.html",
+            category="mixed positions",
+            labels={
+                "reference": "{reference}",
+                "step": "mixed only",
+            },
+        ),
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
     conda:
