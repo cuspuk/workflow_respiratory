@@ -94,7 +94,7 @@ def get_consensus_for_passed_references_only(wildcards):
 
 def get_mixed_positions_for_passed_references_only(wildcards):
     return expand(
-        f"results/variants/{wildcards.sample}/mixed_positions/{{reference}}_count.tsv",
+        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions_count.tsv",
         reference=get_passed_references(wildcards),
     )
 
@@ -102,11 +102,11 @@ def get_mixed_positions_for_passed_references_only(wildcards):
 def get_variant_reports_for_passed_references_only(wildcards):
     passed_refs = get_passed_references(wildcards)
     lst1 = expand(
-        f"results/variants/{wildcards.sample}/mixed_positions/{{reference}}.html",
+        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions.html",
         reference=passed_refs,
     )
     lst2 = expand(
-        f"results/variants/{wildcards.sample}/{{reference}}.html",
+        f"results/variants/{wildcards.sample}/{{reference}}/all.html",
         reference=passed_refs,
     )
     return lst1 + lst2

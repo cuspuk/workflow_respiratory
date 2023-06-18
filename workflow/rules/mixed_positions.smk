@@ -4,7 +4,7 @@ rule ivar__get_variants:
         bai="results/mapping/{reference}/deduplicated/{sample}.bam.bai",
         ref=get_reference_fasta,
     output:
-        "results/variants/{sample}/{reference}.tsv",
+        "results/variants/{sample}/{reference}/all.tsv",
     params:
         out_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
         samtools_params=parse_samtools_params_for_variants(),
@@ -21,10 +21,10 @@ rule ivar__get_variants:
 
 rule report__ivar_variants_to_html:
     input:
-        "results/variants/{sample}/{reference}.tsv",
+        "results/variants/{sample}/{reference}/all.tsv",
     output:
         report(
-            "results/variants/{sample}/{reference}.html",
+            "results/variants/{sample}/{reference}/all.html",
             category="Mixed positions",
             labels={
                 "reference": "{reference}",
@@ -41,10 +41,10 @@ rule report__ivar_variants_to_html:
 
 rule custom__compute_mixed_positions:
     input:
-        "results/variants/{sample}/{reference}.tsv",
+        "results/variants/{sample}/{reference}/all.tsv",
     output:
-        mixed_positions="results/variants/{sample}/mixed_positions/{reference}.tsv",
-        readcount=temp("results/variants/{sample}/mixed_positions/{reference}_count.tsv"),
+        mixed_positions="results/variants/{sample}/{reference}/mixed_positions.tsv",
+        readcount=temp("results/variants/{sample}/{reference}/mixed_positions_count.tsv"),
     params:
         alt_depth=config["mixed_positions_params"]["filtering"]["min_alt_depth"],
         min_alt_freq=config["mixed_positions_params"]["filtering"]["min_alt_freq"],
@@ -60,10 +60,10 @@ rule custom__compute_mixed_positions:
 
 rule report__mixed_positions_to_html:
     input:
-        "results/variants/{sample}/mixed_positions/{reference}.tsv",
+        "results/variants/{sample}/{reference}/mixed_positions.tsv",
     output:
         report(
-            "results/variants/{sample}/mixed_positions/{reference}.html",
+            "results/variants/{sample}/{reference}/mixed_positions.html",
             category="Mixed positions",
             labels={
                 "reference": "{reference}",
@@ -83,7 +83,12 @@ rule custom__concatenate_mixed_positions:
         mixed_positions=get_mixed_positions_for_passed_references_only,
         reports=get_variant_reports_for_passed_references_only,
     output:
-        "results/variants/{sample}/mixed_positions_summary.tsv",
+        report(
+            "results/variants/{sample}/mixed_positions_summary.tsv",
+            labels={
+                "Name": "Summary of mixed positions",
+            },
+        ),
     log:
         "logs/variants/{sample}/summary.log",
     conda:

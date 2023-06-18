@@ -25,7 +25,7 @@ rule nextclade__download_nextclade_dataset:
 
 rule nextclade__run_nextclade:
     input:
-        fa=get_reference_fasta,
+        fa="results/consensus/{sample}/{reference}.fa",
         nextclade_data="resources/nextclade/{reference}/{name}_{tag}",
     output:
         "results/consensus/{sample}/nextclade/{reference}/{name}_{tag}/nextclade.tsv",
@@ -40,6 +40,7 @@ rule nextclade__run_nextclade:
 
 
 rule aggregate__nextclade_results:
+    # force getting other consensuses TODO
     input:
         nextclade_tsv=get_nextclade_results,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
