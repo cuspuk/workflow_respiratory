@@ -123,9 +123,10 @@ rule qualimap__mapping_quality_report:
     output:
         report_dir=report(
             directory("results/mapping/{reference}/{step}/bamqc/{sample}"),
-            category="Qualimaps",
+            category="Reports",
             labels={
-                "Reference": "{reference}",
+                "Type": "Qualimap",
+                "Name": "{reference}",
             },
             htmlindex="qualimapReport.html",
         ),

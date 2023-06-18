@@ -50,7 +50,11 @@ rule krona__create_chart:
     output:
         report(
             "results/kraken/kronas/{sample}.html",
-            category="Kronas",
+            category="Reports",
+            labels={
+                "Type": "Krona",
+                "Name": "-",
+            },
         ),
     log:
         "logs/krona/create_chart/{sample}.log",

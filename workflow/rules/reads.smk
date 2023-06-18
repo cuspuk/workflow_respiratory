@@ -63,8 +63,11 @@ rule fastqc__quality_report:
     output:
         html=report(
             "results/reads/{step}/fastqc/{fastq}.html",
-            category="FastQC",
-            subcategory="{step}",
+            category="Reports",
+            labels={
+                "Type": "Fastqc",
+                "Name": "{fastq}",
+            },
         ),
         zip="results/reads/{step}/fastqc/{fastq}.zip",
         qc_data="results/reads/{step}/fastqc/{fastq}/fastqc_data.txt",
