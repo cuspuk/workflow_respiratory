@@ -77,6 +77,17 @@ def get_passed_references(wildcards):  # TODO better way
     return [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
 
 
+def passed_references(sample):
+    passed_refs = []
+
+    with checkpoints.mapping_quality_evaluation.get(sample=sample).output[0].open() as f:
+        passed_refs = f.read().splitlines()
+
+    ref_prefix = "results/mapping/"
+    ref_suffix = f"deduplicated/bamqc/{wildcards.sample}/genome_results.txt"
+    return [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
+
+
 def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
 
@@ -86,6 +97,19 @@ def get_mixed_positions_for_passed_references_only(wildcards):
         f"results/variants/{wildcards.sample}/mixed_positions/{{reference}}_count.tsv",
         reference=get_passed_references(wildcards),
     )
+
+
+def get_variant_reports_for_passed_references_only(wildcards):
+    passed_refs = get_passed_references(wildcards)
+    lst1 = expand(
+        f"results/variants/{wildcards.sample}/mixed_positions/{{reference}}.html",
+        reference=passed_refs,
+    )
+    lst2 = expand(
+        f"results/variants/{wildcards.sample}/{{reference}}.html",
+        reference=passed_refs,
+    )
+    return lst1 + lst2
 
 
 def get_all_qualimap_dirs(wildcards):

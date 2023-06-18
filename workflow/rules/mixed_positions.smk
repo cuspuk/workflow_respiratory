@@ -19,6 +19,19 @@ rule ivar__get_variants:
         " ivar variants -p {params.out_prefix} -r {input.ref} {params.ivar_params}) 1> {log} 2>&1"
 
 
+rule report__ivar_variants_to_html:
+    input:
+        "results/variants/{sample}/{reference}.tsv",
+    output:
+        report("results/variants/{sample}/{reference}.html"),
+    log:
+        "logs/report/{sample}/ivar_variants/{reference}.log",
+    conda:
+        "../envs/python_panel.yaml"
+    script:
+        "../scripts/tsv_html.py"
+
+
 rule custom__compute_mixed_positions:
     input:
         "results/variants/{sample}/{reference}.tsv",
@@ -38,9 +51,23 @@ rule custom__compute_mixed_positions:
         "../scripts/compute_mixed_positions.py"
 
 
+rule report__mixed_positions_to_html:
+    input:
+        "results/variants/{sample}/mixed_positions/{reference}.tsv",
+    output:
+        report("results/variants/{sample}/mixed_positions/{reference}.html"),
+    log:
+        "logs/report/{sample}/mixed_positions/{reference}.log",
+    conda:
+        "../envs/python_panel.yaml"
+    script:
+        "../scripts/tsv_html.py"
+
+
 rule custom__concatenate_mixed_positions:
     input:
-        get_mixed_positions_for_passed_references_only,
+        mixed_positinos=get_mixed_positions_for_passed_references_only,
+        reports=get_variant_reports_for_passed_references_only,
     output:
         "results/variants/{sample}/mixed_positions_summary.tsv",
     log:

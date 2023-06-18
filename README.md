@@ -39,16 +39,10 @@ To re-run after parameter changes:
 snakemake -n -R `snakemake --list-params-changes`
 ```
 
-Or after code changes:
-
-```shell
-snakemake -n -R `snakemake --list-code-changes`
-```
-
 ### Debugging
 
 - run with `--notemp` to ignore `temp()` in snakemake rules.
-- run with `--show-failed-logs` to automatically show failed log messages
+- run with `--show-failed-logs` to automatically show failed log messages.
 
 ### Issues
 
