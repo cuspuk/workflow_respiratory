@@ -38,6 +38,8 @@ repos:
     rev: v2.2.4
     hooks:
       - id: codespell
+        args:
+          - "-L artic"
 
   - repo: https://github.com/snakemake/snakefmt
     rev: v0.8.4

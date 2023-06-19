@@ -1,7 +1,32 @@
-# The highest level logic of the workflow is defined here
-# Here **and only here** should be defined which other .smk files are included
-# Here define the rule `all` gathering all the outputs of the workflow
-# Here can be defined also other highlevel snakemake stuff like `localrules`, `min_version` or `report`
-#
-# Please follow the best practices:
-# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
+from snakemake.utils import min_version
+
+min_version("7.25.0")
+
+
+localrules:
+    all,
+    curl__download_kraken_db,
+    krona__update_taxonomy,
+    custom__infer_and_store_read_group,
+
+
+include: "rules/common.smk"
+include: "rules/reads.smk"
+include: "rules/mapping.smk"
+include: "rules/kraken.smk"
+include: "rules/consensus.smk"
+include: "rules/nextclade.smk"
+include: "rules/mixed_positions.smk"
+
+
+wildcard_constraints:
+    **get_constraints(),
+
+
+rule all:
+    input:
+        **get_fastqc_reports(),
+        **get_bam_outputs(),
+        **get_krona_reports(),
+        **get_consensus_files(),
+        **get_mixed_positions_result(),
