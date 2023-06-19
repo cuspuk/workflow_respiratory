@@ -32,7 +32,7 @@ def load_metadata(metadata_file: str):
     with open(metadata_file, "r") as f:
         for line in f.readlines():
             try:
-                name, _, nextclade, tag = line.split(",")
+                name, _, nextclade, tag = line.strip().split(",")
                 mapping[name] = (nextclade, tag)
             except ValueError:
                 raise InvalidMetadataFile("Metadata table {} does not have 4 columns".format(metadata_file))
