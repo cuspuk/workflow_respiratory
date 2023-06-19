@@ -145,7 +145,11 @@ def get_bam_outputs():
             "results/mapping/{reference}/deduplicated/{sample}.bam",
             sample=SAMPLES,
             reference=REFERENCES,
-        )
+        ),
+        "nonempty_bams": expand(
+            "results/checkpoints/nonempty_bams/{sample}.tsv",
+            sample=SAMPLES,
+        ),
     }
 
 
