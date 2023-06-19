@@ -46,7 +46,7 @@ rule aggregate__nextclade_results:
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
-        reference_metadata="resources/metadata.csv",
+        metadata="resources/metadata.csv",
     output:
         "results/summary/{sample}/reference_summary.json",
     conda:
