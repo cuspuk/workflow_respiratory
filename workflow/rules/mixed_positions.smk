@@ -65,7 +65,7 @@ rule report__mixed_positions_to_html:
         report(
             "results/variants/{sample}/{reference}/mixed_positions.html",
             category="Mixed positions",
-            caption="report/mixed_positions.rst",
+            caption="../report/mixed_positions.rst",
             labels={
                 "reference": "{reference}",
                 "step": "Only mixed positions",
