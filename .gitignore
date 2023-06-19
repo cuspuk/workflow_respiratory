@@ -4,6 +4,10 @@
 !.tests/
 !.tests/config/
 !.tests/config/**
+!.tests/resources/
+!.tests/resources/metadata.csv
+!.tests/resources/test_reference_panel/
+!.tests/resources/test_reference_panel/**
 !.tests/results/
 !.tests/results/**
 !.tests/results/reads/
