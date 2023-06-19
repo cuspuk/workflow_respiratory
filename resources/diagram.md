@@ -8,8 +8,8 @@ flowchart LR;
   L1[Output];
   L2[Temporary Output];
 
-  style L1 stroke:#00ff00,stroke-width:7px;
-  style L2 stroke:#ffff00,stroke-width:7px;
+  style L1 stroke:#00ff00,stroke-width:5px;
+  style L2 stroke:#ffff00,stroke-width:5px;
   end;
 
 
@@ -19,8 +19,8 @@ flowchart LR;
 
 ```mermaid
 flowchart TB;
-  classDef OUTPUT stroke:#00ff00,stroke-width:7px;
-  classDef TEMP stroke:#ffff00,stroke-width:7px;
+  classDef OUTPUT stroke:#00ff00,stroke-width:5px;
+  classDef TEMP stroke:#ffff00,stroke-width:5px;
 
   A[/Raw reads/];
   B[Trimmed reads]:::TEMP;
@@ -44,7 +44,7 @@ flowchart TB;
   H--->|evaluate coverage|S3;
   S1-->|ivar consensus|S3_S1;
   S1-->|ivar variants|S3_1;
-  S3--->|Summarize|Z;
+  S3---->|Summarize|Z;
 
   O>config params]-.->S3_2;
 
