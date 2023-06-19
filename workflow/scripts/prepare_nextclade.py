@@ -1,27 +1,20 @@
-import os
 import sys
 
 
-def summarize_results(references_file: str, nextclade_out: str, others_out: str):
-    mapping = {
-        "sars_cov_2": ("sars-cov-2", "default"),  # ???
-        "rsv_a_2017": ("rsv_a", "default"),
-        "rsv_b_2019": ("rsv_b", "default"),
-        "yamagata_2013": ("flu_yam_ha", "default"),
-        "victoria_2021": ("flu_vic_ha", "default"),  # flu_vic_na ??
-        "h1n1_2019": ("flu_h1n1pdm_ha", "default"),  # ci NA?
-        "h3n2_2021": ("flu_h3n2_ha", "default"),  # a NA ?
-        "monkeypox": ("hMPXV", "default"),  # ci ine?
-    }
+class InvalidMetadataFile(Exception):
+    """Raised when the metadata file cannot be parsed into 4 values"""
 
+
+def summarize_results(references_file: str, nextclade_out: str, others_out: str, metadata: dict[str, tuple[str, str]]):
     nextclades: dict[str, tuple[str, str]] = {}
     others: list[str] = []
 
     references: list[str] = [line.strip() for line in open(references_file, "r").readlines()]
     print(f"Found {len(references)} references", file=sys.stderr)
+
     for reference in references:
-        if reference in mapping:
-            nextclades[reference] = mapping[reference]
+        if metadata[reference][1]:
+            nextclades[reference] = metadata[reference]
         else:
             others.append(reference)
 
@@ -34,6 +27,24 @@ def summarize_results(references_file: str, nextclade_out: str, others_out: str)
             f.write(f"{reference}\n")
 
 
+def load_metadata(metadata_file: str):
+    mapping: dict[str, tuple[str, str]] = {}
+    with open(metadata_file, "r") as f:
+        for line in f.readlines():
+            try:
+                name, _, nextclade, tag = line.split(",")
+                mapping[name] = (nextclade, tag)
+            except ValueError:
+                raise InvalidMetadataFile("Metadata table {} does not have 4 columns".format(metadata_file))
+    return mapping
+
+
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    summarize_results(snakemake.input[0], snakemake.output.nextclade, snakemake.output.others)
+    metadata = load_metadata(snakemake.input.metadata)
+    summarize_results(
+        references_file=snakemake.input.references,
+        nextclade_out=snakemake.output.nextclade,
+        others_out=snakemake.output.others,
+        metadata=metadata,
+    )

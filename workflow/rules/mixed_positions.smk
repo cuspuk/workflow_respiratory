@@ -84,7 +84,7 @@ rule custom__concatenate_mixed_positions:
         reports=get_variant_reports_for_passed_references_only,
     output:
         report(
-            "results/variants/{sample}/mixed_positions_summary.tsv",
+            "results/variants/{sample}/mixed_positions_summary.txt",
             labels={
                 "Name": "Summary of mixed positions",
             },

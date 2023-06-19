@@ -1,6 +1,7 @@
 checkpoint select_references_for_nextclade:
     input:
-        "results/mapping/passed_references/{sample}.txt",
+        references="results/mapping/passed_references/{sample}.txt",
+        reference_metadata="resources/metadata.csv",
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
@@ -45,6 +46,7 @@ rule aggregate__nextclade_results:
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
+        reference_metadata="resources/metadata.csv",
     output:
         "results/summary/{sample}/reference_summary.json",
     conda:

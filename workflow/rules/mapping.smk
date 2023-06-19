@@ -103,7 +103,7 @@ checkpoint nonempty_bams:
         read_counts=expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
     output:
         report(
-            "results/checkpoints/nonempty_bams/{sample}.tsv",
+            "results/checkpoints/nonempty_bams/{sample}.txt",
             labels={
                 "Name": "List of non empty BAMs",
             },

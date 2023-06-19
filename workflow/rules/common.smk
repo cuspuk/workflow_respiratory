@@ -147,7 +147,7 @@ def get_bam_outputs():
             reference=REFERENCES,
         ),
         "nonempty_bams": expand(
-            "results/checkpoints/nonempty_bams/{sample}.tsv",
+            "results/checkpoints/nonempty_bams/{sample}.txt",
             sample=SAMPLES,
         ),
     }
@@ -164,7 +164,7 @@ def get_consensus_files():
 
 
 def get_mixed_positions_result():
-    return {"mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.tsv", sample=SAMPLES)}
+    return {"mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=SAMPLES)}
 
 
 ## PARAMETERS PARSING #################################################################
