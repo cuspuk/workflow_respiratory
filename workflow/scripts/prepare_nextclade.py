@@ -17,13 +17,7 @@ def summarize_results(references_file: str, nextclade_out: str, others_out: str)
     nextclades: dict[str, tuple[str, str]] = {}
     others: list[str] = []
 
-    references: list[str] = []
-    with open(references_file, "r") as f:
-        for line in f.readlines():
-            reference = line.strip()
-            name = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(reference)))))
-            references.append(name)
-
+    references: list[str] = [line.strip() for line in open(references_file, "r").readlines()]
     print(f"Found {len(references)} references", file=sys.stderr)
     for reference in references:
         if reference in mapping:
