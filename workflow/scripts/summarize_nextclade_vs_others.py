@@ -47,7 +47,9 @@ def summarize_results(
                         "category": "nextclade",
                         "reference_name": ref,
                         "virus": mapping[ref],
-                        "relative_path_to_nextclade_dir": os.path.relpath(os.path.dirname(tsv), out_summary_json),
+                        "relative_path_to_nextclade_dir": os.path.relpath(
+                            os.path.dirname(tsv), os.path.dirname(out_summary_json)
+                        ),
                     }
                 )
                 break
