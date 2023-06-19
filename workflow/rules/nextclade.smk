@@ -48,7 +48,12 @@ rule aggregate__nextclade_results:
         other_results=get_others_results,
         metadata="resources/metadata.csv",
     output:
-        "results/summary/{sample}/reference_summary.json",
+        report(
+            "results/summary/{sample}/reference_summary.json",
+            labels={
+                "Name": "Consensus summary",
+            },
+        ),
     conda:
         "../envs/python.yaml"
     log:
