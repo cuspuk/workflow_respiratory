@@ -49,7 +49,7 @@ rule aggregate__nextclade_results:
         metadata="resources/metadata.csv",
     output:
         report(
-            "results/summary/{sample}/reference_summary.json",
+            "results/consensus/{sample}/nextclade/reference_summary.json",
             labels={
                 "Name": "Consensus summary",
             },

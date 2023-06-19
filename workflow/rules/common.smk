@@ -160,7 +160,7 @@ def get_krona_reports():
 
 
 def get_consensus_files():
-    return {"consensus": expand("results/summary/{sample}/reference_summary.json", sample=SAMPLES)}
+    return {"consensus": expand("results/consensus/{sample}/nextclade/reference_summary.json", sample=SAMPLES)}
 
 
 def get_mixed_positions_result():
