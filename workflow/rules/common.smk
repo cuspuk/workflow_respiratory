@@ -119,7 +119,10 @@ def get_nextclade_results(wildcards):
 def get_others_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.others.open() as f:
         references = [line.strip() for line in f.readlines()]
+    if references:
         return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=references)
+    else:
+        return []
 
 
 #### OUTPUTS #################################################################
