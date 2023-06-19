@@ -19,14 +19,6 @@ After running, create a [report](https://snakemake.readthedocs.io/en/stable/snak
 snakemake --report my_first_report.zip
 ```
 
-It is also advised to [archive](https://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html#sustainable-and-reproducible-archiving) the workflow if successful:
-
-```shell
-snakemake --archive my_first_workflow.tar.gz
-```
-
-### Recommendations
-
 Use dry-run: `-n` first to confirm that it works as intended:
 
 ```shell
