@@ -8,8 +8,8 @@ flowchart LR;
   L1[Output];
   L2[Temporary Output];
 
-  style L1 fill:#0f0;
-  style L2 fill:#ff0;
+  style L1 stroke:#00ff00,stroke-width:7px;
+  style L2 stroke:#ffff00,stroke-width:7px;
   end;
 
 
@@ -19,8 +19,8 @@ flowchart LR;
 
 ```mermaid
 flowchart TB;
-  classDef OUTPUT fill:#0f0;
-  classDef TEMP fill:#ff0;
+  classDef OUTPUT stroke:#00ff00,stroke-width:7px;
+  classDef TEMP stroke:#ffff00,stroke-width:7px;
 
   A[/Raw reads/];
   B[Trimmed reads]:::TEMP;
@@ -30,13 +30,6 @@ flowchart TB;
   D[FastQC report]:::OUTPUT;
   Z[Summary]:::OUTPUT;
   H[Mapping quality summary]:::OUTPUT;
-
-  style S1_1 fill:#0f0;
-  style S2_0 fill:#0f0;
-  style S3_2 fill:#0f0;
-  style S3_0 fill:#0f0;
-  style S3_1 fill:#0f0;
-  style S3_3 fill:#0f0;
 
   A-->|trimmomatic|B;
   B-->|kraken|C;
@@ -58,22 +51,22 @@ flowchart TB;
   subgraph S1[For every reference sequence in the panel];
   direction TB;
     S1_0[Mapping output]:::TEMP;
-    S1_1[Deduplicated BAM];
+    S1_1[Deduplicated BAM]:::OUTPUT;
     S1_0-->|picard markDuplicates|S1_1;
   end;
 
   subgraph S2[For every non-empty BAM]
   direction TB;
-    S2_0[Qualimap report];
+    S2_0[Qualimap report]:::OUTPUT;
   end;
 
   subgraph S3[For every BAM passing quality check]
   direction TB;
     S3_D{reference};
-    S3_0[Consensus];
-    S3_1[Variants tsv];
-    S3_2[Mixed positions];
-    S3_3[Nextclade report];
+    S3_0[Consensus]:::OUTPUT;
+    S3_1[Variants tsv]:::OUTPUT;
+    S3_2[Mixed positions]:::OUTPUT;
+    S3_3[Nextclade report]:::OUTPUT;
     S3_S1-->|concatenate|S3_0;
     S3_1-->|count|S3_2;
     S3_D-->|is in nextclade DB|S3_3;
