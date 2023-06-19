@@ -54,8 +54,7 @@ def get_bwa_index(wildcards):
 
 def get_references_with_non_empty_bams(wildcards):
     with checkpoints.nonempty_bams.get(sample=wildcards.sample).output[0].open() as f:
-        non_empty_references = f.read().splitlines()
-        return non_empty_references
+        return f.read().splitlines()
 
 
 def get_reference_fasta(wildcards):
@@ -66,26 +65,9 @@ def get_reference_faidx(wildcards):
     return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa.fai")
 
 
-def get_passed_references(wildcards):  # TODO better way
-    passed_refs = []
-
+def get_passed_references(wildcards):
     with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
-        passed_refs = f.read().splitlines()
-
-    ref_prefix = "results/mapping/"
-    ref_suffix = f"deduplicated/bamqc/{wildcards.sample}/genome_results.txt"
-    return [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
-
-
-def passed_references(sample):
-    passed_refs = []
-
-    with checkpoints.mapping_quality_evaluation.get(sample=sample).output[0].open() as f:
-        passed_refs = f.read().splitlines()
-
-    ref_prefix = "results/mapping/"
-    ref_suffix = f"deduplicated/bamqc/{wildcards.sample}/genome_results.txt"
-    return [ref.removeprefix(ref_prefix).removesuffix(ref_suffix).rstrip("/") for ref in passed_refs]
+        return [line.strip() for line in f.readlines()]
 
 
 def get_consensus_for_passed_references_only(wildcards):
@@ -120,20 +102,24 @@ def get_all_qualimap_dirs(wildcards):
 
 
 def get_consensus_per_reference_segment(wildcards):
-    segments = []
     with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
-        for line in f.readlines():
-            segments.append(line.split()[0])
+        segments = [line.split()[0] for line in f.readlines()]
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
 def get_nextclade_results(wildcards):
     results = []
-    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output[0].open() as f:
+    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
             ref, name, tag = line.split()
             results.append(f"results/consensus/{wildcards.sample}/nextclade/{ref}/{name}_{tag}/nextclade.tsv")
     return results
+
+
+def get_others_results(wildcards):
+    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.others.open() as f:
+        references = [line.strip() for line in f.readlines()]
+        return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=references)
 
 
 #### OUTPUTS #################################################################
@@ -145,7 +131,7 @@ def get_fastqc_reports():
             "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
             sample=SAMPLES,
             orientation=[1, 2],
-            step=["original"],  # TODO
+            step=["trimmed"],  # TODO
         )
     }
 

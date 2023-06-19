@@ -62,7 +62,7 @@ rule samtools__bam_index:
     output:
         bai="results/mapping/{reference}/{step}/{sample}.bam.bai",
     benchmark:
-        "benchmarks/samtools/indexing/{step}/{reference}/{sample}.benchmark"
+        "benchmarks/samtools/bam_index/{step}/{reference}/{sample}.benchmark"
     threads: config["threads"]
     log:
         "logs/samtools/bam_index/{step}/{reference}/{sample}.log",
@@ -91,7 +91,7 @@ rule samtools__view_number_of_reads:
     output:
         temp("results/mapping/{reference}/deduplicated/{sample}_counter.txt"),
     log:
-        "logs/samtools/count_reads/{reference}/{sample}.log",
+        "logs/samtools/view_number_of_reads/{reference}/{sample}.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -141,3 +141,27 @@ rule qualimap__mapping_quality_report:
         "logs/qualimap/mapping_quality_report/{reference}/{step}/{sample}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
+
+
+checkpoint mapping_quality_evaluation:
+    input:
+        qualimaps=get_all_qualimap_dirs,
+    output:
+        passed_refs=report(
+            "results/mapping/passed_references/{sample}.txt",
+            labels={
+                "Name": "List of passed references",
+            },
+        ),
+    params:
+        reference_names=lambda wildcards, input: [
+            os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(filename)))))
+            for filename in input.qualimaps
+        ],
+        criteria=config["consensus_params"]["reference_criteria"],
+    log:
+        "logs/checkpoints/mapping_quality_evaluation/{sample}.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/mapping_quality_evaluation.py"

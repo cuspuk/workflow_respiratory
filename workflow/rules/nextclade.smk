@@ -40,11 +40,11 @@ rule nextclade__run_nextclade:
 
 
 rule aggregate__nextclade_results:
-    # force getting other consensuses TODO
     input:
         nextclade_tsv=get_nextclade_results,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
+        other_results=get_others_results,
     output:
         "results/summary/{sample}/reference_summary.json",
     conda:

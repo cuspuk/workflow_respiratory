@@ -55,6 +55,7 @@ class MeanCoverageParser(AbstractQualimapParser):
 @dataclass
 class QualimapProcessor:
     filenames: list[str]
+    references: list[str]
     parsers: list[AbstractQualimapParser]
 
     def _evaluate_file_by_parsers(self, filename: str) -> bool:
@@ -65,8 +66,10 @@ class QualimapProcessor:
 
     def evaluate_files(self) -> list[str]:
         genome_results_files = [os.path.join(filename, "genome_results.txt") for filename in self.filenames]
-        existing_files = [filename for filename in genome_results_files if os.path.exists(filename)]
-        return [filename for filename in existing_files if self._evaluate_file_by_parsers(filename)]
+        existing_files = [
+            (filename, ref) for filename, ref in zip(genome_results_files, self.references) if os.path.exists(filename)
+        ]
+        return [ref for filename, ref in existing_files if self._evaluate_file_by_parsers(filename)]
 
 
 def build_parsers(criteria: dict[str, float | int]) -> list[AbstractQualimapParser]:
@@ -81,18 +84,23 @@ def build_parsers(criteria: dict[str, float | int]) -> list[AbstractQualimapPars
     return parsers
 
 
-def evaluate_mapping_quality(qualimap_dirs: list[str], criteria: dict[str, float | int], output_file: str):
+def evaluate_mapping_quality(
+    qualimap_dirs: list[str], reference_names: list[str], criteria: dict[str, float | int], output_file: str
+):
     parsers = build_parsers(criteria)
-    qualimap_processor = QualimapProcessor(qualimap_dirs, parsers)
-    passed_files = qualimap_processor.evaluate_files()
+    qualimap_processor = QualimapProcessor(qualimap_dirs, reference_names, parsers)
+    passed_references = qualimap_processor.evaluate_files()
 
-    print(passed_files)
     with open(output_file, "w") as out_file:
-        for passed_ref in passed_files:
-            out_file.write(passed_ref)
-            out_file.write("\n")
+        for passed_ref in passed_references:
+            out_file.write(passed_ref + "\n")
 
 
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    evaluate_mapping_quality(snakemake.input, snakemake.params, snakemake.output.passed_refs)
+    evaluate_mapping_quality(
+        snakemake.input.qualimaps,
+        snakemake.params.reference_names,
+        snakemake.params.criteria,
+        snakemake.output.passed_refs,
+    )
