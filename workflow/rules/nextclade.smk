@@ -1,7 +1,7 @@
 checkpoint select_references_for_nextclade:
     input:
         references="results/mapping/passed_references/{sample}.txt",
-        reference_metadata="resources/metadata.csv",
+        metadata="resources/metadata.csv",
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
