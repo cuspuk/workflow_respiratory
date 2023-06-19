@@ -1,11 +1,11 @@
 import json
 import os
 import sys
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class ConsensusResult(TypedDict):
-    category: str
+    category: Literal["nextclade", "other"]
     reference_name: str
     virus: str
     relative_path_to_nextclade_dir: str | None
