@@ -155,7 +155,7 @@ checkpoint mapping_quality_evaluation:
         ),
     params:
         reference_names=lambda wildcards, input: [
-            os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(filename)))))
+            os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(filename))))
             for filename in input.qualimaps
         ],
         criteria=config["consensus_params"]["reference_criteria"],
