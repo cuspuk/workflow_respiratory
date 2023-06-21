@@ -5,6 +5,7 @@ references_metadata_file: "metadata.csv" # file in the reference panel directory
 threads: 2
 
 kraken_db: k2_pluspf_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
+kraken_dir: "resources/kraken" # Directory where kraken is located or will be downloaded
 
 reads__decontamination:
   exclude_taxa_ids: # list of taxonomy IDs to exclude

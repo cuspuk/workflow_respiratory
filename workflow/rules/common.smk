@@ -22,7 +22,7 @@ def glob_samples(regex: str):
 def glob_references(reference_panel_dirpath: str):
     _SUFFIX = ".fa"
     _REGEX = ".*"
-    location_format = f"{reference_panel_dirpath}/{{name, {_REGEX}}}{_SUFFIX}"
+    location_format = os.path.join(reference_panel_dirpath, f"{{name, {_REGEX}}}{_SUFFIX}")
     return set(glob_wildcards(location_format).name)
 
 

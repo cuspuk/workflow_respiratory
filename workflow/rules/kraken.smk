@@ -1,6 +1,6 @@
 rule curl__download_kraken_db:
     output:
-        directory("resources/kraken/{tag}"),
+        directory(os.path.join(config["kraken_dir"], "{tag}")),
     params:
         url=lambda wildcards, output: "https://genome-idx.s3.amazonaws.com/kraken/{tag}.tar.gz".format(
             tag=os.path.basename(output[0])
@@ -34,7 +34,7 @@ rule kraken__analysis:
 
 rule krona__update_taxonomy:
     output:
-        directory("resources/krona/"),
+        directory(os.path.join(config["kraken_dir"], "krona")),
     log:
         "logs/krona/update_taxonomy.log",
     conda:

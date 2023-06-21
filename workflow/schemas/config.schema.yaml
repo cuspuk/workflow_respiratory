@@ -22,6 +22,9 @@ definitions:
       kraken_db:
         type: string
         description: "Tag for the kraken database which will be used"
+      kraken_dir:
+        type: string
+        description: "Directory where kraken is located or will be downloaded"
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
