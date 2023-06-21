@@ -5,13 +5,16 @@ rule custom__link_samples_to_workdir:
     output:
         r1="results/reads/original/{sample}_R1.fastq.gz",
         r2="results/reads/original/{sample}_R2.fastq.gz",
+    params:
+        dirpath=lambda w, input: os.path.splitext(output.r1)[0],
     log:
         "logs/custom/link_samples_to_workdir/{sample}.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
-        "ln -s {input.r1} {output.r1} > {log} 2>&1; "
-        "ln -s {input.r2} {output.r2} >> {log} 2>>&1; "
+        "mkdir -p {params.dirpath} > {log} 2>&1; "
+        "ln -s {input.r1} {output.r1} >> {log} 2>&1; "
+        "ln -s {input.r2} {output.r2} >> {log} 2>&1; "
 
 
 rule trimmomatic__trim_reads_pe:
