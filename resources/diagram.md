@@ -7,20 +7,21 @@ flowchart LR;
   subgraph LEG[LEGEND];
   L1[Output];
   L2[Temporary Output];
+  L3[Output not embedded in report];
 
-  style L1 stroke:#00ff00,stroke-width:5px;
-  style L2 stroke:#ffff00,stroke-width:5px;
+  style L1 stroke:#00ff00,stroke-width:4px;
+  style L3 stroke:#00ff00,stroke-width:4px, stroke-dasharray: 15 7;
+  style L2 stroke:#ffff00,stroke-width:4px;
   end;
-
-
 ```
 
 ## Diagram
 
 ```mermaid
 flowchart TB;
-  classDef OUTPUT stroke:#00ff00,stroke-width:5px;
-  classDef TEMP stroke:#ffff00,stroke-width:5px;
+  classDef OUTPUT stroke:#00ff00,stroke-width:4px;
+  classDef TEMP stroke:#ffff00,stroke-width:4px;
+  classDef NOREPORT stroke:#00ff00,stroke-width:4px, stroke-dasharray: 15 7;
 
   A[/Raw reads/];
   B[Trimmed reads]:::TEMP;
@@ -51,7 +52,7 @@ flowchart TB;
   subgraph S1[For every reference sequence in the panel];
   direction TB;
     S1_0[Mapping output]:::TEMP;
-    S1_1[Deduplicated BAM]:::OUTPUT;
+    S1_1[Deduplicated BAM]:::NOREPORT;
     S1_0-->|picard markDuplicates|S1_1;
   end;
 
@@ -66,7 +67,7 @@ flowchart TB;
     S3_0[Consensus]:::OUTPUT;
     S3_1[Variants tsv]:::OUTPUT;
     S3_2[Mixed positions]:::OUTPUT;
-    S3_3[Nextclade report]:::OUTPUT;
+    S3_3[Nextclade report]:::NOREPORT;
     S3_S1-->|concatenate|S3_0;
     S3_1-->|count|S3_2;
     S3_D-->|is in nextclade DB|S3_3;

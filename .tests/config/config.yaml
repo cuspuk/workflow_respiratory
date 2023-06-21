@@ -1,5 +1,6 @@
 sample_names_regex: ".*"
 reference_panel_dirpath: "resources/test_reference_panel/" # directory with reference fasta sequences
+references_metadata_file: "metadata.csv" # file in the reference panel directory with reference metadata
 
 threads: 2
 

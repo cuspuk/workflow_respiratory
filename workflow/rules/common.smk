@@ -211,7 +211,6 @@ def parse_samtools_params():
     samtools_params.append("--max-depth {value}".format(value=config["consensus_params"]["max_read_depth"]))
     samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))
     samtools_params.append("--min-BQ {value}".format(value=config["consensus_params"]["min_base_quality"]))
-
     return " ".join(samtools_params)
 
 
