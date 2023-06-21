@@ -8,12 +8,8 @@
 !.tests/resources/metadata.csv
 !.tests/resources/test_reference_panel/
 !.tests/resources/test_reference_panel/**
-!.tests/results/
-!.tests/results/**
-!.tests/results/reads/
-!.tests/results/reads/**
-!.tests/results/reads/original/
-!.tests/results/reads/original/**
+!.tests/test_data/
+!.tests/test_data/**
 !config/
 !config/**
 !resources/

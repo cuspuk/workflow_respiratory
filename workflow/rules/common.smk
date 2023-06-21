@@ -13,10 +13,11 @@ validate(config, "../schemas/config.schema.yaml")
 MAPPING_INPUT_STEP = "decontaminated"
 
 
-def glob_samples(regex: str):
+def glob_samples(sample_dir: str, regex: str):
     _PAIRED_INFO = ("_R1", "_R2")
-    _BASE_LOCATION = "results/reads/original/{{sample, {regex}}}{paired_str}.fastq.gz"
-    return set(glob_wildcards(_BASE_LOCATION.format(regex=regex, paired_str=_PAIRED_INFO[0])).sample)
+    paired_str = _PAIRED_INFO[0]
+    _BASE_LOCATION = os.path.join(sample_dir, f"{{sample, {regex}}}{paired_str}.fastq.gz")
+    return set(glob_wildcards(_BASE_LOCATION).sample)
 
 
 def glob_references(reference_panel_dirpath: str):
@@ -26,7 +27,7 @@ def glob_references(reference_panel_dirpath: str):
     return set(glob_wildcards(location_format).name)
 
 
-SAMPLES = glob_samples(config["sample_names_regex"])
+SAMPLES = glob_samples(config["samples_dirpath"], config["sample_names_regex"])
 REFERENCES = glob_references(config["reference_panel_dirpath"])
 
 
