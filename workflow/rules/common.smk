@@ -97,7 +97,7 @@ def get_variant_reports_for_passed_references_only(wildcards):
 
 def get_all_qualimap_dirs(wildcards):
     return expand(
-        f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}",
+        f"results/mapping/{wildcards.sample}/deduplicated/bamqc/{{reference}}",
         reference=get_references_with_non_empty_bams(wildcards),
     )
 
@@ -143,7 +143,7 @@ def get_fastqc_reports():
 def get_bam_outputs():
     return {
         "bams": expand(
-            "results/mapping/{reference}/deduplicated/{sample}.bam",
+            "results/mapping/{sample}/deduplicated/{reference}.bam",
             sample=SAMPLES,
             reference=REFERENCES,
         ),

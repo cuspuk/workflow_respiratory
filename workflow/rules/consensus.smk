@@ -2,7 +2,7 @@ checkpoint index_passed_references:
     input:
         reference=get_reference_fasta,
     output:
-        f"{config['reference_panel_dirpath']}/{{reference}}.fa.fai",
+        os.path.join(config["reference_panel_dirpath"], "{reference}.fa.fai"),
     log:
         "logs/checkpoints/reference_segments/{reference}.log",
     wrapper:
@@ -11,8 +11,8 @@ checkpoint index_passed_references:
 
 rule ivar__create_consensus_per_segment:
     input:
-        bam="results/mapping/{reference}/deduplicated/{sample}.bam",
-        bai="results/mapping/{reference}/deduplicated/{sample}.bam.bai",
+        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
+        bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
     output:
         consensus=temp("results/consensus/{sample}/{reference}/{segment}.fa"),
     params:
@@ -20,7 +20,7 @@ rule ivar__create_consensus_per_segment:
         samtools_params=parse_samtools_params(),
         ivar_params=parse_ivar_params(),
     log:
-        "logs/consensus/{sample}/{reference}/{segment}.log",
+        "logs/ivar/create_consensus_per_segment/{sample}/{reference}/{segment}.log",
     conda:
         "../envs/ivar.yaml"
     shell:
@@ -43,7 +43,7 @@ rule concat__consensus_from_segments:
             },
         ),
     log:
-        "logs/consensus/{sample}/{reference}.log",
+        "logs/concat/consensus_from_segments/{sample}/{reference}.log",
     conda:
         "../envs/ivar.yaml"
     shell:

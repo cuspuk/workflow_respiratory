@@ -1,7 +1,7 @@
 checkpoint select_references_for_nextclade:
     input:
-        references="results/mapping/passed_references/{sample}.txt",
-        metadata=f"{config['reference_panel_dirpath']}/{config['references_metadata_file']}",
+        references="results/checkpoints/passed_references/{sample}.txt",
+        metadata=os.path.join(config["reference_panel_dirpath"], config["references_metadata_file"]),
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
@@ -46,7 +46,7 @@ rule aggregate__nextclade_results:
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
-        metadata=f"{config['reference_panel_dirpath']}/{config['references_metadata_file']}",
+        metadata=os.path.join(config["reference_panel_dirpath"], config["references_metadata_file"]),
     output:
         report(
             "results/consensus/{sample}/nextclade/reference_summary.json",
