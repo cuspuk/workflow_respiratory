@@ -8,9 +8,6 @@ definitions:
       sample_names_regex:
         type: string
         description: "Regular expression to match sample names that will be analysed"
-      samples_dirpath:
-        type: string
-        description: "Path to the directory where sample files will be stored with names according to the regex"
       reference_panel_dirpath:
         type: string
         description: "Directory with reference .fasta files"

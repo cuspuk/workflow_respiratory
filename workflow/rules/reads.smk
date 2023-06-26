@@ -1,22 +1,3 @@
-rule custom__link_samples_to_workdir:
-    input:
-        r1=os.path.join(config["samples_dirpath"], "{sample}_R1.fastq.gz"),
-        r2=os.path.join(config["samples_dirpath"], "{sample}_R2.fastq.gz"),
-    output:
-        r1="results/reads/original/{sample}_R1.fastq.gz",
-        r2="results/reads/original/{sample}_R2.fastq.gz",
-    params:
-        dirpath=lambda w, output: os.path.splitext(output.r1)[0],
-    log:
-        "logs/custom/link_samples_to_workdir/{sample}.log",
-    conda:
-        "../envs/coreutils.yaml"
-    shell:
-        "mkdir -p {params.dirpath} > {log} 2>&1; "
-        "ln -s {input.r1} {output.r1} >> {log} 2>&1; "
-        "ln -s {input.r2} {output.r2} >> {log} 2>&1; "
-
-
 rule trimmomatic__trim_reads_pe:
     input:
         r1="results/reads/original/{sample}_R1.fastq.gz",

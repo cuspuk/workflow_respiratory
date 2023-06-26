@@ -1,6 +1,5 @@
 # INPUTS
-sample_names_regex: ".*"
-samples_dirpath: "test_data" # Path to the directory where sample files will be stored with names according to the regex
+sample_names_regex: ".*" # at results/reads/original
 reference_panel_dirpath: "resources/test_reference_panel/" # directory with reference fasta sequences
 references_metadata_file: "metadata.csv" # file in the reference panel directory with reference metadata
 
