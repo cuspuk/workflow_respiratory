@@ -6,7 +6,7 @@ rule custom__link_samples_to_workdir:
         r1="results/reads/original/{sample}_R1.fastq.gz",
         r2="results/reads/original/{sample}_R2.fastq.gz",
     params:
-        dirpath=lambda w, input: os.path.splitext(output.r1)[0],
+        dirpath=lambda w, output: os.path.splitext(output.r1)[0],
     log:
         "logs/custom/link_samples_to_workdir/{sample}.log",
     conda:
