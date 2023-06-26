@@ -41,16 +41,16 @@ rule bwa__map_reads_to_reference:
         index=get_bwa_index,
         read_group="results/reads/original/read_group/{sample}.txt",
     output:
-        bam=temp("results/mapping/{reference}/mapped/{sample}.bam"),
+        bam=temp("results/mapping/{sample}/mapped/{reference}.bam"),
     params:
         filter="-F 4",  # discard unmapped reads
     threads: 2
     resources:
         mem_mb=4096,
     log:
-        "logs/bwa/mapping/{reference}/{sample}.log",
+        "logs/bwa/map_reads_to_reference/{sample}/{reference}.log",
     benchmark:
-        "benchmarks/bwa/map_reads_to_reference/{reference}/{sample}.benchmark"
+        "benchmarks/bwa/map_reads_to_reference/{sample}/{reference}.benchmark"
     threads: config["threads"]
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.7/wrappers/bwa/map"
@@ -58,38 +58,38 @@ rule bwa__map_reads_to_reference:
 
 rule samtools__bam_index:
     input:
-        bam="results/mapping/{reference}/{step}/{sample}.bam",
+        bam="results/mapping/{sample}/{step}/{reference}.bam",
     output:
-        bai="results/mapping/{reference}/{step}/{sample}.bam.bai",
+        bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
     benchmark:
         "benchmarks/samtools/bam_index/{step}/{reference}/{sample}.benchmark"
     threads: config["threads"]
     log:
-        "logs/samtools/bam_index/{step}/{reference}/{sample}.log",
+        "logs/samtools/bam_index/{sample}/{reference}_{step}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/index"
 
 
 rule picard__mark_duplicates:
     input:
-        bam="results/mapping/{reference}/mapped/{sample}.bam",
-        bai="results/mapping/{reference}/mapped/{sample}.bam.bai",
+        bam="results/mapping/{sample}/mapped/{reference}.bam",
+        bai="results/mapping/{sample}/mapped/{reference}.bam.bai",
     output:
-        bam="results/mapping/{reference}/deduplicated/{sample}.bam",
-        stat="results/mapping/{reference}/deduplicated/{sample}.stats",
+        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
+        stat="results/mapping/{sample}/deduplicated/{reference}.stats",
     log:
-        "logs/picard/mark_duplicates/{reference}/{sample}.log",
+        "logs/picard/mark_duplicates/{sample}/{reference}.log",
     benchmark:
-        "benchmarks/picard/mark_duplicates/{reference}/{sample}.benchmark"
+        "benchmarks/picard/mark_duplicates/{sample}/{reference}.benchmark"
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
     input:
-        "results/mapping/{reference}/deduplicated/{sample}.bam",
+        "results/mapping/{sample}/deduplicated/{reference}.bam",
     output:
-        temp("results/mapping/{reference}/deduplicated/{sample}_counter.txt"),
+        temp("results/mapping/{sample}/deduplicated/{reference}.count"),
     log:
         "logs/samtools/view_number_of_reads/{reference}/{sample}.log",
     conda:
@@ -100,7 +100,7 @@ rule samtools__view_number_of_reads:
 
 checkpoint nonempty_bams:
     input:
-        read_counts=expand("results/mapping/{reference}/deduplicated/{{sample}}_counter.txt", reference=REFERENCES),
+        read_counts=expand("results/mapping/{{sample}}/deduplicated/{reference}.count", reference=REFERENCES),
     output:
         report(
             "results/checkpoints/nonempty_bams/{sample}.txt",
@@ -118,11 +118,11 @@ checkpoint nonempty_bams:
 
 rule qualimap__mapping_quality_report:
     input:
-        bam="results/mapping/{reference}/{step}/{sample}.bam",
-        bai="results/mapping/{reference}/{step}/{sample}.bam.bai",
+        bam="results/mapping/{sample}/{step}/{reference}.bam",
+        bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
     output:
         report_dir=report(
-            directory("results/mapping/{reference}/{step}/bamqc/{sample}"),
+            directory("results/mapping/{sample}/{step}/bamqc/{reference}"),
             category="Reports",
             labels={
                 "Type": "Qualimap",
@@ -138,7 +138,7 @@ rule qualimap__mapping_quality_report:
     resources:
         mem_mb=10000,
     log:
-        "logs/qualimap/mapping_quality_report/{reference}/{step}/{sample}.log",
+        "logs/qualimap/mapping_quality_report/{sample}/{step}/{reference}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
 
@@ -148,7 +148,7 @@ checkpoint mapping_quality_evaluation:
         qualimaps=get_all_qualimap_dirs,
     output:
         passed_refs=report(
-            "results/mapping/passed_references/{sample}.txt",
+            "results/checkpoints/passed_references/{sample}.txt",
             labels={
                 "Name": "List of passed references",
             },

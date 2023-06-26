@@ -1,6 +1,6 @@
 rule curl__download_kraken_db:
     output:
-        directory("resources/kraken/{tag}"),
+        directory(os.path.join(config["kraken_dir"], "{tag}")),
     params:
         url=lambda wildcards, output: "https://genome-idx.s3.amazonaws.com/kraken/{tag}.tar.gz".format(
             tag=os.path.basename(output[0])
@@ -16,7 +16,7 @@ rule curl__download_kraken_db:
 
 rule kraken__analysis:
     input:
-        db="resources/kraken/{tag}".format(tag=config["kraken_db"]),
+        db=os.path.join(config["kraken_dir"], config["kraken_db"]),
         r1="results/reads/trimmed/{sample}_R1.fastq.gz",
         r2="results/reads/trimmed/{sample}_R2.fastq.gz",
     output:
@@ -34,7 +34,7 @@ rule kraken__analysis:
 
 rule krona__update_taxonomy:
     output:
-        directory("resources/krona/"),
+        directory(os.path.join(config["kraken_dir"], "krona")),
     log:
         "logs/krona/update_taxonomy.log",
     conda:
@@ -46,7 +46,7 @@ rule krona__update_taxonomy:
 rule krona__create_chart:
     input:
         kraken_output="results/kraken/{sample}.kreport2",
-        tax_db="resources/krona/",
+        tax_db=os.path.join(config["kraken_dir"], "krona"),
     output:
         report(
             "results/kraken/kronas/{sample}.html",

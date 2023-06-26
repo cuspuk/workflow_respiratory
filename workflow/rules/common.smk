@@ -22,7 +22,7 @@ def glob_samples(regex: str):
 def glob_references(reference_panel_dirpath: str):
     _SUFFIX = ".fa"
     _REGEX = ".*"
-    location_format = f"{reference_panel_dirpath}/{{name, {_REGEX}}}{_SUFFIX}"
+    location_format = os.path.join(reference_panel_dirpath, f"{{name, {_REGEX}}}{_SUFFIX}")
     return set(glob_wildcards(location_format).name)
 
 
@@ -96,7 +96,7 @@ def get_variant_reports_for_passed_references_only(wildcards):
 
 def get_all_qualimap_dirs(wildcards):
     return expand(
-        f"results/mapping/{{reference}}/deduplicated/bamqc/{wildcards.sample}",
+        f"results/mapping/{wildcards.sample}/deduplicated/bamqc/{{reference}}",
         reference=get_references_with_non_empty_bams(wildcards),
     )
 
@@ -142,7 +142,7 @@ def get_fastqc_reports():
 def get_bam_outputs():
     return {
         "bams": expand(
-            "results/mapping/{reference}/deduplicated/{sample}.bam",
+            "results/mapping/{sample}/deduplicated/{reference}.bam",
             sample=SAMPLES,
             reference=REFERENCES,
         ),
@@ -211,7 +211,6 @@ def parse_samtools_params():
     samtools_params.append("--max-depth {value}".format(value=config["consensus_params"]["max_read_depth"]))
     samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))
     samtools_params.append("--min-BQ {value}".format(value=config["consensus_params"]["min_base_quality"]))
-
     return " ".join(samtools_params)
 
 

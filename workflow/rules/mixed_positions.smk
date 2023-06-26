@@ -1,7 +1,7 @@
 rule ivar__get_variants:
     input:
-        bam="results/mapping/{reference}/deduplicated/{sample}.bam",
-        bai="results/mapping/{reference}/deduplicated/{sample}.bam.bai",
+        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
+        bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
         ref=get_reference_fasta,
     output:
         "results/variants/{sample}/{reference}/all.tsv",

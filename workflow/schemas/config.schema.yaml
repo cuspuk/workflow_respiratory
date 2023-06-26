@@ -7,8 +7,14 @@ definitions:
     properties:
       sample_names_regex:
         type: string
+        description: "Regular expression to match sample names that will be analysed"
       reference_panel_dirpath:
         type: string
+        description: "Directory with reference .fasta files"
+      references_metadata_file:
+        type: string
+        description: "File in the reference panel directory with reference metadata. Contains columns: reference_name,virus,nextclade_name,nextclade_tag"
+        default: "metadata.csv"
       threads:
         type: integer
         description: "Number of threads"
@@ -16,6 +22,9 @@ definitions:
       kraken_db:
         type: string
         description: "Tag for the kraken database which will be used"
+      kraken_dir:
+        type: string
+        description: "Directory where kraken is located or will be downloaded"
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
