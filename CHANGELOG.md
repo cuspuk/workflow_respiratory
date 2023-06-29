@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/xsitarcik/respiratory/compare/v1.0.1...v1.0.2) (2023-06-29)
+
+
+### Bug Fixes
+
+* added memory resource handling for trimming ([455a78a](https://github.com/xsitarcik/respiratory/commit/455a78ad109939555dd67bca934ac22ffba76b06))
+
 ## [1.0.1](https://github.com/xsitarcik/respiratory/compare/v1.0.0...v1.0.1) (2023-06-26)
 
 
