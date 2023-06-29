@@ -37,6 +37,10 @@ definitions:
       mixed_positions_params:
         type: object
         "$ref": "#/definitions/MixedPositionsParams"
+      resources:
+        type: object
+        "$ref": "#/definitions/Resources"
+        default: { "trimming_mem_mb": 2048 }
     required:
       - sample_names_regex
       - reference_panel_dirpath
@@ -222,3 +226,10 @@ definitions:
         default: 10
         description: "Mixed positions must have at least this TOTAL_DP value to be counted"
     title: MixedPositionsCriteria
+  Resources:
+    trimming_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for trimming"
+    required:
+      - trimming_mem_mb
+    title: Resources

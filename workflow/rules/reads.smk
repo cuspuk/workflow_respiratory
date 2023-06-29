@@ -12,6 +12,8 @@ rule trimmomatic__trim_reads_pe:
         extra="-phred33",
         compression_level="-9",
     threads: config["threads"]
+    resources:
+        mem_mb=config["resources"]["trimming_mem_mb"],
     log:
         "logs/trimmomatic/{sample}.log",
     wrapper:
