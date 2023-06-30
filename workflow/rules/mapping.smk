@@ -72,17 +72,21 @@ rule samtools__bam_index:
 
 rule picard__mark_duplicates:
     input:
-        bam="results/mapping/{sample}/mapped/{reference}.bam",
+        bams="results/mapping/{sample}/mapped/{reference}.bam",
         bai="results/mapping/{sample}/mapped/{reference}.bam.bai",
     output:
         bam="results/mapping/{sample}/deduplicated/{reference}.bam",
-        stat="results/mapping/{sample}/deduplicated/{reference}.stats",
+        metrics=temp("results/mapping/{sample}/deduplicated/{reference}.stats"),
+    params:
+        extra="VALIDATION_STRINGENCY=SILENT",
+    resources:
+        mem_mb=10000,
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
     benchmark:
         "benchmarks/picard/mark_duplicates/{sample}/{reference}.benchmark"
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/picard/markduplicates"
+        "v2.1.1/bio/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
