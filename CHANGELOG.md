@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/xsitarcik/respiratory/compare/v1.0.4...v1.0.5) (2023-06-30)
+
+
+### Bug Fixes
+
+* picard changed wrapper ([d0e64af](https://github.com/xsitarcik/respiratory/commit/d0e64af476bd90078700063c2e4dc7c2a398bf84))
+
 ## [1.0.4](https://github.com/xsitarcik/respiratory/compare/v1.0.3...v1.0.4) (2023-06-30)
 
 
