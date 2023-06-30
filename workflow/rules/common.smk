@@ -170,37 +170,87 @@ def get_mixed_positions_result():
 ## PARAMETERS PARSING #################################################################
 
 
-def get_illuminaclip(illumina_config):
-    return ":".join(
-        [
-            "ILLUMINACLIP",
-            illumina_config["path_adapters"],
-            str(illumina_config["seed_mismatches"]),
-            str(illumina_config["palindrome_clip_threshold"]),
-            str(illumina_config["simple_clip_threshold"]),
-        ]
-    )
+def get_cutadapt_extra() -> list[str]:
+    args_lst = []
+    if config["reads__trimming"].get("keep_trimmed_only", False):
+        args_lst.append("--discard-untrimmed")
+    if "shorten_to_length" in config["reads__trimming"]:
+        args_lst.append(f"--length {config['reads__trimming']['shorten_to_length']}")
+    if "cut_from_start" in config["reads__trimming"]:
+        args_lst.append(f"--cut {config['reads__trimming']['cut_from_start']}")
+    if "cut_from_end" in config["reads__trimming"]:
+        args_lst.append(f"--cut -{config['reads__trimming']['cut_from_end']}")
+    if "max_n_bases" in config["reads__trimming"]:
+        args_lst.append(f"--max-n {config['reads__trimming']['max_n_bases']}")
+    if "max_expected_errors" in config["reads__trimming"]:
+        args_lst.append(f"--max-expected-errors {config['reads__trimming']['max_expected_errors']}")
+    if param_value := config["reads__trimming"].get("anywhere_adapter", ""):
+        args_lst.append(f"--anywhere file:{param_value}")
+    if param_value := config["reads__trimming"].get("front_adapter", ""):
+        args_lst.append(f"--front file:{param_value}")
+    if param_value := config["reads__trimming"].get("regular_adapter", ""):
+        args_lst.append(f"--adapter file:{param_value}")
+    return args_lst
 
 
-def get_trimmers_from_config() -> list[str]:
-    trimmers = []
-    if "illumina_clip" in config["reads__trimming"]:
-        trimmers.append(get_illuminaclip(config["reads__trimming"]["illumina_clip"]))
+def parse_paired_cutadapt_param(pe_config, param1, param2, arg_name) -> str:
+    if param1 in pe_config:
+        if param2 in pe_config:
+            return f"{arg_name} {pe_config[param1]}:{pe_config[param2]}"
+        else:
+            return f"{arg_name} {pe_config[param1]}:"
+    elif param2 in pe_config:
+        return f"{arg_name} :{pe_config[param2]}"
+    return ""
 
-    if "lead_trim" in config["reads__trimming"]:
-        trimmers.append("LEADING:%s" % config["reads__trimming"]["lead_trim"])
-    if "trail_trim" in config["reads__trimming"]:
-        trimmers.append("TRAILING:%s" % config["reads__trimming"]["trail_trim"])
-    if "head_crop" in config["reads__trimming"]:
-        trimmers.append("HEADCROP:%s" % config["reads__trimming"]["head_crop"])
-    if "crop_to_fixed_length" in config["reads__trimming"]:
-        trimmers.append("CROP:%s" % config["reads__trimming"]["crop_to_fixed_length"])
-    if "quality_threshold" in config["reads__trimming"]:
-        trimmers.append("SLIDINGWINDOW:5:%s" % config["reads__trimming"]["quality_threshold"])
-    if "min_length_filter" in config["reads__trimming"]:
-        trimmers.append("MINLEN:%s" % config["reads__trimming"]["min_length_filter"])
 
-    return trimmers
+def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
+    if param1 in config:
+        if param2 in config:
+            return f"{arg_name} {config[param2]},{config[param1]}"
+        else:
+            return f"{arg_name} {config[param1]}"
+    elif param2 in config:
+        return f"{arg_name} {config[param2]},0"
+    return ""
+
+
+def get_cutadapt_extra_se() -> str:
+    args_lst = get_cutadapt_extra()
+    if not "single" in config["reads__trimming"]:
+        return " ".join(args_lst)
+
+    se_config = config["reads__trimming"]["single"]
+    if "max_length" in se_config:
+        args_lst.append(f"--maximum-length {se_config['max_length']}")
+    if "min_length" in se_config:
+        args_lst.append(f"--minimum-length {se_config['min_length']}")
+    if qual_cut_arg := parse_cutadapt_comma_param(
+        se_config, "quality_cutoff_from_3_end", "quality_cutoff_from_5_end", "--quality-cutoff"
+    ):
+        args_lst.append(qual_cut_arg)
+    return " ".join(args_lst)
+
+
+def get_cutadapt_extra_pe() -> str:
+    args_lst = get_cutadapt_extra()
+    if not "paired" in config["reads__trimming"]:
+        return " ".join(args_lst)
+
+    pe_config = config["reads__trimming"]["paired"]
+    if parsed_arg := parse_paired_cutadapt_param(pe_config, "max_length_r1", "max_length_r2", "--maximum-length"):
+        args_lst.append(parsed_arg)
+    if parsed_arg := parse_paired_cutadapt_param(pe_config, "min_length_r1", "min_length_r2", "--minimum-length"):
+        args_lst.append(parsed_arg)
+    if qual_cut_arg_r1 := parse_cutadapt_comma_param(
+        pe_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
+    ):
+        args_lst.append(qual_cut_arg_r1)
+    if qual_cut_arg_r2 := parse_cutadapt_comma_param(
+        pe_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
+    ):
+        args_lst.append(qual_cut_arg_r2)
+    return " ".join(args_lst)
 
 
 def parse_samtools_params():

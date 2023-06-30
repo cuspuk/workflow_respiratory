@@ -15,18 +15,16 @@ reads__decontamination:
   exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
   exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
 
-reads__trimming: # Define one or more of the following trimmers
-  quality_threshold: 20 # Minimal average quality of read bases to keep (inside sliding window of length 5)
-  lead_trim: 0 # Remove leading low quality or N bases below this quality threshold
-  trail_trim: 0 # Remove trailing low quality or N bases below this quality threshold
-  crop_to_fixed_length: 300 # The number of bases to keep, from the start of the read
-  head_crop: 0 # "Number of bases to remove from the start of read
-  min_length_filter: 35 # Minimal length after trimming. Shorter reads would be removed
-  illumina_clip: # Define to trim adapters, else remove from the config
-    path_adapters: "resources/adapters/artic.fa" # Specifies the path to a fasta file containing all the adapters
-    seed_mismatches: 2 # Specifies the maximum mismatch count which will still allow a full match to be performed
-    palindrome_clip_threshold: 30 # Specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment
-    simple_clip_threshold: 10 # Specifies how accurate the match between any adapter etc. sequence must be against a read
+reads__trimming: # params are ignored if 'trimming' is not set in the main parameters
+  shorten_to_length: 300 # OPT shorten to this length
+  max_n_bases: 10 # OPT Discard reads with more than the specified number of bases. # fifth step
+  max_expected_errors: 2 # OPT - discard reads with more expected errors than this.
+  min_length_r1: 35 # OPT, # fourth step
+  min_length_r2: 35 # OPT, # fourth step
+  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
 
 consensus_params:
   reference_criteria: # Here define criteria for references so they would be considered for further analysis

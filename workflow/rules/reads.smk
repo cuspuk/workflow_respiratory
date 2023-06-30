@@ -1,23 +1,22 @@
-rule trimmomatic__trim_reads_pe:
+rule cutadapt__trim_reads_pe:
     input:
         r1="results/reads/original/{sample}_R1.fastq.gz",
         r2="results/reads/original/{sample}_R2.fastq.gz",
     output:
-        r1="results/reads/trimmed/{sample}_R1.fastq.gz",
-        r2="results/reads/trimmed/{sample}_R2.fastq.gz",
-        r1_unpaired=temp("results/reads/trimmed/{sample}_R1.unpaired.fastq.gz"),
-        r2_unpaired=temp("results/reads/trimmed/{sample}_R2.unpaired.fastq.gz"),
+        r1=temp("results/reads/trimmed/{sample}_R1.fastq.gz"),
+        r2=temp("results/reads/trimmed/{sample}_R2.fastq.gz"),
+        report="results/reads/trimmed/{sample}_cutadapt.json",
     params:
-        trimmer=get_trimmers_from_config(),  # list
-        extra="-phred33",
-        compression_level="-9",
+        overlap=config["reads__trimming"]["overlap"],
+        error_rate=config["reads__trimming"]["error_rate"],
+        times=config["reads__trimming"]["times"],
+        action=config["reads__trimming"]["action"],
+        extra=get_cutadapt_extra_pe(),
     threads: config["threads"]
-    resources:
-        mem_mb=config["resources"]["trimming_mem_mb"],
     log:
-        "logs/trimmomatic/{sample}.log",
+        "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:
-        "v1.31.1/bio/trimmomatic/pe"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.1/wrappers/cutadapt/paired"
 
 
 rule kraken__decontaminate:
