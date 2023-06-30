@@ -215,23 +215,6 @@ def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
     return ""
 
 
-def get_cutadapt_extra_se() -> str:
-    args_lst = get_cutadapt_extra()
-    if not "single" in config["reads__trimming"]:
-        return " ".join(args_lst)
-
-    se_config = config["reads__trimming"]["single"]
-    if "max_length" in se_config:
-        args_lst.append(f"--maximum-length {se_config['max_length']}")
-    if "min_length" in se_config:
-        args_lst.append(f"--minimum-length {se_config['min_length']}")
-    if qual_cut_arg := parse_cutadapt_comma_param(
-        se_config, "quality_cutoff_from_3_end", "quality_cutoff_from_5_end", "--quality-cutoff"
-    ):
-        args_lst.append(qual_cut_arg)
-    return " ".join(args_lst)
-
-
 def get_cutadapt_extra_pe() -> str:
     args_lst = get_cutadapt_extra()
     if not "paired" in config["reads__trimming"]:

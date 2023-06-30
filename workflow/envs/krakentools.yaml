@@ -3,3 +3,4 @@ channels:
   - conda-forge
 dependencies:
   - krakentools=1.2
+  - biopython=1.81
