@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/xsitarcik/respiratory/compare/v1.0.3...v1.0.4) (2023-06-30)
+
+
+### Bug Fixes
+
+* added biopython into krakentools env ([6ce5f6b](https://github.com/xsitarcik/respiratory/commit/6ce5f6b60a94bee241fec2bf2c0c13ad8c48fdf3))
+
 ## [1.0.3](https://github.com/xsitarcik/respiratory/compare/v1.0.2...v1.0.3) (2023-06-30)
 
 
