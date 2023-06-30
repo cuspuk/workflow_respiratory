@@ -72,50 +72,84 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      quality_threshold:
+      overlap:
         type: integer
-        description: "Minimal average quality of read bases to keep (inside sliding window of length 5)"
-      lead_trim:
+        default: 3
+        description: "Minimum number of bases required to overlap with the adapter"
+      error_rate:
+        type: number
+        default: 0.1
+        exclusiveMinimum: 0
+        description: "Error tolerance used when searching for adapter"
+      times:
         type: integer
-        description: "Remove leading low quality or N bases below this quality threshold"
-      trail_trim:
-        type: integer
-        description: "Remove trailing low quality or N bases below this quality threshold"
-      crop_to_fixed_length:
-        type: integer
-        description: "The number of bases to keep, from the start of the read."
-      head_crop:
-        type: integer
-        description: "Number of bases to remove from the start of read"
-      min_length_filter:
-        type: integer
-        description: "Minimal length after trimming. Shorter reads would be removed."
-      illumina_clip:
-        type: object
-        "$ref": "#/definitions/IlluminaClipping"
-    title: ReadsTrimming
-  IlluminaClipping:
-    type: object
-    additionalProperties: false
-    properties:
-      path_adapters:
+        default: 1
+        description: "How many times to repeat adapter removal"
+      action:
         type: string
-        description: "Specifies the path to a fasta file containing all the adapters"
-      seed_mismatches:
+        enum:
+          - "retain"
+          - "trim"
+          - "mask"
+          - "none"
+          - "lowercase"
+        default: "trim"
+        description: "Defines an action to perform with the found adapter"
+      keep_trimmed_only:
+        type: boolean
+        default: false
+        description: "Optional. Discard reads with no adapters found"
+      shorten_to_length:
         type: integer
-        description: "Specifies the maximum mismatch count which will still allow a full match to be performed"
-      palindrome_clip_threshold:
+        description: "Optional. Shorten each read to the specified length. Corresponds to the cutadapt length parameter"
+      cut_from_start:
         type: integer
-        description: "Specifies how accurate the match between the two 'adapter ligated' reads must be for PE palindrome read alignment."
-      simple_clip_threshold:
+        description: "Optional. Removes a specified number of bases from the beginning of the read"
+      cut_from_end:
         type: integer
-        description: "Specifies how accurate the match between any adapter etc. sequence must be against a read."
-    required:
-      - path_adapters
-      - seed_mismatches
-      - palindrome_clip_threshold
-      - simple_clip_threshold
-    title: IlluminaClipping
+        description: "Optional. Removes a specified number of bases from the end of the read"
+      max_n_bases:
+        type: integer
+        description: "Optional. Removes reads with more N bases than the specified number"
+      max_expected_errors:
+        type: integer
+        description: "Optional. Discard reads whose expected number of errors exceeds this value"
+      anywhere_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for adapters anywhere in the read"
+      front_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for 5' adapters in the read"
+      regular_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for 3' adapters in the read"
+      max_length_r1:
+        type: integer
+        description: "Optional. Discards R1 reads longer than this"
+      max_length_r2:
+        type: integer
+        description: "Optional. Discards R2 reads longer than this"
+      min_length_r1:
+        type: integer
+        default: 1
+        description: "Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads"
+      min_length_r2:
+        type: integer
+        default: 1
+        description: "Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads"
+      quality_cutoff_from_3_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R1 read"
+      quality_cutoff_from_5_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R1 read"
+      quality_cutoff_from_3_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R2 read"
+      quality_cutoff_from_5_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R2 read"
+    title: ReadsTrimming
   ConsensusParams:
     type: object
     additionalProperties: false
