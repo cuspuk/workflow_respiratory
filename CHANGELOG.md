@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/xsitarcik/respiratory/compare/v1.0.2...v1.0.3) (2023-06-30)
+
+
+### Bug Fixes
+
+* added cutadapt to replace trimmomatic ([1e56a2a](https://github.com/xsitarcik/respiratory/commit/1e56a2acc2d0726c4d86b741cb145252233814bc))
+
 ## [1.0.2](https://github.com/xsitarcik/respiratory/compare/v1.0.1...v1.0.2) (2023-06-29)
 
 
