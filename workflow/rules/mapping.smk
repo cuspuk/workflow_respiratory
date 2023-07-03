@@ -44,14 +44,13 @@ rule bwa__map_reads_to_reference:
         bam=temp("results/mapping/{sample}/mapped/{reference}.bam"),
     params:
         filter="-F 4",  # discard unmapped reads
-    threads: 2
+    threads: min(config["threads"]["mapping"], config["max_threads"])
     resources:
-        mem_mb=4096,
+        mem_mb=get_mem_mb_for_mapping,
     log:
         "logs/bwa/map_reads_to_reference/{sample}/{reference}.log",
     benchmark:
         "benchmarks/bwa/map_reads_to_reference/{sample}/{reference}.benchmark"
-    threads: config["threads"]
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.7/wrappers/bwa/map"
 
@@ -63,7 +62,9 @@ rule samtools__bam_index:
         bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
     benchmark:
         "benchmarks/samtools/bam_index/{step}/{reference}/{sample}.benchmark"
-    threads: config["threads"]
+    threads: min(config["threads"]["bam_index"], config["max_threads"])
+    resources:
+        mem_mb=get_mem_mb_for_bam_index,
     log:
         "logs/samtools/bam_index/{sample}/{reference}_{step}.log",
     wrapper:
@@ -80,7 +81,7 @@ rule picard__mark_duplicates:
     params:
         extra="--VALIDATION_STRINGENCY SILENT",
     resources:
-        mem_mb=10000,
+        mem_mb=get_mem_mb_for_picard,
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
     benchmark:
@@ -125,7 +126,7 @@ rule qualimap__mapping_quality_report:
         bam="results/mapping/{sample}/{step}/{reference}.bam",
         bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
     output:
-        report_dir=report(
+        report(
             directory("results/mapping/{sample}/{step}/bamqc/{reference}"),
             category="Reports",
             labels={
@@ -140,11 +141,11 @@ rule qualimap__mapping_quality_report:
             "-outformat PDF:HTML",
         ],
     resources:
-        mem_mb=10000,
+        mem_mb=get_mem_mb_for_qualimap,
     log:
         "logs/qualimap/mapping_quality_report/{sample}/{step}/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
+        "v2.1.1/bio/qualimap/bamqc"
 
 
 checkpoint mapping_quality_evaluation:

@@ -22,7 +22,7 @@ rule kraken__analysis:
     output:
         kraken_output=temp("results/kraken/{sample}.kraken"),
         report="results/kraken/{sample}.kreport2",
-    threads: config["threads"]
+    threads: min(config["threads"]["kraken"], config["max_threads"])
     log:
         "logs/kraken/analysis/{sample}.log",
     conda:
