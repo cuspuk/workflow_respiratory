@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/xsitarcik/respiratory/compare/v1.0.5...v1.1.0) (2023-07-03)
+
+
+### Features
+
+* added resource handling from config ([8749ba6](https://github.com/xsitarcik/respiratory/commit/8749ba6ce02ed35e0de76d3fc543869ed1740cc0))
+
 ## [1.0.5](https://github.com/xsitarcik/respiratory/compare/v1.0.4...v1.0.5) (2023-06-30)
 
 
