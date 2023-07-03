@@ -5,8 +5,8 @@ sys.stderr = open(snakemake.log[0], "w")
 
 
 def _parse_reference_name(filepath: str) -> str:
-    # results/mapping/{reference}/deduplicated/{sample}_counter.txt
-    return os.path.basename(os.path.dirname(os.path.dirname(filepath)))
+    # results/mapping/{sample}/deduplicated/{reference}.count
+    return os.path.basename(filepath).removesuffix(".count")
 
 
 def _count_is_zero(filepath: str) -> int:
