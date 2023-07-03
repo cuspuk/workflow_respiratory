@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/xsitarcik/respiratory/compare/v1.1.0...v1.1.1) (2023-07-03)
+
+
+### Bug Fixes
+
+* fixed parsing reference name in nonempty bams ([9a7f584](https://github.com/xsitarcik/respiratory/commit/9a7f58436e8a55ee6561fa72e9d905b80d8dbda4))
+
 ## [1.1.0](https://github.com/xsitarcik/respiratory/compare/v1.0.5...v1.1.0) (2023-07-03)
 
 
