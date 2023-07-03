@@ -7,7 +7,6 @@ kraken_db: k2_viral_20230314 # Tag of kraken reference database. Get tag from ht
 kraken_dir: "resources/kraken" # Directory where kraken is located or will be downloaded
 
 # PARAMETERS
-threads: 2
 
 reads__decontamination:
   exclude_taxa_ids: # list of taxonomy IDs to exclude
@@ -52,3 +51,8 @@ mixed_positions_params:
     min_alt_freq: 0.1 # mixed positions must have at least this ALT_FREQ value
     max_alt_freq: 0.9 # mixed positions cannot have ALT_FREQ value equal or larger than this
     min_total_depth: 10 # mixed positions must have at least this TOTAL_DP value
+
+# RESOURCES
+
+max_threads: 2
+max_mem_mb: 2048

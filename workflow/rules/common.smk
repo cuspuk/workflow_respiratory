@@ -275,3 +275,30 @@ def parse_ivar_params_for_variants():
     ivar_params.append("-t {value}".format(value=config["mixed_positions_params"]["min_frequency_threshold"]))
     ivar_params.append("-m {value}".format(value=config["mixed_positions_params"]["min_read_depth"]))
     return " ".join(ivar_params)
+
+
+### RESOURCES
+
+
+def get_mem_mb_for_picard(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["picard_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_qualimap(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["qualimap_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_trimming(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["trimming_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_mapping(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["mapping_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_bam_index(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["bam_index_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_fastqc(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["fastqc_mem_mb"] * attempt)

@@ -12,7 +12,9 @@ rule cutadapt__trim_reads_pe:
         times=config["reads__trimming"]["times"],
         action=config["reads__trimming"]["action"],
         extra=get_cutadapt_extra_pe(),
-    threads: config["threads"]
+    resources:
+        mem_mb=get_mem_mb_for_trimming,
+    threads: min(config["threads"]["trimming"], config["max_threads"])
     log:
         "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:
@@ -32,7 +34,7 @@ rule kraken__decontaminate:
         taxid=" ".join(str(taxa_id) for taxa_id in config["reads__decontamination"]["exclude_taxa_ids"]),
         children="--include-children" if config["reads__decontamination"]["exclude_children"] else "",
         parents="--include-parents" if config["reads__decontamination"]["exclude_ancestors"] else "",
-    threads: config["threads"]
+    threads: min(config["threads"]["kraken"], config["max_threads"])
     log:
         "logs/kraken/decontaminate/{sample}.log",
     conda:
@@ -47,7 +49,7 @@ rule pigz__compress_decontaminated:
         "results/reads/decontaminated/{sample}_{strand}.fastq",
     output:
         "results/reads/decontaminated/{sample}_{strand}.fastq.gz",
-    threads: config["threads"]
+    threads: 1
     params:
         level=6,
     log:
@@ -73,6 +75,9 @@ rule fastqc__quality_report:
         zip="results/reads/{step}/fastqc/{fastq}.zip",
         qc_data="results/reads/{step}/fastqc/{fastq}/fastqc_data.txt",
         summary_txt="results/reads/{step}/fastqc/{fastq}/summary.txt",
+    threads: min(config["threads"]["fastqc"], config["max_threads"])
+    resources:
+        mem_mb=get_mem_mb_for_fastqc,
     log:
         "logs/fastqc/{step}/{fastq}.log",
     wrapper:

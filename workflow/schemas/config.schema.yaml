@@ -15,10 +15,16 @@ definitions:
         type: string
         description: "File in the reference panel directory with reference metadata. Contains columns: reference_name,virus,nextclade_name,nextclade_tag"
         default: "metadata.csv"
-      threads:
+      max_threads:
         type: integer
-        description: "Number of threads"
+        description: "Number of maximum threads to use in jobs"
+        default: 1
         Minimum: 1
+      max_mem_mb:
+        type: integer
+        description: "Maximum memory in megabytes to allocate for any job"
+        Minimum: 2048
+        default: 2048
       kraken_db:
         type: string
         description: "Tag for the kraken database which will be used"
@@ -40,7 +46,27 @@ definitions:
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: { "trimming_mem_mb": 2048 }
+        default:
+          {
+            "trimming_mem_mb": 2048,
+            "fastqc_mem_mb": 2048,
+            "mapping_mem_mb": 2048,
+            "bam_index_mem_mb": 2048,
+            "picard_mem_mb": 2048,
+            "qualimap_mem_mb": 2048,
+          }
+      threads:
+        type: object
+        "$ref": "#/definitions/Threads"
+        default:
+          {
+            "trimming": 1,
+            "fastqc": 1,
+            "kraken": 1,
+            "mapping": 1,
+            "bam_index": 1,
+            "picard": 1,
+          }
     required:
       - sample_names_regex
       - reference_panel_dirpath
@@ -264,6 +290,45 @@ definitions:
     trimming_mem_mb:
       type: integer
       description: "Memory in MB to reserve for trimming"
-    required:
-      - trimming_mem_mb
+    fastqc_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for fastqc"
+    mapping_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for mapping"
+    bam_index_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for bam_index"
+    picard_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for picard"
+    qualimap_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for qualimap"
     title: Resources
+  Threads:
+    trimming:
+      type: integer
+      default: 1
+      description: "Number of threads to use for trimming"
+    fastqc:
+      type: integer
+      default: 1
+      description: "Number of threads to use for fastqc"
+    kraken:
+      type: integer
+      default: 1
+      description: "Number of threads to use for kraken"
+    mapping:
+      type: integer
+      default: 1
+      description: "Number of threads to use for mapping"
+    bam_index:
+      type: integer
+      default: 1
+      description: "Number of threads to use for bam_index"
+    picard:
+      type: integer
+      default: 1
+      description: "Number of threads to use for picard"
+    title: Threads
