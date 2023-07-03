@@ -17,17 +17,17 @@ reads__decontamination:
 reads__trimming: # params are ignored if 'trimming' is not set in the main parameters
   shorten_to_length: 300 # OPT shorten to this length
   max_n_bases: 10 # OPT Discard reads with more than the specified number of bases. # fifth step
-  max_expected_errors: 2 # OPT - discard reads with more expected errors than this.
+  max_expected_errors: 5 # OPT - discard reads with more expected errors than this.
   min_length_r1: 35 # OPT, # fourth step
   min_length_r2: 35 # OPT, # fourth step
-  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+  quality_cutoff_from_5_end_r1: 2 # OPT cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 2 # OPT cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 2 # OPT cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 2 # OPT cutoff on 3' end of R2 read. The second step.
 
 consensus_params:
   reference_criteria: # Here define criteria for references so they would be considered for further analysis
-    min_mean_coverage: 50 # Minimum mean coverage taken from qualimap
+    min_mean_coverage: 2 # Minimum mean coverage taken from qualimap
 
   count_orphans: false # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
   max_read_depth: 1000 # limits the number of reads to load in memory per input file
