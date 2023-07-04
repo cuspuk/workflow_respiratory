@@ -145,7 +145,7 @@ rule qualimap__mapping_quality_report:
     log:
         "logs/qualimap/mapping_quality_report/{sample}/{step}/{reference}.log",
     wrapper:
-        "v2.1.1/bio/qualimap/bamqc"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
 
 
 checkpoint mapping_quality_evaluation:
