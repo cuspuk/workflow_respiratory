@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/xsitarcik/respiratory/compare/v1.1.1...v1.1.2) (2023-07-04)
+
+
+### Bug Fixes
+
+* change bamqc to different wrapper ([abb2b86](https://github.com/xsitarcik/respiratory/commit/abb2b86ad42603ac3bd763bc2a48293532e3273a))
+
 ## [1.1.1](https://github.com/xsitarcik/respiratory/compare/v1.1.0...v1.1.1) (2023-07-03)
 
 
