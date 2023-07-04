@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/xsitarcik/respiratory/compare/v1.1.2...v1.1.3) (2023-07-04)
+
+
+### Bug Fixes
+
+* fixed parsing refernce name from qualimap dir ([d895c13](https://github.com/xsitarcik/respiratory/commit/d895c13f40a9bec35e4294d70d3dcc839debd134))
+
 ## [1.1.2](https://github.com/xsitarcik/respiratory/compare/v1.1.1...v1.1.2) (2023-07-04)
 
 
