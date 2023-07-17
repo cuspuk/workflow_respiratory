@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/xsitarcik/respiratory/compare/v1.1.3...v1.2.0) (2023-07-17)
+
+
+### Features
+
+* nextclade supports multiple segments of reference ([7ad5608](https://github.com/xsitarcik/respiratory/commit/7ad56083d3455ffc94954af267b86f018a90ee95))
+
+
+### Bug Fixes
+
+* nextclade uses default tag if not provided ([6ce0a28](https://github.com/xsitarcik/respiratory/commit/6ce0a281663fc623c48f56d5e864bcaa64eeb1af))
+
 ## [1.1.3](https://github.com/xsitarcik/respiratory/compare/v1.1.2...v1.1.3) (2023-07-04)
 
 
