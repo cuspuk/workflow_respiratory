@@ -27,26 +27,25 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_
         other_references = [line.strip() for line in f.readlines()]
 
     results: list[ConsensusResult] = []
+
     for ref, segment in requested_tuples:
-        nextclade_results: list[NextcladeResult] = []
+        results.append({"category": "nextclade", "reference_name": ref, "nextclade_results": []})
 
-        for tsv in nextclade_tsv:
-            result_ref = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(tsv))))
-            segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
+    for tsv in nextclade_tsv:
+        result_ref = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(tsv))))
+        segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
 
-            if ref != result_ref and segment != segment_nextclade:
-                continue
-
-            nextclade_results.append(
-                {
-                    "segment": segment_nextclade,
-                    "relative_path_to_nextclade_dir": os.path.relpath(
-                        os.path.dirname(tsv), os.path.dirname(out_summary_json)
-                    ),
-                }
-            )
-
-        results.append({"category": "nextclade", "reference_name": ref, "nextclade_results": nextclade_results})
+        for result in results:
+            if result["reference_name"] == result_ref:
+                result["nextclade_results"].append(
+                    {
+                        "segment": segment_nextclade,
+                        "relative_path_to_nextclade_dir": os.path.relpath(
+                            os.path.dirname(tsv), os.path.dirname(out_summary_json)
+                        ),
+                    }
+                )
+            break
 
     for ref in other_references:
         results.append({"category": "other", "reference_name": ref, "nextclade_results": []})
