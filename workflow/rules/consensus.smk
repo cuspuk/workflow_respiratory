@@ -2,7 +2,7 @@ checkpoint index_passed_references:
     input:
         reference=get_reference_fasta,
     output:
-        os.path.join(config["reference_panel_dirpath"], "{reference}.fa.fai"),
+        os.path.join(config["reference_panel_dirpath"], "references", "{reference}.fa.fai"),
     log:
         "logs/checkpoints/reference_segments/{reference}.log",
     wrapper:

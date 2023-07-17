@@ -4,34 +4,20 @@ import sys
 from typing import Literal, TypedDict
 
 
+class NextcladeResult(TypedDict):
+    segment: str
+    relative_path_to_nextclade_dir: str
+
+
 class ConsensusResult(TypedDict):
     category: Literal["nextclade", "other"]
     reference_name: str
-    virus: str
-    relative_path_to_nextclade_dir: str | None
+    nextclade_results: list[NextcladeResult]
 
 
-class InvalidMetadataFile(Exception):
-    """Raised when the metadata file cannot be parsed into 4 values"""
-
-
-def load_metadata(metadata_file: str):
-    mapping: dict[str, str] = {}
-    with open(metadata_file, "r") as f:
-        for line in f.readlines():
-            try:
-                name, virus, _, _ = line.strip().split(",")
-                mapping[name] = virus
-            except ValueError:
-                raise InvalidMetadataFile("Metadata table {} does not have 4 columns".format(metadata_file))
-    return mapping
-
-
-def summarize_results(
-    others_csv: str, nextclade_tsv: list[str], nextclade_refs: str, out_summary_json: str, mapping: dict[str, str]
-):
+def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_file: str, out_summary_json: str):
     nextclade_references = []
-    with open(nextclade_refs, "r") as f:
+    with open(nextclade_refs_file, "r") as f:
         nextclade_references = [line.strip().split()[0] for line in f.readlines()]
 
     other_references = []
@@ -40,23 +26,27 @@ def summarize_results(
 
     results: list[ConsensusResult] = []
     for ref in nextclade_references:
+        nextclade_results: list[NextcladeResult] = []
+
         for tsv in nextclade_tsv:
-            if ref in tsv:
-                results.append(
-                    {
-                        "category": "nextclade",
-                        "reference_name": ref,
-                        "virus": mapping[ref],
-                        "relative_path_to_nextclade_dir": os.path.relpath(
-                            os.path.dirname(tsv), os.path.dirname(out_summary_json)
-                        ),
-                    }
-                )
-                break
+            result_ref = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(tsv))))
+            if ref != result_ref:
+                continue
+
+            segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
+            nextclade_results.append(
+                {
+                    "segment": segment_nextclade,
+                    "relative_path_to_nextclade_dir": os.path.relpath(
+                        os.path.dirname(tsv), os.path.dirname(out_summary_json)
+                    ),
+                }
+            )
+
+        results.append({"category": "nextclade", "reference_name": ref, "nextclade_results": nextclade_results})
+
     for ref in other_references:
-        results.append(
-            {"category": "other", "reference_name": ref, "virus": mapping[ref], "relative_path_to_nextclade_dir": None}
-        )
+        results.append({"category": "other", "reference_name": ref, "nextclade_results": []})
 
     with open(out_summary_json, "w") as f:
         json.dump(results, f, indent=2)
@@ -64,11 +54,9 @@ def summarize_results(
 
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    metadata = load_metadata(snakemake.input.metadata)
     summarize_results(
         others_csv=snakemake.input.others,
         nextclade_tsv=snakemake.input.nextclade_tsv,
-        nextclade_refs=snakemake.input.nextclade_refs,
+        nextclade_refs_file=snakemake.input.nextclade_refs,
         out_summary_json=snakemake.output[0],
-        mapping=metadata,
     )

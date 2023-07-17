@@ -1,7 +1,7 @@
 checkpoint select_references_for_nextclade:
     input:
         references="results/checkpoints/passed_references/{sample}.txt",
-        metadata=os.path.join(config["reference_panel_dirpath"], config["references_metadata_file"]),
+        metadata=os.path.join(config["reference_panel_dirpath"], "nextclade_mapping.csv"),
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
@@ -15,27 +15,27 @@ checkpoint select_references_for_nextclade:
 
 rule nextclade__download_nextclade_dataset:
     output:
-        directory("resources/nextclade/{reference}/{name}_{tag}"),
+        directory("resources/nextclade/{reference}/{name}__{tag}"),
     conda:
         "../envs/nextclade.yaml"
     log:
-        "logs/nextclade/download/{reference}/{name}_{tag}.log",
+        "logs/nextclade/download/{reference}/{name}__{tag}.log",
     shell:
         "nextclade dataset get --name {wildcards.name} --reference {wildcards.tag} --output-dir {output} 1> {log} 2>&1"
 
 
 rule nextclade__run_nextclade:
     input:
-        fa="results/consensus/{sample}/{reference}.fa",
-        nextclade_data="resources/nextclade/{reference}/{name}_{tag}",
+        fa="results/consensus/{sample}/{reference}/{segment}.fa",
+        nextclade_data="resources/nextclade/{reference}/{name}__{tag}",
     output:
-        "results/consensus/{sample}/nextclade/{reference}/{name}_{tag}/nextclade.tsv",
+        "results/consensus/{sample}/nextclade/{reference}/{segment}/{name}__{tag}/nextclade.tsv",
     params:
         outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
         "../envs/nextclade.yaml"
     log:
-        "logs/nextclade/run/{sample}/{reference}/{name}_{tag}.log",
+        "logs/nextclade/run/{sample}/{reference}/{segment}/{name}__{tag}.log",
     shell:
         "nextclade run --input-dataset={input.nextclade_data} --output-all={params.outdir} {input.fa} 1> {log} 2>&1"
 
@@ -46,7 +46,6 @@ rule aggregate__nextclade_results:
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
-        metadata=os.path.join(config["reference_panel_dirpath"], config["references_metadata_file"]),
     output:
         report(
             "results/consensus/{sample}/nextclade/reference_summary.json",

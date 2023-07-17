@@ -36,7 +36,9 @@ class MixedPositionDeterminator:
 def load_ivar_variants(ivar_tsv: str):
     with open(ivar_tsv, "r") as ivar_file:
         ivar_reader = csv.DictReader(ivar_file, delimiter="\t")
-        ivar_header: list[str] = ivar_reader.fieldnames
+        if not ivar_reader.fieldnames:
+            raise ValueError("No header in ivar file")
+        ivar_header: list[str] = list(ivar_reader.fieldnames)
         ivar_rows = list(ivar_reader)
 
         if any(
