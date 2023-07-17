@@ -36,6 +36,7 @@ def load_metadata(metadata_file: str):
         for line in f.readlines():
             try:
                 name, segment, nextclade, tag = line.strip().split(",")
+                tag = tag if tag else "default"
                 if name not in mapping:
                     mapping[name] = []
                 mapping[name].append((segment, nextclade, tag))
