@@ -28,7 +28,8 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_
 
     results: list[ConsensusResult] = []
 
-    for ref, segment in requested_tuples:
+    used_refs = set([ref for ref, _ in requested_tuples])
+    for ref in used_refs:
         results.append({"category": "nextclade", "reference_name": ref, "nextclade_results": []})
 
     for tsv in nextclade_tsv:
@@ -45,7 +46,7 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_
                         ),
                     }
                 )
-            break
+                break
 
     for ref in other_references:
         results.append({"category": "other", "reference_name": ref, "nextclade_results": []})
