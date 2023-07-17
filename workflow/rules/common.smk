@@ -28,7 +28,6 @@ def glob_references(reference_panel_dirpath: str):
 
 SAMPLES = glob_samples(config["sample_names_regex"])
 REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
-print("Panel contains references: ", REFERENCES)
 
 
 def get_constraints():

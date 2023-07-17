@@ -16,24 +16,27 @@ class ConsensusResult(TypedDict):
 
 
 def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_file: str, out_summary_json: str):
-    nextclade_references = []
+    requested_tuples: list[tuple[str, str]] = []
     with open(nextclade_refs_file, "r") as f:
-        nextclade_references = [line.strip().split()[0] for line in f.readlines()]
+        for line in f.readlines():
+            name, segment, _, _ = line.strip().split()
+            requested_tuples.append((name, segment))
 
     other_references = []
     with open(others_csv, "r") as f:
         other_references = [line.strip() for line in f.readlines()]
 
     results: list[ConsensusResult] = []
-    for ref in nextclade_references:
+    for ref, segment in requested_tuples:
         nextclade_results: list[NextcladeResult] = []
 
         for tsv in nextclade_tsv:
             result_ref = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(tsv))))
-            if ref != result_ref:
+            segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
+
+            if ref != result_ref and segment != segment_nextclade:
                 continue
 
-            segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
             nextclade_results.append(
                 {
                     "segment": segment_nextclade,

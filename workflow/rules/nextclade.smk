@@ -37,7 +37,7 @@ rule nextclade__run_nextclade:
     log:
         "logs/nextclade/run/{sample}/{reference}/{segment}/{name}__{tag}.log",
     shell:
-        "nextclade run --input-dataset={input.nextclade_data} --output-all={params.outdir} {input.fa} 1> {log} 2>&1"
+        "nextclade run --input-dataset={input.nextclade_data} --output-all={params.outdir} {input.fa} 1> {log} 2>&1;"
 
 
 rule aggregate__nextclade_results:
