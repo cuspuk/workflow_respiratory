@@ -22,12 +22,13 @@ def glob_samples(regex: str):
 def glob_references(reference_panel_dirpath: str):
     _SUFFIX = ".fa"
     _REGEX = ".*"
-    location_format = os.path.join(reference_panel_dirpath, "references", f"{{name, {_REGEX}}}{_SUFFIX}")
+    location_format = os.path.join(reference_panel_dirpath, f"{{name, {_REGEX}}}{_SUFFIX}")
     return set(glob_wildcards(location_format).name)
 
 
 SAMPLES = glob_samples(config["sample_names_regex"])
-REFERENCES = glob_references(config["reference_panel_dirpath"])
+REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
+print("Panel contains references: ", REFERENCES)
 
 
 def get_constraints():
