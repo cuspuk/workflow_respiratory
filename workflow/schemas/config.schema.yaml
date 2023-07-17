@@ -11,10 +11,6 @@ definitions:
       reference_panel_dirpath:
         type: string
         description: "Directory with reference .fasta files"
-      references_metadata_file:
-        type: string
-        description: "File in the reference panel directory with reference metadata. Contains columns: reference_name,virus,nextclade_name,nextclade_tag"
-        default: "metadata.csv"
       max_threads:
         type: integer
         description: "Number of maximum threads to use in jobs"

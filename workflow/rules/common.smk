@@ -27,7 +27,7 @@ def glob_references(reference_panel_dirpath: str):
 
 
 SAMPLES = glob_samples(config["sample_names_regex"])
-REFERENCES = glob_references(config["reference_panel_dirpath"])
+REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
 
 
 def get_constraints():
@@ -41,7 +41,9 @@ def get_constraints():
 
 
 def get_bwa_index(wildcards):
-    base_dir = os.path.join(config["reference_panel_dirpath"], "bwa_index", wildcards.reference, wildcards.reference)
+    base_dir = os.path.join(
+        config["reference_panel_dirpath"], "references", "bwa_index", wildcards.reference, wildcards.reference
+    )
     return multiext(
         base_dir,
         ".amb",
@@ -58,11 +60,11 @@ def get_references_with_non_empty_bams(wildcards):
 
 
 def get_reference_fasta(wildcards):
-    return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa")
+    return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
 def get_reference_faidx(wildcards):
-    return os.path.join(config["reference_panel_dirpath"], f"{wildcards.reference}.fa.fai")
+    return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa.fai")
 
 
 def get_passed_references(wildcards):
@@ -111,8 +113,10 @@ def get_nextclade_results(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, name, tag = line.split()
-            results.append(f"results/consensus/{wildcards.sample}/nextclade/{ref}/{name}_{tag}/nextclade.tsv")
+            ref, segment, name, tag = line.split()
+            results.append(
+                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{segment}/{name}__{tag}/nextclade.tsv"
+            )
     return results
 
 
