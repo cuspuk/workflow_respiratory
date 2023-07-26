@@ -5,9 +5,9 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      sample_names_regex:
+      pepfile:
         type: string
-        description: "Regular expression to match sample names that will be analysed"
+        description: "Path to the PEP file containing the info how to load the data"
       reference_panel_dirpath:
         type: string
         description: "Directory with reference .fasta files"
@@ -64,7 +64,7 @@ definitions:
             "picard": 1,
           }
     required:
-      - sample_names_regex
+      - pepfile
       - reference_panel_dirpath
       - threads
       - kraken_db

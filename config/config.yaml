@@ -1,5 +1,5 @@
 # INPUTS
-sample_names_regex: ".*" # at results/reads/original
+pepfile: "config/pep/config.yaml" # here configure how to read the data
 reference_panel_dirpath: "resources/reference_panel_XY/" # directory with reference fasta sequences
 
 kraken_db: k2_pluspf_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
