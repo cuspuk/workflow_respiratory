@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/xsitarcik/respiratory/compare/v1.2.0...v2.0.0) (2023-07-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* changed data input to use pep files
+
+### Features
+
+* changed data input to use pep files ([1be145c](https://github.com/xsitarcik/respiratory/commit/1be145cc2d1278b9a8d714d6e65496fda1f2c876))
+
 ## [1.2.0](https://github.com/xsitarcik/respiratory/compare/v1.1.3...v1.2.0) (2023-07-17)
 
 
