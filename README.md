@@ -5,30 +5,52 @@
 
 A Snakemake workflow for analysis of respiratory samples.
 
-## Running
+## Installing and running
 
-Snakemake workflows are advised to be run from the workflow directory. Recommended arguments to use, is `--use-conda` to use conda, and the `--conda-prefix` which is the directory where snakemake will install workflow conda environments. Then for example, the command is:
+To install the workflow, simply git clone the repository into the path you want:
 
-```shell
-snakemake --cores {THREADS} --use-conda --conda-prefix {CONDA_DIR}
+```bash
+git clone git@github.com:xsitarcik/respiratory.git
 ```
 
-After running, create a [report](https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html), either `.zip` or `.html`:
+Install the following conda environment:
 
-```shell
-snakemake --report my_first_report.zip
+```bash
+mamba create -c conda-forge -c bioconda --name snakemake_respiratory snakemake=7.25 peppy
 ```
 
-Use dry-run: `-n` first to confirm that it works as intended:
+**IMPORTANT**: change the directory to the cloned repository - workflow directory. Every relative path mentioned is relative to this directory.
 
-```shell
-snakemake -n
+### Preparing data and configuration
+
+First, prepare your data configuration using PEP file, see [samples.csv](config/pep/samples.csv) as an example. Create new file or update the existing one.
+
+Second, you must configure the `config/config.yaml` file:
+
+- Do not forget to update the `pepfile` path, if you created your own PEP file.
+- Provide the path to the viral reference panel, i.e. `reference_panel_dirpath`.
+- Update other values as desired.
+
+Third, in the path specified by `kraken_dir` there will be created a new directory named as `kraken_db` where the workflow will download a kraken database. To save both, disk space and time required for downloading, link the existing kraken database here, if possible:
+
+```sh
+ln -s {existing_kraken_db} {kraken_dir}/{kraken_tag}
 ```
 
-To re-run after parameter changes:
+### Running the workflow
+
+There are many arguments to use when running a snakemake workflow, see [the documentation](https://snakemake.readthedocs.io/en/stable/executing/cli.html). Recommended arguments to use, is `--use-conda` to use conda, and the `--conda-prefix` which is the directory where snakemake will install workflow conda environments. Then for example, the command is:
+
+First, it is advised to dry-run the snakemake workflow using `--dry-run`, i.e.:
 
 ```shell
-snakemake -n -R `snakemake --list-params-changes`
+snakemake --cores {THREADS} --use-conda --rerun-incomplete --printshellcmds --dry-run
+```
+
+A basic summary of outputs and rules is outputted for you to verify. Then, run snakemake without `--dry-run`
+
+```shell
+snakemake --cores {THREADS} --use-conda --rerun-incomplete --printshellcmds
 ```
 
 ### Debugging
@@ -41,17 +63,52 @@ snakemake -n -R `snakemake --list-params-changes`
 - use issues in github to report any problems. This way solving any issue will be stored here for other users or future ourselves.
 - Watch the repo to subscribe to pull requests, issues and other repo-related stuff. This way you will be notified of any changes.
 
-## Development
+### Running using SLURM
 
-Repository is now created from the template. You can git clone the repository and start the development.
+It is advised to prepare a different directory for cluster logs, for example we can use `./sbatch_logs`. You must create the directory manually as slurm does not create it automatically:
 
-Install snakemake, for example in the environment `snakemake_dev`:
-
-```shell
-mamba create -c conda-forge -c bioconda --name snakemake_dev snakemake pre_commit
+```sh
+mkdir -p sbatch_logs
 ```
 
-Then set up `pre-commit` in the repository:
+Also you will probably need to set executive permissions to the sbatch monitoring script:
+
+```sh
+chmod +x sbatch_status.py
+```
+
+Then, the recommended command is:
+
+```shell
+snakemake --jobs 40 --rerun-incomplete --use-conda --printshellcmds --cluster "sbatch --partition=gen-compute --cpus-per-task=8 --parsable --output=`pwd`/sbatch_logs/%j.log --error=`pwd`/sbatch_logs/%j.err" --cluster-status `pwd`/sbatch_status.py --keep-going --cluster-cancel scancel --retries 3 --dry-run
+```
+
+Do not forget to adjust the numbers accordingly for your cluster configuration, and also to run it without the `--dry-run` option.
+
+Some explanations for the above command:
+
+- `%j` is used to create a log for each cluster job named the same as the job itself.
+- `--cpus-per-task=8` it is important to also specify the number of threads in the config.
+- Snakemake process must be kept alive during the whole analysis as a master process. Sometimes a SLURM job can fail before sending the failure message to the master process and the job will hang forever. To prevent this, snakemake recommends the usage of [cluster-status argument](https://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#using-cluster-status), requiring to pass parsable argument to sbatch.
+- Snakemake jobs can be expected to fail such as download jobs, but also they can fail due to memory constraints, i.e. when a job requests more memory than expected due to an unusually large .fastq.gz file, you should pass `--retries {XXX}` option to tell snakemake to retry the job. This is further used for example in picard deduplication where more memory is requested for the subsequent retries (up to the maximum memory specified in the config).
+
+### Results
+
+After running, you can create a [report](https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html), either `.zip` or `.html`:
+
+```shell
+snakemake --report my_first_report.zip
+```
+
+## Development
+
+Install `snakemake` with `pre_commit`, for example in the environment `snakemake_dev`:
+
+```shell
+mamba create -c conda-forge -c bioconda --name snakemake_dev snakemake=7.25 pre_commit peppy
+```
+
+Then set up `pre-commit` in the cloned repository:
 
 ```bash
 pre-commit install

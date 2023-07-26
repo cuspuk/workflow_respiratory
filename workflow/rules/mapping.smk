@@ -21,7 +21,7 @@ rule bwa__build_index:
 
 rule custom__infer_and_store_read_group:
     input:
-        "results/reads/original/{sample}_R1.fastq.gz",
+        get_one_fastq_file,
     output:
         read_group="results/reads/original/read_group/{sample}.txt",
     log:

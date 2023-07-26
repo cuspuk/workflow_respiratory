@@ -1,7 +1,6 @@
 rule cutadapt__trim_reads_pe:
     input:
-        r1="results/reads/original/{sample}_R1.fastq.gz",
-        r2="results/reads/original/{sample}_R2.fastq.gz",
+        get_fastq_paths,
     output:
         r1=temp("results/reads/trimmed/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/trimmed/{sample}_R2.fastq.gz"),
@@ -18,7 +17,7 @@ rule cutadapt__trim_reads_pe:
     log:
         "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.1/wrappers/cutadapt/paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.9/wrappers/cutadapt/paired"
 
 
 rule kraken__decontaminate:

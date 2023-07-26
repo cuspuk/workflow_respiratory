@@ -8,15 +8,14 @@ configfile: "config/config.yaml"
 validate(config, "../schemas/config.schema.yaml")
 
 
+pepfile: config["pepfile"]
+
+
+validate(pep.sample_table, "../schemas/samples.schema.yaml")
+
 ## GLOBAL SPACE #################################################################
 
 MAPPING_INPUT_STEP = "decontaminated"
-
-
-def glob_samples(regex: str):
-    _PAIRED_INFO = ("_R1", "_R2")
-    _BASE_LOCATION = "results/reads/original/{{sample, {regex}}}{paired_str}.fastq.gz"
-    return set(glob_wildcards(_BASE_LOCATION.format(regex=regex, paired_str=_PAIRED_INFO[0])).sample)
 
 
 def glob_references(reference_panel_dirpath: str):
@@ -26,13 +25,24 @@ def glob_references(reference_panel_dirpath: str):
     return set(glob_wildcards(location_format).name)
 
 
-SAMPLES = glob_samples(config["sample_names_regex"])
 REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
+
+
+def get_sample_names():
+    return list(pep.sample_table["sample_name"].values)
+
+
+def get_one_fastq_file(wildcards):
+    return pep.sample_table.loc[wildcards.sample][["fq1"]]
+
+
+def get_fastq_paths(wildcards):
+    return pep.sample_table.loc[wildcards.sample][["fq1", "fq2"]]
 
 
 def get_constraints():
     return {
-        "sample": "|".join(SAMPLES),
+        "sample": "|".join(get_sample_names()),
         "reference": "|".join(REFERENCES),
     }
 
@@ -132,43 +142,27 @@ def get_others_results(wildcards):
 #### OUTPUTS #################################################################
 
 
-def get_fastqc_reports():
+def get_outputs():
+    sample_names = get_sample_names()
     return {
         "fastqc_report": expand(
-            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
-            sample=SAMPLES,
+            "results/reads/trimmed/fastqc/{sample}_R{orientation}.html",
+            sample=sample_names,
             orientation=[1, 2],
-            step=["trimmed"],  # TODO
-        )
-    }
-
-
-def get_bam_outputs():
-    return {
+        ),
         "bams": expand(
             "results/mapping/{sample}/deduplicated/{reference}.bam",
-            sample=SAMPLES,
+            sample=sample_names,
             reference=REFERENCES,
         ),
         "nonempty_bams": expand(
             "results/checkpoints/nonempty_bams/{sample}.txt",
-            sample=SAMPLES,
+            sample=sample_names,
         ),
+        "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
+        "consensus": expand("results/consensus/{sample}/nextclade/reference_summary.json", sample=sample_names),
+        "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
     }
-
-
-def get_krona_reports():
-    return {
-        "kronas": expand("results/kraken/kronas/{sample}.html", sample=SAMPLES),
-    }
-
-
-def get_consensus_files():
-    return {"consensus": expand("results/consensus/{sample}/nextclade/reference_summary.json", sample=SAMPLES)}
-
-
-def get_mixed_positions_result():
-    return {"mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=SAMPLES)}
 
 
 ## PARAMETERS PARSING #################################################################
