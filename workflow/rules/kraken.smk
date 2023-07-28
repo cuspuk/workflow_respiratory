@@ -34,7 +34,7 @@ rule kraken__analysis:
 
 rule krona__update_taxonomy:
     output:
-        config["krona_dir"],
+        directory(config["krona_dir"]),
     log:
         "logs/krona/update_taxonomy.log",
     conda:
