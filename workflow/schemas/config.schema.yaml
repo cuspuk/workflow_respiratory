@@ -26,7 +26,10 @@ definitions:
         description: "Tag for the kraken database which will be used"
       kraken_dir:
         type: string
-        description: "Directory where kraken is located or will be downloaded"
+        description: "Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded"
+      krona_dir:
+        type: string
+        description: "Directory where krona dataset is located or will be downloaded"
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
@@ -68,6 +71,8 @@ definitions:
       - reference_panel_dirpath
       - threads
       - kraken_db
+      - krona_dir
+      - kraken_dir
       - consensus_params
       - mixed_positions_params
     title: Respiratory

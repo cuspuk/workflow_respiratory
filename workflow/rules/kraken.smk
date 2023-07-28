@@ -34,7 +34,7 @@ rule kraken__analysis:
 
 rule krona__update_taxonomy:
     output:
-        directory(os.path.join(config["kraken_dir"], "krona")),
+        directory(config["krona_dir"]),
     log:
         "logs/krona/update_taxonomy.log",
     conda:
@@ -43,10 +43,10 @@ rule krona__update_taxonomy:
         "ktUpdateTaxonomy.sh {output} 1> {log} 2>&1"
 
 
-rule krona__create_chart:
+rule kraken__krona_chart:
     input:
         kraken_output="results/kraken/{sample}.kreport2",
-        tax_db=os.path.join(config["kraken_dir"], "krona"),
+        tax_db=config["krona_dir"],
     output:
         report(
             "results/kraken/kronas/{sample}.html",
@@ -57,7 +57,7 @@ rule krona__create_chart:
             },
         ),
     log:
-        "logs/krona/create_chart/{sample}.log",
+        "logs/kraken/krona_chart/{sample}.log",
     params:
         extra="-m 3 -t 5",
     conda:
