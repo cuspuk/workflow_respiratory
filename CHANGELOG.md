@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/xsitarcik/respiratory/compare/v2.0.1...v2.0.2) (2023-07-28)
+
+
+### Bug Fixes
+
+* added configurable kraken mode to save memory ([e2b446a](https://github.com/xsitarcik/respiratory/commit/e2b446a80e4e1ffc8c22e1e208d2f19bc14bce89))
+
 ## [2.0.1](https://github.com/xsitarcik/respiratory/compare/v2.0.0...v2.0.1) (2023-07-28)
 
 
