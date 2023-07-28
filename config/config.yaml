@@ -3,7 +3,8 @@ pepfile: "config/pep/config.yaml" # here configure how to read the data
 reference_panel_dirpath: "resources/reference_panel_XY/" # directory with reference fasta sequences
 
 kraken_db: k2_pluspf_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
-kraken_dir: "resources/kraken" # Directory where kraken is located or will be downloaded
+kraken_dir: "resources/kraken" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
+krona_dir: "resources/krona" # Directory where krona dataset is located or will be downloaded
 
 # PARAMETERS
 reads__decontamination:
@@ -12,7 +13,7 @@ reads__decontamination:
   exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
   exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
 
-reads__trimming: # params are ignored if 'trimming' is not set in the main parameters
+reads__trimming:
   shorten_to_length: 300 # OPT shorten to this length
   max_n_bases: 10 # OPT Discard reads with more than the specified number of bases. # fifth step
   max_expected_errors: 2 # OPT - discard reads with more expected errors than this.
