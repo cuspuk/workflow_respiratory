@@ -30,6 +30,10 @@ definitions:
       krona_dir:
         type: string
         description: "Directory where krona dataset is located or will be downloaded"
+      kraken__params:
+        type: object
+        "$ref": "#/definitions/KrakenParams"
+        default: { "save_memory": true }
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
@@ -95,6 +99,15 @@ definitions:
         description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels"
     required:
       - exclude_taxa_ids
+  KrakenParams:
+    type: object
+    additionalProperties: false
+    properties:
+      save_memory:
+        type: boolean
+        description: "if true, kraken limits RAM memory usage but sacrifices speed"
+        default: true
+    title: KrakenParams
   ReadsTrimming:
     type: object
     additionalProperties: false
