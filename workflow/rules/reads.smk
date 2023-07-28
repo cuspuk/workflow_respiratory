@@ -29,6 +29,7 @@ rule kraken__decontaminate:
     output:
         r1=temp("results/reads/decontaminated/{sample}_R1.fastq"),
         r2=temp("results/reads/decontaminated/{sample}_R2.fastq"),
+        std_out=temp("results/reads/decontaminated/{sample}_decontamination.out"),
     params:
         taxid=" ".join(str(taxa_id) for taxa_id in config["reads__decontamination"]["exclude_taxa_ids"]),
         children="--include-children" if config["reads__decontamination"]["exclude_children"] else "",
@@ -40,7 +41,7 @@ rule kraken__decontaminate:
         "../envs/krakentools.yaml"
     shell:
         "extract_kraken_reads.py -k {input.kraken_output} -r {input.kraken_report} -s {input.r1} -s2 {input.r2}"
-        " -o {output.r1} -o2 {output.r2} -t {params.taxid} --exclude --fastq-output > {log} 2>&1"
+        " -o {output.r1} -o2 {output.r2} -t {params.taxid} --exclude --fastq-output > {output.std_out} 2> {log}"
 
 
 rule pigz__compress_decontaminated:
