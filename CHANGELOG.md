@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/xsitarcik/respiratory/compare/v2.0.0...v2.0.1) (2023-07-28)
+
+
+### Bug Fixes
+
+* added configurable krona directory in the config ([37fd19b](https://github.com/xsitarcik/respiratory/commit/37fd19b1c513fa082da067f51aa088b363a17e3a))
+* removed decontamination rule stdout in log ([77f604d](https://github.com/xsitarcik/respiratory/commit/77f604d352fa416c7b302909548d2eceef1db4e6))
+
 ## [2.0.0](https://github.com/xsitarcik/respiratory/compare/v1.2.0...v2.0.0) (2023-07-26)
 
 
