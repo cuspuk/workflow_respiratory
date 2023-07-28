@@ -7,6 +7,10 @@ kraken_dir: "resources/kraken" # Parent directory with {kraken_db} subdirectory,
 krona_dir: "resources/krona" # Directory where krona dataset is located or will be downloaded
 
 # PARAMETERS
+
+kraken__params:
+  save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
+
 reads__decontamination:
   exclude_taxa_ids: # list of taxonomy IDs to exclude
     - 9606 # Homo Sapiens

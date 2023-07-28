@@ -22,6 +22,8 @@ rule kraken__analysis:
     output:
         kraken_output=temp("results/kraken/{sample}.kraken"),
         report="results/kraken/{sample}.kreport2",
+    params:
+        save_memory="--memory-mapping" if config["kraken__params"]["save_memory"] else "",
     threads: min(config["threads"]["kraken"], config["max_threads"])
     log:
         "logs/kraken/analysis/{sample}.log",
@@ -29,7 +31,7 @@ rule kraken__analysis:
         "../envs/kraken2.yaml"
     shell:
         "(kraken2 --db {input.db} --threads {threads} --paired --gzip-compressed"
-        " --memory-mapping --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
+        " {params.save_memory} --report {output.report} {input.r1} {input.r2} 1> {output.kraken_output}) 2> {log}"
 
 
 rule krona__update_taxonomy:
