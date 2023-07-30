@@ -16,7 +16,7 @@ git clone git@github.com:xsitarcik/respiratory.git
 Install the following conda environment:
 
 ```bash
-mamba create -c conda-forge -c bioconda --name snakemake_respiratory snakemake=7.25 peppy
+mamba create -c conda-forge -c bioconda --name snakemake_respiratory snakemake=7.25 peppy snakemake-wrapper-utils
 ```
 
 **IMPORTANT**: change the directory to the cloned repository - workflow directory. Every relative path mentioned is relative to this directory.
@@ -105,7 +105,7 @@ snakemake --report my_first_report.zip
 Install `snakemake` with `pre_commit`, for example in the environment `snakemake_dev`:
 
 ```shell
-mamba create -c conda-forge -c bioconda --name snakemake_dev snakemake=7.25 pre_commit peppy
+mamba create -c conda-forge -c bioconda --name snakemake_dev snakemake=7.25 snakemake-wrapper-utils pre_commit peppy
 ```
 
 Then set up `pre-commit` in the cloned repository:
