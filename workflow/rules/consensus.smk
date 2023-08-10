@@ -2,9 +2,9 @@ checkpoint index_passed_references:
     input:
         reference=get_reference_fasta,
     output:
-        os.path.join(config["reference_panel_dirpath"], "references", "{reference}.fa.fai"),
+        protected("{reference_dir}/{reference}.fa.fai"),
     log:
-        "logs/checkpoints/reference_segments/{reference}.log",
+        "{reference_dir}/logs/samtools__prepare_fai_index/{reference}.log",
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/faidx"
 

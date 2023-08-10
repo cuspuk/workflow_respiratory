@@ -1,13 +1,10 @@
-# INPUTS
+### INPUT SECTION ###############################
 pepfile: "config/pep/config.yaml" # here configure how to read the data
-reference_panel_dirpath: "resources/reference_panel_XY/" # directory with reference fasta sequences
+reference_panel_dirpath: "resources/reference_panel_XY" # directory with reference fasta sequences
+kraken_dir: "resources/kraken/KRAKEN_TAG" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
+krona_dir: "resources/krona/TIMESTAMP_VERSION" # Directory where krona dataset is located or will be downloaded
 
-kraken_db: k2_pluspf_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
-kraken_dir: "resources/kraken" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
-krona_dir: "resources/krona" # Directory where krona dataset is located or will be downloaded
-
-# PARAMETERS
-
+### HYPERPARAMETERS #############################
 kraken__params:
   save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
 
@@ -58,7 +55,7 @@ mixed_positions_params:
 # RESOURCES
 
 max_threads: 8
-max_mem_mb: 20000
+max_mem_mb: 16384
 
 resources:
   trimming_mem_mb: 4096
@@ -71,7 +68,6 @@ resources:
 threads:
   trimming: 4
   fastqc: 1
-  kraken: 4
-  mapping: 4
+  kraken: 8
+  mapping: 2
   bam_index: 2
-  picard: 2

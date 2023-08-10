@@ -21,12 +21,9 @@ definitions:
         description: "Maximum memory in megabytes to allocate for any job"
         Minimum: 2048
         default: 2048
-      kraken_db:
-        type: string
-        description: "Tag for the kraken database which will be used"
       kraken_dir:
         type: string
-        description: "Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded"
+        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename"
       krona_dir:
         type: string
         description: "Directory where krona dataset is located or will be downloaded"
@@ -68,17 +65,16 @@ definitions:
             "kraken": 1,
             "mapping": 1,
             "bam_index": 1,
-            "picard": 1,
           }
     required:
       - pepfile
       - reference_panel_dirpath
       - threads
-      - kraken_db
       - krona_dir
       - kraken_dir
       - consensus_params
       - mixed_positions_params
+      - resources
     title: Respiratory
   ReadsDecontamination:
     type: object
@@ -341,8 +337,4 @@ definitions:
       type: integer
       default: 1
       description: "Number of threads to use for bam_index"
-    picard:
-      type: integer
-      default: 1
-      description: "Number of threads to use for picard"
     title: Threads
