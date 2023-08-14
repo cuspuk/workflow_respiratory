@@ -36,12 +36,11 @@ def load_metadata(metadata_file: str) -> dict[str, list[tuple[str, str, str, str
         for line in f.readlines():
             try:
                 name, segment, nextclade, accession, tag = line.strip().split(",")
-                tag = tag if tag else "default"
                 if name not in mapping:
                     mapping[name] = []
                 mapping[name].append((segment, nextclade, accession, tag))
             except ValueError:
-                raise InvalidMetadataFile("Metadata table {} does not have 4 columns".format(metadata_file))
+                raise InvalidMetadataFile("Metadata table {} does not have 5 columns".format(metadata_file))
     return mapping
 
 
