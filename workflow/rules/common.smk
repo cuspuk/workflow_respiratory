@@ -119,9 +119,9 @@ def get_nextclade_results(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, segment, name, tag = line.split()
+            ref, seg, name, acc, version = line.split()
             results.append(
-                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{segment}/{name}__{tag}/nextclade.tsv"
+                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv"
             )
     return results
 
