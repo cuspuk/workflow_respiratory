@@ -1,5 +1,4 @@
 ### INPUT SECTION ###############################
-pepfile: "config/pep/config.yaml" # here configure how to read the data
 reference_panel_dirpath: "resources/reference_panel_XY" # directory with reference fasta sequences
 kraken_dir: "resources/kraken/KRAKEN_TAG" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
 krona_dir: "resources/krona/TIMESTAMP_VERSION" # Directory where krona dataset is located or will be downloaded

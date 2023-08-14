@@ -44,7 +44,7 @@ rule krona__update_taxonomy:
     log:
         "{prefix_dir}/logs/update_taxonomy.log",
     conda:
-        "../../envs/kraken2.yaml"
+        "../envs/kraken2.yaml"
     shell:
         "ktUpdateTaxonomy.sh {params.tax_dir} 1> {log} 2>&1"
 

@@ -8,6 +8,7 @@ definitions:
       pepfile:
         type: string
         description: "Path to the PEP file containing the info how to load the data"
+        default: "config/pep/config.yaml"
       reference_panel_dirpath:
         type: string
         description: "Directory with reference .fasta files"
