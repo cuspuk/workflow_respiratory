@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.0.0](https://github.com/xsitarcik/respiratory/compare/v2.0.2...v3.0.0) (2023-08-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* input kraken path required to be already tagged
+
+### Features
+
+* added nextclade using accession and version tag ([9ab76c7](https://github.com/xsitarcik/respiratory/commit/9ab76c739c9e93b00620dc944d3c49005b24ee51))
+* input kraken path required to be already tagged ([9f525af](https://github.com/xsitarcik/respiratory/commit/9f525afebbe333c94650c6c6900e02a9dc720933))
+* kraken input merged into path with tag ([fe03f10](https://github.com/xsitarcik/respiratory/commit/fe03f10b49c2da4d671feda5b12d4a285ad847e0))
+
+
+### Bug Fixes
+
+* nextclade are downloaded into common directory ([d4085e6](https://github.com/xsitarcik/respiratory/commit/d4085e6827242ed95a4ca39f62afa934e3952456))
+
 ## [2.0.2](https://github.com/xsitarcik/respiratory/compare/v2.0.1...v2.0.2) (2023-07-28)
 
 
