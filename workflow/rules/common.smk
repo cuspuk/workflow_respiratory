@@ -73,10 +73,6 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
-def get_reference_faidx(wildcards):
-    return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa.fai")
-
-
 def get_passed_references(wildcards):
     with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
         return [line.strip() for line in f.readlines()]

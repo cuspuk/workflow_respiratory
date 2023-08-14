@@ -63,7 +63,7 @@ resources:
   mapping_mem_mb: 4096
   bam_index_mem_mb: 4096
   picard_mem_mb: 4096
-  qualimap_mem_mb: 2048
+  qualimap_mem_mb: 4096
 
 threads:
   trimming: 4
