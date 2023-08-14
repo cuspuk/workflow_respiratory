@@ -15,11 +15,11 @@ checkpoint select_references_for_nextclade:
 
 rule nextclade__download_nextclade_dataset:
     output:
-        directory("resources/nextclade/{reference}/{name}__{accession}__{version}"),
+        directory("{prefix_dir}/{name}__{accession}__{version}"),
     conda:
         "../envs/nextclade.yaml"
     log:
-        "logs/nextclade/download/{reference}/{name}__{accession}__{version}.log",
+        "{prefix_dir}/{name}__{accession}__{version}.log",
     shell:
         "nextclade dataset get --name {wildcards.name} --reference {wildcards.accession} --tag {wildcards.version}"
         " --output-dir {output} 1> {log} 2>&1"
@@ -28,7 +28,7 @@ rule nextclade__download_nextclade_dataset:
 rule nextclade__run_nextclade:
     input:
         fa="results/consensus/{sample}/{reference}/{segment}.fa",
-        nextclade_data="resources/nextclade/{reference}/{name}__{accession}__{version}",
+        nextclade_data=os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}"),
     output:
         "results/consensus/{sample}/nextclade/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
     params:
