@@ -39,12 +39,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Free up some disk sapce
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
       - name: Test workflow
         uses: snakemake/snakemake-github-action@v1.24.0
         with:
           directory: .tests
           snakefile: workflow/Snakefile
-          args: "--use-conda --show-failed-logs --cores 3 --conda-cleanup-pkgs cache"
+          args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
 
       - name: Test report
         uses: snakemake/snakemake-github-action@v1.24.0

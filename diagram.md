@@ -32,11 +32,11 @@ flowchart TB;
   Z[Summary]:::OUTPUT;
   H[Mapping quality summary]:::OUTPUT;
 
-  A-->|trimmomatic|B;
+  A-->|cutadapt|B;
   B-->|kraken|C;
   C-->E;
   B-->F;
-  C-->F;
+  C-->|exclude HG taxa|F;
   F-->|bwa|S1;
   B-->|FastQC|D;
 
@@ -47,21 +47,19 @@ flowchart TB;
   S1-->|ivar variants|S3_1;
   S3---->|Summarize|Z;
 
-  O>config params]-.->S3_2;
-
-  subgraph S1[For every reference sequence in the panel];
+  subgraph S1[1. For every reference sequence in the panel];
   direction TB;
     S1_0[Mapping output]:::TEMP;
     S1_1[Deduplicated BAM]:::NOREPORT;
     S1_0-->|picard markDuplicates|S1_1;
   end;
 
-  subgraph S2[For every non-empty BAM]
+  subgraph S2[2. For every non-empty BAM]
   direction TB;
     S2_0[Qualimap report]:::OUTPUT;
   end;
 
-  subgraph S3[For every BAM passing quality check]
+  subgraph S3[3. For every BAM passing quality check]
   direction TB;
     S3_D{reference};
     S3_0[Consensus]:::OUTPUT;

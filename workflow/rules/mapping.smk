@@ -2,13 +2,15 @@ rule bwa__build_index:
     input:
         "{reference_panel_dir}/{reference}.fa",
     output:
-        idx=multiext(
-            "{reference_panel_dir}/bwa_index/{reference}/{reference}",
-            ".amb",
-            ".ann",
-            ".bwt",
-            ".pac",
-            ".sa",
+        idx=protected(
+            multiext(
+                "{reference_panel_dir}/bwa_index/{reference}/{reference}",
+                ".amb",
+                ".ann",
+                ".bwt",
+                ".pac",
+                ".sa",
+            )
         ),
     params:
         prefix=lambda wildcards, output: os.path.splitext(output.idx[0])[0],

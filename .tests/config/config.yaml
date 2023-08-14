@@ -1,10 +1,8 @@
 # INPUTS
 pepfile: "config/pep/config.yaml" # here configure how to read the data
 reference_panel_dirpath: "resources/test_reference_panel/" # directory with reference fasta sequences
-
-kraken_db: k2_viral_20230314 # Tag of kraken reference database. Get tag from https://benlangmead.github.io/aws-indexes/k2
-kraken_dir: "resources/kraken" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
-krona_dir: "resources/krona" # Directory where krona dataset is located or will be downloaded
+kraken_dir: "resources/kraken/k2_viral_20230314" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
+krona_dir: "resources/krona/test_timestamp" # Directory where krona dataset is located or will be downloaded
 
 # PARAMETERS
 

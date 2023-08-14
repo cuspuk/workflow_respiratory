@@ -73,10 +73,6 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
-def get_reference_faidx(wildcards):
-    return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa.fai")
-
-
 def get_passed_references(wildcards):
     with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
         return [line.strip() for line in f.readlines()]
@@ -123,9 +119,9 @@ def get_nextclade_results(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, segment, name, tag = line.split()
+            ref, seg, name, acc, version = line.split()
             results.append(
-                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{segment}/{name}__{tag}/nextclade.tsv"
+                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv"
             )
     return results
 

@@ -4,7 +4,7 @@ rule cutadapt__trim_reads_pe:
     output:
         r1=temp("results/reads/trimmed/{sample}_R1.fastq.gz"),
         r2=temp("results/reads/trimmed/{sample}_R2.fastq.gz"),
-        report="results/reads/trimmed/{sample}_cutadapt.json",
+        report=temp("results/reads/trimmed/{sample}_cutadapt.json"),
     params:
         overlap=config["reads__trimming"]["overlap"],
         error_rate=config["reads__trimming"]["error_rate"],
@@ -81,4 +81,4 @@ rule fastqc__quality_report:
     log:
         "logs/fastqc/{step}/{fastq}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.3/wrappers/fastqc/quality"
+        "https://github.com/xsitarcik/wrappers/raw/v1.5.4/wrappers/fastqc/quality"
