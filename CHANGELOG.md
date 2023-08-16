@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/xsitarcik/respiratory/compare/v3.0.0...v3.0.1) (2023-08-16)
+
+
+### Bug Fixes
+
+* fixing parsing paired cutadapt params ([3d38e39](https://github.com/xsitarcik/respiratory/commit/3d38e39c47ce7e390497915cf64fa3cfdb4934db))
+
 ## [3.0.0](https://github.com/xsitarcik/respiratory/compare/v2.0.2...v3.0.0) (2023-08-14)
 
 
