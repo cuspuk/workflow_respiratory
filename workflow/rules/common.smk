@@ -211,20 +211,18 @@ def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
 
 def get_cutadapt_extra_pe() -> str:
     args_lst = get_cutadapt_extra()
-    if not "paired" in config["reads__trimming"]:
-        return " ".join(args_lst)
 
-    pe_config = config["reads__trimming"]["paired"]
-    if parsed_arg := parse_paired_cutadapt_param(pe_config, "max_length_r1", "max_length_r2", "--maximum-length"):
+    cutadapt_config = config["reads__trimming"]
+    if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "max_length_r1", "max_length_r2", "--maximum-length"):
         args_lst.append(parsed_arg)
-    if parsed_arg := parse_paired_cutadapt_param(pe_config, "min_length_r1", "min_length_r2", "--minimum-length"):
+    if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "min_length_r1", "min_length_r2", "--minimum-length"):
         args_lst.append(parsed_arg)
     if qual_cut_arg_r1 := parse_cutadapt_comma_param(
-        pe_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
+        cutadapt_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
     ):
         args_lst.append(qual_cut_arg_r1)
     if qual_cut_arg_r2 := parse_cutadapt_comma_param(
-        pe_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
+        cutadapt_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
     ):
         args_lst.append(qual_cut_arg_r2)
     return " ".join(args_lst)
