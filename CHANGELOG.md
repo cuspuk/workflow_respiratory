@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/xsitarcik/respiratory/compare/v3.0.1...v3.0.2) (2023-10-03)
+
+
+### Bug Fixes
+
+* fixed validation schema for consensus threshold ([e64a176](https://github.com/xsitarcik/respiratory/commit/e64a176727800f67f134e8235c9a2b383c027097))
+
 ## [3.0.1](https://github.com/xsitarcik/respiratory/compare/v3.0.0...v3.0.1) (2023-08-16)
 
 
