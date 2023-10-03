@@ -215,7 +215,7 @@ definitions:
         default: 20
         description: "Minimum quality score threshold to count base in ivar consensus"
       consensus_frequency_threshold:
-        type: integer
+        type: number
         default: 0
         Minimum: 0
         Maximum: 1
