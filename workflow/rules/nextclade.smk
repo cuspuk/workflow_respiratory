@@ -50,9 +50,7 @@ rule aggregate__nextclade_results:
     output:
         report(
             "results/consensus/{sample}/nextclade/reference_summary.json",
-            labels={
-                "Name": "Consensus summary",
-            },
+            labels={"Type": "Consensus summary", "Reference": "-"},
         ),
     conda:
         "../envs/python.yaml"

@@ -111,8 +111,10 @@ checkpoint nonempty_bams:
     output:
         report(
             "results/checkpoints/nonempty_bams/{sample}.txt",
+            category="{sample}",
             labels={
-                "Name": "List of non empty BAMs",
+                "Type": "List of non empty BAMs",
+                "Reference": "-",
             },
         ),
     log:
@@ -130,10 +132,10 @@ rule qualimap__mapping_quality_report:
     output:
         report_dir=report(
             directory("results/mapping/{sample}/{step}/bamqc/{reference}"),
-            category="Reports",
+            category="{sample}",
             labels={
-                "Type": "Qualimap",
-                "Name": "{reference}",
+                "Type": "Qualimap - {step}",
+                "Reference": "{reference}",
             },
             htmlindex="qualimapReport.html",
         ),
@@ -156,8 +158,10 @@ checkpoint mapping_quality_evaluation:
     output:
         passed_refs=report(
             "results/checkpoints/passed_references/{sample}.txt",
+            category="{sample}",
             labels={
-                "Name": "List of passed references",
+                "Type": "List of passed references",
+                "Reference": "-",
             },
         ),
     params:

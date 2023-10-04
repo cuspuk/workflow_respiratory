@@ -20,10 +20,10 @@ rule report__ivar_variants_to_html:
     output:
         report(
             "results/variants/{sample}/{reference}/all.html",
-            category="Mixed positions",
+            category="{sample}",
             labels={
-                "reference": "{reference}",
-                "step": "All variants",
+                "Type": "Variants - all",
+                "Reference": "{reference}",
             },
         ),
     log:
@@ -59,11 +59,11 @@ rule report__mixed_positions_to_html:
     output:
         report(
             "results/variants/{sample}/{reference}/mixed_positions.html",
-            category="Mixed positions",
             caption="../report/mixed_positions.rst",
+            category="{sample}",
             labels={
-                "reference": "{reference}",
-                "step": "Only mixed positions",
+                "Type": "Variants - mixed positions",
+                "Reference": "{reference}",
             },
         ),
     log:
@@ -81,8 +81,10 @@ rule custom__concatenate_mixed_positions:
     output:
         report(
             "results/variants/{sample}/mixed_positions_summary.txt",
+            category="{sample}",
             labels={
-                "Name": "Summary of mixed positions",
+                "Type": "Mixed positions summary",
+                "Reference": "-",
             },
         ),
     log:
