@@ -14,21 +14,14 @@ rule ivar__create_consensus_per_segment:
         bam="results/mapping/{sample}/deduplicated/{reference}.bam",
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
     output:
-        consensus=temp("results/consensus/{sample}/{reference}/{segment}.fa"),
+        consensus="results/consensus/{sample}/{reference}/{segment}.fa",
     params:
-        out_prefix=lambda wildcards, output: os.path.splitext(output.consensus)[0],
-        samtools_params=parse_samtools_params(),
+        samtools_params=parse_samtools_params_with_region,
         ivar_params=parse_ivar_params(),
     log:
         "logs/ivar/create_consensus_per_segment/{sample}/{reference}/{segment}.log",
-    conda:
-        "../envs/ivar.yaml"
-    shell:
-        "("
-        " samtools mpileup --no-BAQ --region {wildcards.segment} {params.samtools_params} {input.bam}"
-        " |"
-        " ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}"
-        ") 1> {log} 2>&1"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/consensus"
 
 
 rule concat__consensus_from_segments:

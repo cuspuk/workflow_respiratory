@@ -228,6 +228,15 @@ def get_cutadapt_extra_pe() -> str:
     return " ".join(args_lst)
 
 
+def get_kraken_decontamination_params():
+    extra = []
+    if config["reads__decontamination"]["exclude_children"]:
+        extra.append("--include-children")
+    if config["reads__decontamination"]["exclude_ancestors"]:
+        extra.append("--include-parents")
+    return " ".join(extra)
+
+
 def parse_samtools_params():
     samtools_params = []
     if config["consensus_params"]["count_orphans"]:
@@ -237,6 +246,10 @@ def parse_samtools_params():
     samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))
     samtools_params.append("--min-BQ {value}".format(value=config["consensus_params"]["min_base_quality"]))
     return " ".join(samtools_params)
+
+
+def parse_samtools_params_with_region(wildcards):
+    return f"--region {wildcards.sample} {parse_samtools_params()}"
 
 
 def parse_ivar_params():

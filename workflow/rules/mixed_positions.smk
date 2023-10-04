@@ -6,17 +6,12 @@ rule ivar__get_variants:
     output:
         "results/variants/{sample}/{reference}/all.tsv",
     params:
-        out_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
         samtools_params=parse_samtools_params_for_variants(),
         ivar_params=parse_ivar_params_for_variants(),
     log:
         "logs/variants/{sample}/ivar/{reference}.log",
-    conda:
-        "../envs/ivar.yaml"
-    shell:
-        "(samtools mpileup -aa --no-BAQ {params.samtools_params} {input.bam}"
-        " |"
-        " ivar variants -p {params.out_prefix} -r {input.ref} {params.ivar_params}) 1> {log} 2>&1"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/variants"
 
 
 rule report__ivar_variants_to_html:
