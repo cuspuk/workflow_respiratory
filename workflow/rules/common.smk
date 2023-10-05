@@ -73,13 +73,31 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
-def get_passed_references(wildcards):
-    with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
+def get_passed_references_for_sample(sample_name: str):
+    with checkpoints.mapping_quality_evaluation.get(sample=sample_name).output[0].open() as f:
         return [line.strip() for line in f.readlines()]
+
+
+def get_passed_references(wildcards):
+    return get_passed_references_for_sample(wildcards.sample)
 
 
 def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
+
+
+def get_consensuses_to_merge_for_reference(wildcards):
+    return [
+        f"results/consensus/{sample}/{{reference}}.fa"
+        for sample in get_sample_names()
+        if wildcards.reference in get_passed_references(sample)
+    ]
+
+
+def get_all_aggregated_consensuses(wildcards):
+    all_refs = [get_passed_references_for_sample(sample) for sample in get_sample_names()]
+    all_refs_set = set([item for sublist in all_refs for item in sublist])
+    return expand("results/_aggregation/{reference}.fa", reference=all_refs_set)
 
 
 def get_mixed_positions_for_passed_references_only(wildcards):
@@ -158,6 +176,7 @@ def get_outputs():
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
         "consensus": expand("results/nextclade/{sample}/reference_summary.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
+        "aggregate": "results/checkpoints/aggregated_all_consensuses.txt",
     }
 
 

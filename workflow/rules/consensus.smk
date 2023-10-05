@@ -42,3 +42,31 @@ rule concat__consensus_from_segments:
         "../envs/coreutils.yaml"
     shell:
         "cat {input.consensuses} 1> {output} 2> {log}"
+
+
+rule concat__consensuses_for_references:
+    input:
+        consensuses=get_consensuses_to_merge_for_reference,
+    output:
+        report(
+            "results/_aggregation/{reference}.fa",
+            category="_aggregation",
+            labels={
+                "Type": "Consensus for {reference}",
+            },
+        ),
+    log:
+        "logs/concat/consensuses_for_references/{reference}.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        "cat {input.consensuses} 1> {output} 2> {log}"
+
+
+rule aggregate__all_consensuses:
+    input:
+        consensuses=get_all_aggregated_consensuses,
+    output:
+        touch("results/checkpoints/aggregated_all_consensuses.txt"),
+    log:
+        "logs/aggregate/all_consensuses.log",
