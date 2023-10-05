@@ -14,6 +14,27 @@ rule ivar__get_variants:
         "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/variants"
 
 
+rule ivar__variants_to_vcf:
+    input:
+        "results/variants/{sample}/{reference}/all.tsv",
+    output:
+        all=report(
+            "results/variants/{sample}/{reference}/all.vcf",
+            category="{sample}",
+            labels={
+                "Type": "Variants - vcf",
+                "Reference": "{reference}",
+            },
+        ),
+        filtered="results/variants/{sample}/{reference}/passed_only.vcf",
+    log:
+        "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/ivar_to_vcf.py"
+
+
 rule report__ivar_variants_to_html:
     input:
         "results/variants/{sample}/{reference}/all.tsv",
