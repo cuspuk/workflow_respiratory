@@ -122,9 +122,7 @@ def get_nextclade_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
             ref, seg, name, acc, version = line.split()
-            results.append(
-                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv"
-            )
+            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv")
     return results
 
 
@@ -158,7 +156,7 @@ def get_outputs():
             sample=sample_names,
         ),
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
-        "consensus": expand("results/consensus/{sample}/nextclade/reference_summary.json", sample=sample_names),
+        "consensus": expand("results/nextclade/{sample}/reference_summary.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
     }
 

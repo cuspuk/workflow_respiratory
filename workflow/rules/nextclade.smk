@@ -30,7 +30,7 @@ rule nextclade__run_nextclade:
         fa="results/consensus/{sample}/{reference}/{segment}.fa",
         nextclade_data=os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}"),
     output:
-        "results/consensus/{sample}/nextclade/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
+        "results/nextclade/{sample}/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
     params:
         outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
@@ -49,7 +49,7 @@ rule aggregate__nextclade_results:
         other_results=get_others_results,
     output:
         report(
-            "results/consensus/{sample}/nextclade/reference_summary.json",
+            "results/nextclade/{sample}/reference_summary.json",
             labels={"Type": "Consensus summary", "Reference": "-"},
         ),
     conda:
