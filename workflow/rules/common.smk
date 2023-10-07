@@ -110,9 +110,8 @@ def get_mixed_positions_for_passed_references_only(wildcards):
 def get_variant_reports_for_passed_references_only(wildcards):
     passed_refs = get_passed_references(wildcards)
     lst1 = expand(
-        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions.{{ext}}",
+        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions.html",
         reference=passed_refs,
-        ext=["html", "vcf"],
     )
     lst2 = expand(
         f"results/variants/{wildcards.sample}/{{reference}}/all.{{ext}}",
