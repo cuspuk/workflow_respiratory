@@ -4,7 +4,7 @@ rule ivar__get_variants:
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
         ref=get_reference_fasta,
     output:
-        "results/variants/{sample}/{reference}/all.tsv",
+        tsv="results/variants/{sample}/{reference}/all.tsv",
     params:
         samtools_params=parse_samtools_params_for_variants(),
         ivar_params=parse_ivar_params_for_variants(),
