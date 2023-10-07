@@ -90,7 +90,7 @@ def get_consensuses_to_merge_for_reference(wildcards):
     return [
         f"results/consensus/{sample}/{{reference}}.fa"
         for sample in get_sample_names()
-        if wildcards.reference in get_passed_references(sample)
+        if wildcards.reference in get_passed_references_for_sample(sample)
     ]
 
 
