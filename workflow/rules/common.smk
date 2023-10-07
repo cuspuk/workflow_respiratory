@@ -273,7 +273,7 @@ def parse_samtools_params():
 
 
 def parse_samtools_params_with_region(wildcards):
-    return f"--region {wildcards.sample} {parse_samtools_params()}"
+    return f"--region {wildcards.segment} {parse_samtools_params()}"
 
 
 def parse_ivar_params():
