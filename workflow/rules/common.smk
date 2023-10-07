@@ -25,7 +25,11 @@ def glob_references(reference_panel_dirpath: str):
     return set(glob_wildcards(location_format).name)
 
 
-REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
+def get_reference_dir():
+    return os.path.join(config["reference_panel_dirpath"], "references")
+
+
+REFERENCES = glob_references(get_reference_dir())
 
 
 def get_sample_names():
@@ -129,7 +133,9 @@ def get_all_qualimap_dirs(wildcards):
 
 
 def get_consensus_per_reference_segment(wildcards):
-    with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
+    with checkpoints.index_passed_references.get(
+        reference_dir=get_reference_dir(), reference=wildcards.reference
+    ).output[0].open() as f:
         segments = [line.split()[0] for line in f.readlines()]
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
