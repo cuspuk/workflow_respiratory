@@ -188,7 +188,8 @@ def get_outputs():
         "merged_nextclades": expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=sample_names),
     }
     if len(sample_names) > 1:
-        outputs["aggregate_consensus"] = ("results/checkpoints/aggregated_all_consensuses.txt",)
+        outputs["aggregate_consensus"] = "results/checkpoints/aggregated_all_consensuses.txt"
+        outputs["aggregate_nextclades"] = "results/_aggregation/nextclade/nextclade.tsv"
     return outputs
 
 
