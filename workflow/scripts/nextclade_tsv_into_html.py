@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pandas as pd
@@ -8,6 +9,13 @@ sys.stderr = open(snakemake.log[0], "w")
 
 def nextclade_to_html(tsv_input_path: str, output_html: str):
     print(f"Converting {tsv_input_path} into html", file=sys.stderr)
+
+    if os.path.getsize(tsv_input_path) == 0:
+        print(f"File {tsv_input_path} is empty. Leaving empty output", file=sys.stderr)
+        with open(output_html, "w") as _:
+            pass
+        return
+
     nextclade_tsv = pd.read_csv(tsv_input_path, delimiter="\t")
 
     filters = {
