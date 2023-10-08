@@ -101,7 +101,7 @@ def get_consensuses_to_merge_for_reference(wildcards):
 def get_all_aggregated_consensuses(wildcards):
     all_refs = [get_passed_references_for_sample(sample) for sample in get_sample_names()]
     all_refs_set = set([item for sublist in all_refs for item in sublist])
-    return expand("results/_aggregation/{reference}.fa", reference=all_refs_set)
+    return expand("results/_aggregation/consensus/{reference}.fa", reference=all_refs_set)
 
 
 def get_mixed_positions_for_passed_references_only(wildcards):
