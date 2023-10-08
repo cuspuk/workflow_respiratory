@@ -46,19 +46,27 @@ def process_files(files: list[str], output_tsv: str):
     all_attributes = set()
     dataframes = []
     for file in files:
+        if os.path.getsize(file) == 0:
+            print(f"File {file} is empty. Continuing...", file=sys.stderr)
+            continue
+
         df = pd.read_csv(file, sep="\t")
-        # df['ID'] = df['seqName'].apply(lambda x: x.split('_')[3].replace('-vsp-', '/'))
         df["type"] = file.split("/")[-1].split(".")[0]
         df["QC"] = df["coverage"].apply(lambda x: assign_pass(x))
 
         if "index" in df.columns:
             df.drop(columns=["index"], inplace=True)
-        # df.rename(columns={'ID':'seqName'}, inplace=True)
         # Only accept samples with specified clade and coverage
         # Samples without clade or coverage are wrongly mapped sequences
         df = df[pd.notnull(df["clade"]) & pd.notnull(df["coverage"])]
         dataframes.append(df)
         all_attributes = all_attributes.union(set(df.columns))
+
+    if len(dataframes) == 0:
+        print("All files have been empty. Leaving empty output file", file=sys.stderr)
+        with open(output_tsv, "w") as _:
+            pass
+        return
 
     # Normalize tables to same columns
     for df in dataframes:
