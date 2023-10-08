@@ -67,6 +67,25 @@ rule nextclade__merge_all_results:
         "../scripts/merge.py"
 
 
+rule nextclade__to_html:
+    input:
+        "results/_aggregation/nextclade/nextclade.tsv",
+    output:
+        report(
+            "results/_aggregation/nextclade/nextclade.html",
+            category="_aggregation",
+            labels={
+                "Type": "Nextclade - merged all",
+            },
+        ),
+    conda:
+        "../envs/python_panel.yaml"
+    log:
+        "logs/aggregate/nextclade__to_html.log",
+    script:
+        "../scripts/nextclade_tsv_into_html.py"
+
+
 rule aggregate__nextclade_results:
     input:
         nextclade_tsv=get_nextclade_results_for_sample,
@@ -74,10 +93,7 @@ rule aggregate__nextclade_results:
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
     output:
-        report(
-            "results/nextclade/{sample}/reference_summary.json",
-            labels={"Type": "Consensus summary", "Reference": "-"},
-        ),
+        "results/nextclade/{sample}/reference_summary.json",
     conda:
         "../envs/python.yaml"
     log:
