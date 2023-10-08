@@ -14,21 +14,15 @@ rule ivar__create_consensus_per_segment:
         bam="results/mapping/{sample}/deduplicated/{reference}.bam",
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
     output:
-        consensus=temp("results/consensus/{sample}/{reference}/{segment}.fa"),
+        consensus="results/consensus/{sample}/{reference}/{segment}.fa",
     params:
-        out_prefix=lambda wildcards, output: os.path.splitext(output.consensus)[0],
-        samtools_params=parse_samtools_params(),
+        name=lambda wildcards: f"{wildcards.sample}_{wildcards.segment}",
+        samtools_params=parse_samtools_params_with_region,
         ivar_params=parse_ivar_params(),
     log:
         "logs/ivar/create_consensus_per_segment/{sample}/{reference}/{segment}.log",
-    conda:
-        "../envs/ivar.yaml"
-    shell:
-        "("
-        " samtools mpileup --no-BAQ --region {wildcards.segment} {params.samtools_params} {input.bam}"
-        " |"
-        " ivar consensus -p {params.out_prefix} -i {wildcards.sample}_{wildcards.segment} {params.ivar_params}"
-        ") 1> {log} 2>&1"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.11.1/wrappers/ivar/consensus"
 
 
 rule concat__consensus_from_segments:
@@ -37,9 +31,10 @@ rule concat__consensus_from_segments:
     output:
         report(
             "results/consensus/{sample}/{reference}.fa",
-            category="Consensus",
+            category="{sample}",
             labels={
-                "Name": "{reference}",
+                "Type": "Consensus",
+                "Reference": "{reference}",
             },
         ),
     log:
@@ -48,3 +43,31 @@ rule concat__consensus_from_segments:
         "../envs/coreutils.yaml"
     shell:
         "cat {input.consensuses} 1> {output} 2> {log}"
+
+
+rule concat__consensuses_for_references:
+    input:
+        consensuses=get_consensuses_to_merge_for_reference,
+    output:
+        report(
+            "results/_aggregation/consensus/{reference}.fa",
+            category="_aggregation",
+            labels={
+                "Type": "Consensus for {reference}",
+            },
+        ),
+    log:
+        "logs/concat/consensuses_for_references/{reference}.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        "cat {input.consensuses} 1> {output} 2> {log}"
+
+
+rule aggregate__all_consensuses:
+    input:
+        consensuses=get_all_aggregated_consensuses,
+    output:
+        touch("results/checkpoints/aggregated_all_consensuses.txt"),
+    log:
+        "logs/aggregate/all_consensuses.log",

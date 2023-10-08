@@ -56,10 +56,10 @@ rule kraken__krona_chart:
     output:
         report(
             "results/kraken/kronas/{sample}.html",
-            category="Reports",
+            category="{sample}",
             labels={
                 "Type": "Krona",
-                "Name": "-",
+                "Reference": "-",
             },
         ),
     params:

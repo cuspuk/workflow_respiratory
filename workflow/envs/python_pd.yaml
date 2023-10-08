@@ -3,5 +3,6 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - krakentools=1.2
-  - biopython=1.81
+  - python=3.11
+  - pandas=2.0.3
+  - numpy=1.26.0

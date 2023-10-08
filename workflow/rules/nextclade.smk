@@ -30,7 +30,7 @@ rule nextclade__run_nextclade:
         fa="results/consensus/{sample}/{reference}/{segment}.fa",
         nextclade_data=os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}"),
     output:
-        "results/consensus/{sample}/nextclade/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
+        "results/nextclade/{sample}/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
     params:
         outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
@@ -41,19 +41,59 @@ rule nextclade__run_nextclade:
         "nextclade run --input-dataset={input.nextclade_data} --output-all={params.outdir} {input.fa} 1> {log} 2>&1;"
 
 
+rule nextclade__merge_results_for_sample:
+    input:
+        nextclade_tsvs=get_nextclade_results_for_sample,
+    output:
+        merged_tsv="results/nextclade/{sample}/_merged/nextclade.tsv",
+    conda:
+        "../envs/python_pd.yaml"
+    log:
+        "logs/nextclade/merge_results_for_sample/{sample}.log",
+    script:
+        "../scripts/merge.py"
+
+
+rule nextclade__merge_all_results:
+    input:
+        nextclade_tsvs=get_merged_nextclade_results(),
+    output:
+        merged_tsv="results/_aggregation/nextclade/nextclade.tsv",
+    conda:
+        "../envs/python_pd.yaml"
+    log:
+        "logs/aggregate/nextclade__merge_all_results.log",
+    script:
+        "../scripts/merge.py"
+
+
+rule nextclade__to_html:
+    input:
+        "results/_aggregation/nextclade/nextclade.tsv",
+    output:
+        report(
+            "results/_aggregation/nextclade/nextclade.html",
+            category="_aggregation",
+            labels={
+                "Type": "Nextclade - merged all",
+            },
+        ),
+    conda:
+        "../envs/python_panel.yaml"
+    log:
+        "logs/aggregate/nextclade__to_html.log",
+    script:
+        "../scripts/nextclade_tsv_into_html.py"
+
+
 rule aggregate__nextclade_results:
     input:
-        nextclade_tsv=get_nextclade_results,
+        nextclade_tsv=get_nextclade_results_for_sample,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
     output:
-        report(
-            "results/consensus/{sample}/nextclade/reference_summary.json",
-            labels={
-                "Name": "Consensus summary",
-            },
-        ),
+        "results/nextclade/{sample}/reference_summary.json",
     conda:
         "../envs/python.yaml"
     log:

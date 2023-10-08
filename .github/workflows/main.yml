@@ -39,20 +39,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Free up some disk sapce
-        run: |
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.0
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
+
       - name: Test workflow
-        uses: snakemake/snakemake-github-action@v1.24.0
+        uses: snakemake/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
           args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
+          show-disk-usage-on-error: true
 
       - name: Test report
-        uses: snakemake/snakemake-github-action@v1.24.0
+        uses: snakemake/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
           args: "--report report.zip"
+          show-disk-usage-on-error: true

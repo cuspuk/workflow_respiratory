@@ -4,19 +4,33 @@ rule ivar__get_variants:
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
         ref=get_reference_fasta,
     output:
-        "results/variants/{sample}/{reference}/all.tsv",
+        tsv="results/variants/{sample}/{reference}/all.tsv",
     params:
-        out_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
         samtools_params=parse_samtools_params_for_variants(),
         ivar_params=parse_ivar_params_for_variants(),
     log:
         "logs/variants/{sample}/ivar/{reference}.log",
-    conda:
-        "../envs/ivar.yaml"
-    shell:
-        "(samtools mpileup -aa --no-BAQ {params.samtools_params} {input.bam}"
-        " |"
-        " ivar variants -p {params.out_prefix} -r {input.ref} {params.ivar_params}) 1> {log} 2>&1"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/variants"
+
+
+rule ivar__variants_to_vcf:
+    input:
+        "results/variants/{sample}/{reference}/all.tsv",
+    output:
+        all=report(
+            "results/variants/{sample}/{reference}/all.vcf",
+            category="{sample}",
+            labels={
+                "Type": "Variants - vcf",
+                "Reference": "{reference}",
+            },
+        ),
+        filtered="results/variants/{sample}/{reference}/passed_only.vcf",
+    log:
+        "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/vcf_convert"
 
 
 rule report__ivar_variants_to_html:
@@ -25,18 +39,16 @@ rule report__ivar_variants_to_html:
     output:
         report(
             "results/variants/{sample}/{reference}/all.html",
-            category="Mixed positions",
+            category="{sample}",
             labels={
-                "reference": "{reference}",
-                "step": "All variants",
+                "Type": "Variants - all",
+                "Reference": "{reference}",
             },
         ),
     log:
         "logs/report/{sample}/ivar_variants/{reference}.log",
-    conda:
-        "../envs/python_panel.yaml"
-    script:
-        "../scripts/tsv_html.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
 
 
 rule custom__compute_mixed_positions:
@@ -52,10 +64,8 @@ rule custom__compute_mixed_positions:
         total_depth=config["mixed_positions_params"]["filtering"]["min_total_depth"],
     log:
         "logs/variants/{sample}/variants/{reference}.log",
-    conda:
-        "../envs/python.yaml"
-    script:
-        "../scripts/compute_mixed_positions.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.10.0/wrappers/ivar/mixed_positions"
 
 
 rule report__mixed_positions_to_html:
@@ -64,19 +74,17 @@ rule report__mixed_positions_to_html:
     output:
         report(
             "results/variants/{sample}/{reference}/mixed_positions.html",
-            category="Mixed positions",
             caption="../report/mixed_positions.rst",
+            category="{sample}",
             labels={
-                "reference": "{reference}",
-                "step": "Only mixed positions",
+                "Type": "Variants - mixed positions",
+                "Reference": "{reference}",
             },
         ),
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
-    conda:
-        "../envs/python_panel.yaml"
-    script:
-        "../scripts/tsv_html.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
 
 
 rule custom__concatenate_mixed_positions:
@@ -86,8 +94,10 @@ rule custom__concatenate_mixed_positions:
     output:
         report(
             "results/variants/{sample}/mixed_positions_summary.txt",
+            category="{sample}",
             labels={
-                "Name": "Summary of mixed positions",
+                "Type": "Mixed positions summary",
+                "Reference": "-",
             },
         ),
     log:

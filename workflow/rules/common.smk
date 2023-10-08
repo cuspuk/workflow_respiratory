@@ -25,7 +25,11 @@ def glob_references(reference_panel_dirpath: str):
     return set(glob_wildcards(location_format).name)
 
 
-REFERENCES = glob_references(os.path.join(config["reference_panel_dirpath"], "references"))
+def get_reference_dir():
+    return os.path.join(config["reference_panel_dirpath"], "references")
+
+
+REFERENCES = glob_references(get_reference_dir())
 
 
 def get_sample_names():
@@ -73,13 +77,31 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
-def get_passed_references(wildcards):
-    with checkpoints.mapping_quality_evaluation.get(sample=wildcards.sample).output[0].open() as f:
+def get_passed_references_for_sample(sample_name: str):
+    with checkpoints.mapping_quality_evaluation.get(sample=sample_name).output[0].open() as f:
         return [line.strip() for line in f.readlines()]
+
+
+def get_passed_references(wildcards):
+    return get_passed_references_for_sample(wildcards.sample)
 
 
 def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
+
+
+def get_consensuses_to_merge_for_reference(wildcards):
+    return [
+        f"results/consensus/{sample}/{{reference}}.fa"
+        for sample in get_sample_names()
+        if wildcards.reference in get_passed_references_for_sample(sample)
+    ]
+
+
+def get_all_aggregated_consensuses(wildcards):
+    all_refs = [get_passed_references_for_sample(sample) for sample in get_sample_names()]
+    all_refs_set = set([item for sublist in all_refs for item in sublist])
+    return expand("results/_aggregation/consensus/{reference}.fa", reference=all_refs_set)
 
 
 def get_mixed_positions_for_passed_references_only(wildcards):
@@ -96,8 +118,9 @@ def get_variant_reports_for_passed_references_only(wildcards):
         reference=passed_refs,
     )
     lst2 = expand(
-        f"results/variants/{wildcards.sample}/{{reference}}/all.html",
+        f"results/variants/{wildcards.sample}/{{reference}}/all.{{ext}}",
         reference=passed_refs,
+        ext=["html", "vcf"],
     )
     return lst1 + lst2
 
@@ -110,20 +133,24 @@ def get_all_qualimap_dirs(wildcards):
 
 
 def get_consensus_per_reference_segment(wildcards):
-    with checkpoints.index_passed_references.get(reference=wildcards.reference).output[0].open() as f:
+    with checkpoints.index_passed_references.get(
+        reference_dir=get_reference_dir(), reference=wildcards.reference
+    ).output[0].open() as f:
         segments = [line.split()[0] for line in f.readlines()]
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
-def get_nextclade_results(wildcards):
+def get_nextclade_results_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
             ref, seg, name, acc, version = line.split()
-            results.append(
-                f"results/consensus/{wildcards.sample}/nextclade/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv"
-            )
+            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv")
     return results
+
+
+def get_merged_nextclade_results():
+    return expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=get_sample_names())
 
 
 def get_others_results(wildcards):
@@ -140,7 +167,7 @@ def get_others_results(wildcards):
 
 def get_outputs():
     sample_names = get_sample_names()
-    return {
+    outputs = {
         "fastqc_report": expand(
             "results/reads/trimmed/fastqc/{sample}_R{orientation}.html",
             sample=sample_names,
@@ -156,9 +183,14 @@ def get_outputs():
             sample=sample_names,
         ),
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
-        "consensus": expand("results/consensus/{sample}/nextclade/reference_summary.json", sample=sample_names),
+        "consensus": expand("results/nextclade/{sample}/reference_summary.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
+        "merged_nextclades": expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=sample_names),
     }
+    if len(sample_names) > 1:
+        outputs["aggregate_consensus"] = "results/checkpoints/aggregated_all_consensuses.txt"
+        outputs["aggregate_nextclades"] = "results/_aggregation/nextclade/nextclade.html"
+    return outputs
 
 
 ## PARAMETERS PARSING #################################################################
@@ -228,6 +260,15 @@ def get_cutadapt_extra_pe() -> str:
     return " ".join(args_lst)
 
 
+def get_kraken_decontamination_params():
+    extra = []
+    if config["reads__decontamination"]["exclude_children"]:
+        extra.append("--include-children")
+    if config["reads__decontamination"]["exclude_ancestors"]:
+        extra.append("--include-parents")
+    return " ".join(extra)
+
+
 def parse_samtools_params():
     samtools_params = []
     if config["consensus_params"]["count_orphans"]:
@@ -237,6 +278,10 @@ def parse_samtools_params():
     samtools_params.append("--min-MQ {value}".format(value=config["consensus_params"]["min_mapping_quality"]))
     samtools_params.append("--min-BQ {value}".format(value=config["consensus_params"]["min_base_quality"]))
     return " ".join(samtools_params)
+
+
+def parse_samtools_params_with_region(wildcards):
+    return f"--region {wildcards.segment} {parse_samtools_params()}"
 
 
 def parse_ivar_params():

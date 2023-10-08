@@ -26,12 +26,12 @@ rule custom__infer_and_store_read_group:
         get_one_fastq_file,
     output:
         read_group="results/reads/original/read_group/{sample}.txt",
+    params:
+        sample_id=lambda wildcards: wildcards.sample,
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
-    conda:
-        "../envs/python.yaml"
-    script:
-        "../scripts/save_read_group.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.11.0/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -111,8 +111,10 @@ checkpoint nonempty_bams:
     output:
         report(
             "results/checkpoints/nonempty_bams/{sample}.txt",
+            category="{sample}",
             labels={
-                "Name": "List of non empty BAMs",
+                "Type": "List of non empty BAMs",
+                "Reference": "-",
             },
         ),
     log:
@@ -130,10 +132,10 @@ rule qualimap__mapping_quality_report:
     output:
         report_dir=report(
             directory("results/mapping/{sample}/{step}/bamqc/{reference}"),
-            category="Reports",
+            category="{sample}",
             labels={
-                "Type": "Qualimap",
-                "Name": "{reference}",
+                "Type": "Qualimap - {step}",
+                "Reference": "{reference}",
             },
             htmlindex="qualimapReport.html",
         ),
@@ -156,8 +158,10 @@ checkpoint mapping_quality_evaluation:
     output:
         passed_refs=report(
             "results/checkpoints/passed_references/{sample}.txt",
+            category="{sample}",
             labels={
-                "Name": "List of passed references",
+                "Type": "List of passed references",
+                "Reference": "-",
             },
         ),
     params:
