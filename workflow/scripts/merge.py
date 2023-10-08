@@ -50,7 +50,9 @@ def process_files(files: list[str], output_tsv: str):
         # df['ID'] = df['seqName'].apply(lambda x: x.split('_')[3].replace('-vsp-', '/'))
         df["type"] = file.split("/")[-1].split(".")[0]
         df["QC"] = df["coverage"].apply(lambda x: assign_pass(x))
-        df.drop(columns=["index"], inplace=True)
+
+        if "index" in df.columns:
+            df.drop(columns=["index"], inplace=True)
         # df.rename(columns={'ID':'seqName'}, inplace=True)
         # Only accept samples with specified clade and coverage
         # Samples without clade or coverage are wrongly mapped sequences
