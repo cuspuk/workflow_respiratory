@@ -50,7 +50,7 @@ rule concat__consensuses_for_references:
         consensuses=get_consensuses_to_merge_for_reference,
     output:
         report(
-            "results/_aggregation/{reference}.fa",
+            "results/_aggregation/consensus/{reference}.fa",
             category="_aggregation",
             labels={
                 "Type": "Consensus for {reference}",
