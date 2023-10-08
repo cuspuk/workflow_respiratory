@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.1.0](https://github.com/xsitarcik/respiratory/compare/v3.0.2...v3.1.0) (2023-10-08)
+
+
+### Features
+
+* added conversion of nextclade tsv into html ([b2985b8](https://github.com/xsitarcik/respiratory/commit/b2985b872cb69a14425731a6257ec859ba80cd8d))
+* aggregated sample consensuses for each reference ([eae9f56](https://github.com/xsitarcik/respiratory/commit/eae9f560c3551626388e8c10a87dc3df64752c58))
+* merged all nextclade tsvs into one ([0c55c73](https://github.com/xsitarcik/respiratory/commit/0c55c733bc10b46e2230172822debe6331c4bb6a))
+* merging nextclade tsv per sample ([3b7870d](https://github.com/xsitarcik/respiratory/commit/3b7870d9c549526a3ae44aafe8c37fe80809717d))
+
+
+### Bug Fixes
+
+* aggregation runs when more than one sample ([9be8079](https://github.com/xsitarcik/respiratory/commit/9be807961f23ac99bd6e519df81ecf70ea7fa0db))
+* ivar variants produced also in vcf format ([b178dbe](https://github.com/xsitarcik/respiratory/commit/b178dbefe9636bf13d0a388df612c48a25ee0a88))
+* moved nextclade outputs into own subdirectory ([657293a](https://github.com/xsitarcik/respiratory/commit/657293a8832d50f517f0f4fad51b1a784453817e))
+* reports grouped per sample ([5848089](https://github.com/xsitarcik/respiratory/commit/58480899caeed7f32349cf876f593dd482ecd621))
+
 ## [3.0.2](https://github.com/xsitarcik/respiratory/compare/v3.0.1...v3.0.2) (2023-10-03)
 
 
