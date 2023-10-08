@@ -43,9 +43,9 @@ rule nextclade__run_nextclade:
 
 rule nextclade__merge_results_for_sample:
     input:
-        get_nextclade_results_for_sample,
+        nextclade_tsvs=get_nextclade_results_for_sample,
     output:
-        "results/nextclade/{sample}/_merged/nextclade.tsv",
+        merged_tsv="results/nextclade/{sample}/_merged/nextclade.tsv",
     conda:
         "../envs/python_pd.yaml"
     log:
