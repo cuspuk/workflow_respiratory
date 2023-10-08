@@ -29,10 +29,8 @@ rule ivar__variants_to_vcf:
         filtered="results/variants/{sample}/{reference}/passed_only.vcf",
     log:
         "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
-    conda:
-        "../envs/python.yaml"
-    script:
-        "../scripts/ivar_to_vcf.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/vcf_convert"
 
 
 rule report__ivar_variants_to_html:
@@ -49,10 +47,8 @@ rule report__ivar_variants_to_html:
         ),
     log:
         "logs/report/{sample}/ivar_variants/{reference}.log",
-    conda:
-        "../envs/python_panel.yaml"
-    script:
-        "../scripts/tsv_html.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
 
 
 rule custom__compute_mixed_positions:
@@ -68,10 +64,8 @@ rule custom__compute_mixed_positions:
         total_depth=config["mixed_positions_params"]["filtering"]["min_total_depth"],
     log:
         "logs/variants/{sample}/variants/{reference}.log",
-    conda:
-        "../envs/python.yaml"
-    script:
-        "../scripts/compute_mixed_positions.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.10.0/wrappers/ivar/mixed_positions"
 
 
 rule report__mixed_positions_to_html:
@@ -89,10 +83,8 @@ rule report__mixed_positions_to_html:
         ),
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
-    conda:
-        "../envs/python_panel.yaml"
-    script:
-        "../scripts/tsv_html.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
 
 
 rule custom__concatenate_mixed_positions:

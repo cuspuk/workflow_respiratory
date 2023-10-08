@@ -16,12 +16,13 @@ rule ivar__create_consensus_per_segment:
     output:
         consensus="results/consensus/{sample}/{reference}/{segment}.fa",
     params:
+        name=lambda wildcards: f"{wildcards.sample}_{wildcards.segment}",
         samtools_params=parse_samtools_params_with_region,
         ivar_params=parse_ivar_params(),
     log:
         "logs/ivar/create_consensus_per_segment/{sample}/{reference}/{segment}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/consensus"
+        "https://github.com/xsitarcik/wrappers/raw/v1.11.1/wrappers/ivar/consensus"
 
 
 rule concat__consensus_from_segments:
