@@ -140,7 +140,7 @@ def get_consensus_per_reference_segment(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
-def get_nextclade_results(wildcards):
+def get_nextclade_results_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
@@ -163,7 +163,7 @@ def get_others_results(wildcards):
 
 def get_outputs():
     sample_names = get_sample_names()
-    return {
+    outputs = {
         "fastqc_report": expand(
             "results/reads/trimmed/fastqc/{sample}_R{orientation}.html",
             sample=sample_names,
@@ -181,8 +181,11 @@ def get_outputs():
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
         "consensus": expand("results/nextclade/{sample}/reference_summary.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
-        "aggregate": "results/checkpoints/aggregated_all_consensuses.txt",
+        "merged_nextclades": expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=sample_names),
     }
+    if len(sample_names) > 1:
+        outputs["aggregate_consensus"] = ("results/checkpoints/aggregated_all_consensuses.txt",)
+    return outputs
 
 
 ## PARAMETERS PARSING #################################################################
