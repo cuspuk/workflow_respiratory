@@ -149,6 +149,10 @@ def get_nextclade_results_for_sample(wildcards):
     return results
 
 
+def get_merged_nextclade_results():
+    return expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=get_sample_names())
+
+
 def get_others_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.others.open() as f:
         references = [line.strip() for line in f.readlines()]

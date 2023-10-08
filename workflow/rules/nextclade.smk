@@ -54,6 +54,19 @@ rule nextclade__merge_results_for_sample:
         "../scripts/merge.py"
 
 
+rule nextclade__merge_all_results:
+    input:
+        nextclade_tsvs=get_merged_nextclade_results(),
+    output:
+        merged_tsv="results/_aggregation/nextclade/nextclade.tsv",
+    conda:
+        "../envs/python_pd.yaml"
+    log:
+        "logs/aggregate/nextclade__merge_all_results.log",
+    script:
+        "../scripts/merge.py"
+
+
 rule aggregate__nextclade_results:
     input:
         nextclade_tsv=get_nextclade_results_for_sample,
