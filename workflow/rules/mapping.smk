@@ -185,4 +185,4 @@ rule copy__passed_bams:
     conda:
         "../envs/coreutils.yaml"
     shell:
-        "(rm -rf {output} && mkdir -p ${output} && for FILE in {input}; do cp $FILE {output}; done) > {log} 2>&1"
+        "(rm -rf {output} && mkdir -p {output} && for FILE in {input}; do cp $FILE {output}; done) > {log} 2>&1"
