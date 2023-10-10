@@ -177,12 +177,12 @@ checkpoint mapping_quality_evaluation:
 
 rule copy__passed_bams:
     input:
-        get_deduplicated_bams_for_sample,
+        bams=get_deduplicated_bams_for_sample,
     output:
-        directory("results/checkpoints/passed_deduplicated_bams/{sample}"),
+        output_dir=directory("results/checkpoints/passed_deduplicated_bams/{sample}"),
     log:
         "logs/copy/passed_bams/{sample}.log",
     conda:
-        "../envs/coreutils.yaml"
-    shell:
-        "(rm -rf {output} && mkdir -p {output} && for FILE in {input}; do cp $FILE {output}; done) > {log} 2>&1"
+        "../envs/python.yaml"
+    script:
+        "../scripts/copy_passed_bams.py"
