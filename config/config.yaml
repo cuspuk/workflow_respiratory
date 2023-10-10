@@ -10,7 +10,7 @@ krona_dir: "resources/krona/TIMESTAMP_VERSION" # Directory where krona dataset i
 reads__trimming:
   shorten_to_length: 500 # OPT - Shorten to this length.
   max_n_bases: 3 # OPT - Discard reads with more than the specified number of bases. The fifth step.
-  max_expected_errors: 3 # OPT - Discard reads with more expected errors than this.
+  max_expected_errors: 2 # OPT - Discard reads with more expected errors than this.
   min_length_r1: 35 # OPT - Minimum R1 read length. The fourth step.
   min_length_r2: 35 # OPT - Minimum R2 read length. The fourth step.
   quality_cutoff_from_5_end_r1: 20 # OPT - Quality cutoff on 5' end of R1 read. The second step.
