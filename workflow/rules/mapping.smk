@@ -78,7 +78,7 @@ rule picard__mark_duplicates:
         bams="results/mapping/{sample}/mapped/{reference}.bam",
         bai="results/mapping/{sample}/mapped/{reference}.bam.bai",
     output:
-        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
+        bam=temp("results/mapping/{sample}/deduplicated/{reference}.bam"),
         metrics=temp("results/mapping/{sample}/deduplicated/{reference}.stats"),
     params:
         extra="--VALIDATION_STRINGENCY SILENT",
@@ -173,3 +173,16 @@ checkpoint mapping_quality_evaluation:
         "../envs/python.yaml"
     script:
         "../scripts/mapping_quality_evaluation.py"
+
+
+rule copy__passed_bams:
+    input:
+        bams=get_deduplicated_bams_for_sample,
+    output:
+        output_dir=directory("results/checkpoints/passed_deduplicated_bams/{sample}"),
+    log:
+        "logs/copy/passed_bams/{sample}.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/copy_passed_bams.py"

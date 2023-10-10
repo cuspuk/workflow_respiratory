@@ -90,6 +90,13 @@ def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
 
 
+def get_deduplicated_bams_for_sample(wildcards):
+    return [
+        f"results/mapping/{wildcards.sample}/deduplicated/{ref}.bam"
+        for ref in get_passed_references_for_sample(wildcards.sample)
+    ]
+
+
 def get_consensuses_to_merge_for_reference(wildcards):
     return [
         f"results/consensus/{sample}/{{reference}}.fa"
@@ -173,10 +180,9 @@ def get_outputs():
             sample=sample_names,
             orientation=[1, 2],
         ),
-        "bams": expand(
-            "results/mapping/{sample}/deduplicated/{reference}.bam",
+        "passed_bams": expand(
+            "results/checkpoints/passed_deduplicated_bams/{sample}",
             sample=sample_names,
-            reference=REFERENCES,
         ),
         "nonempty_bams": expand(
             "results/checkpoints/nonempty_bams/{sample}.txt",
