@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/xsitarcik/respiratory/compare/v3.1.0...v3.1.1) (2023-10-10)
+
+
+### Bug Fixes
+
+* separated passed bams from all bams ([6f6bcb0](https://github.com/xsitarcik/respiratory/commit/6f6bcb0e35db0c50da102520b5de138571197e14))
+
 ## [3.1.0](https://github.com/xsitarcik/respiratory/compare/v3.0.2...v3.1.0) (2023-10-08)
 
 
