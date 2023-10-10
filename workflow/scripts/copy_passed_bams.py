@@ -17,11 +17,12 @@ def copy_passed_bams(bams: list[str], outdir: str):
 def cleanup_dir(dirpath: str):
     print(f"Removing directory {dirpath}", file=sys.stderr)
     shutil.rmtree(dirpath)
-    os.mkdir(dirpath)
 
 
 def run_copy_passed_bams(bams: list[str], outdir: str):
-    cleanup_dir(outdir)
+    if os.path.exists(outdir):
+        cleanup_dir(outdir)
+    os.mkdir(outdir)
     copy_passed_bams(bams, outdir)
 
 
