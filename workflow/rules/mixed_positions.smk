@@ -102,7 +102,7 @@ rule custom__concat_mixed_position_counts:
         ),
     params:
         reference_names=lambda wildcards, input: [
-            os.path.basename(os.path.dirname(filename)) for filename in input.mixed_positions
+            os.path.basename(os.path.dirname(filename)) for filename in input.mixed_positions_counts
         ],
     log:
         "logs/variants/{sample}/concat_mixed_position_counts.log",
