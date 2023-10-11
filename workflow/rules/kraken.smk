@@ -41,6 +41,7 @@ rule krona__update_taxonomy:
         protected("{prefix_dir}/taxonomy.tab"),
     params:
         tax_dir=lambda wildcards, output: os.path.dirname(output[0]),
+    retries: 1
     log:
         "{prefix_dir}/logs/update_taxonomy.log",
     conda:
