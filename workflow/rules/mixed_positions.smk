@@ -87,12 +87,12 @@ rule report__mixed_positions_to_html:
         "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
 
 
-rule custom__concatenate_mixed_positions:
+rule custom__concat_mixed_position_counts:
     input:
-        mixed_positions=get_mixed_positions_for_passed_references_only,
+        mixed_positions_counts=get_mixed_positions_for_passed_references_only,
         reports=get_variant_reports_for_passed_references_only,
     output:
-        report(
+        summary=report(
             "results/variants/{sample}/mixed_positions_summary.txt",
             category="{sample}",
             labels={
@@ -100,9 +100,13 @@ rule custom__concatenate_mixed_positions:
                 "Reference": "-",
             },
         ),
+    params:
+        reference_names=lambda wildcards, input: [
+            os.path.basename(os.path.dirname(filename)) for filename in input.mixed_positions
+        ],
     log:
-        "logs/variants/{sample}/summary.log",
+        "logs/variants/{sample}/concat_mixed_position_counts.log",
     conda:
-        "../envs/coreutils.yaml"
-    shell:
-        "cat {input.mixed_positions} > {output} 2>&1"
+        "../envs/python.yaml"
+    script:
+        "../scripts/concat_mixed_position_counts.py"
