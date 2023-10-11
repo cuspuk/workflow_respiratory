@@ -29,6 +29,8 @@ rule kraken__decontaminate:
     output:
         r1="results/reads/decontaminated/{sample}_R1.fastq.gz",
         r2="results/reads/decontaminated/{sample}_R2.fastq.gz",
+        temp_r1=temp("results/reads/decontaminated/{sample}_R1.fastq"),
+        temp_r2=temp("results/reads/decontaminated/{sample}_R2.fastq"),
         std_out=temp("results/reads/decontaminated/{sample}_decontamination.out"),
     params:
         taxid=" ".join(str(taxa_id) for taxa_id in config["reads__decontamination"]["exclude_taxa_ids"]),
