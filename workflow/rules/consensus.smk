@@ -15,6 +15,7 @@ rule ivar__create_consensus_per_segment:
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
     output:
         consensus="results/consensus/{sample}/{reference}/{segment}.fa",
+        qual=temp("results/consensus/{sample}/{reference}/{segment}.qual.txt"),
     params:
         name=lambda wildcards: f"{wildcards.sample}_{wildcards.segment}",
         samtools_params=parse_samtools_params_with_region,
