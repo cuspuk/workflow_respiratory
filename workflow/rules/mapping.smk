@@ -177,7 +177,7 @@ checkpoint mapping_quality_evaluation:
 
 rule copy__passed_bams:
     input:
-        bams=get_deduplicated_bams_for_sample,
+        bams_and_idxes=get_deduplicated_bams_with_idxes_for_sample,
     output:
         output_dir=directory("results/checkpoints/passed_deduplicated_bams/{sample}"),
     log:

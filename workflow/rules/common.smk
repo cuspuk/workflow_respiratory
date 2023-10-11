@@ -90,11 +90,12 @@ def get_consensus_for_passed_references_only(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
 
 
-def get_deduplicated_bams_for_sample(wildcards):
-    return [
-        f"results/mapping/{wildcards.sample}/deduplicated/{ref}.bam"
-        for ref in get_passed_references_for_sample(wildcards.sample)
-    ]
+def get_deduplicated_bams_with_idxes_for_sample(wildcards):
+    return expand(
+        f"results/mapping/{wildcards.sample}/deduplicated/{{reference}}.{{ext}}",
+        ext=["bam", "bai"],
+        reference=get_passed_references_for_sample(wildcards.sample),
+    )
 
 
 def get_consensuses_to_merge_for_reference(wildcards):
