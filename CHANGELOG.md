@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.1.2](https://github.com/xsitarcik/respiratory/compare/v3.1.1...v3.1.2) (2023-10-11)
+
+
+### Bug Fixes
+
+* added retry for fallible krona update ([58c4152](https://github.com/xsitarcik/respiratory/commit/58c4152309597b01b68ae1781bbcf154bf97142c))
+* passed bams are copied with indexes ([95d1b0a](https://github.com/xsitarcik/respiratory/commit/95d1b0a8f4deda61b2d13b40156f89a3119a1c7b))
+* qual output in ivar consensus set to temporary ([ce052da](https://github.com/xsitarcik/respiratory/commit/ce052da659de464f0a1d5b265b4e86aefce22129))
+* reformatted mixed positions counts summary file ([ed414eb](https://github.com/xsitarcik/respiratory/commit/ed414eb8e0ad0ad47b24b1c5f7cfbf07ac35030b))
+* uncompressed files during decontamination set to temporary ([59cf7f4](https://github.com/xsitarcik/respiratory/commit/59cf7f42b87a43c20e698b7a36d66760804913dd))
+
 ## [3.1.1](https://github.com/xsitarcik/respiratory/compare/v3.1.0...v3.1.1) (2023-10-10)
 
 
