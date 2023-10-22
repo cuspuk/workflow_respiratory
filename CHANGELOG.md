@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.3](https://github.com/xsitarcik/respiratory/compare/v3.1.2...v3.1.3) (2023-10-22)
+
+
+### Bug Fixes
+
+* mapping indexes unset temporary ([035b29a](https://github.com/xsitarcik/respiratory/commit/035b29a0a53263b4f9a487e7cd5428438669e68a))
+
 ## [3.1.2](https://github.com/xsitarcik/respiratory/compare/v3.1.1...v3.1.2) (2023-10-11)
 
 
