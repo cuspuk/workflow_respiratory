@@ -89,6 +89,7 @@ rule nextclade__to_html:
 rule aggregate__nextclade_results:
     input:
         nextclade_tsv=get_nextclade_results_for_sample,
+        nextclade_consensuses=get_nextclade_consensuses_for_sample,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
