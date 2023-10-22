@@ -78,7 +78,7 @@ rule picard__mark_duplicates:
         bams="results/mapping/{sample}/mapped/{reference}.bam",
         bai="results/mapping/{sample}/mapped/{reference}.bam.bai",
     output:
-        bam=temp("results/mapping/{sample}/deduplicated/{reference}.bam"),
+        bam="results/mapping/{sample}/deduplicated/{reference}.bam",
         metrics=temp("results/mapping/{sample}/deduplicated/{reference}.stats"),
     params:
         extra="--VALIDATION_STRINGENCY SILENT",
