@@ -93,7 +93,7 @@ def get_consensus_for_passed_references_only(wildcards):
 def get_deduplicated_bams_with_idxes_for_sample(wildcards):
     return expand(
         f"results/mapping/{wildcards.sample}/deduplicated/{{reference}}.{{ext}}",
-        ext=["bam", "bai"],
+        ext=["bam", "bam.bai"],
         reference=get_passed_references_for_sample(wildcards.sample),
     )
 
