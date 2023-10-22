@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.4](https://github.com/xsitarcik/respiratory/compare/v3.1.3...v3.1.4) (2023-10-22)
+
+
+### Bug Fixes
+
+* added full consensus for sample nextclade refs ([00185f1](https://github.com/xsitarcik/respiratory/commit/00185f17d00420dd25c6934314dc5f5bac42c5e1))
+
 ## [3.1.3](https://github.com/xsitarcik/respiratory/compare/v3.1.2...v3.1.3) (2023-10-22)
 
 
