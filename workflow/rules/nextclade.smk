@@ -86,7 +86,7 @@ rule nextclade__to_html:
         "../scripts/nextclade_tsv_into_html.py"
 
 
-rule aggregate__nextclade_results:
+rule aggregate__all_results:
     input:
         nextclade_tsv=get_nextclade_results_for_sample,
         nextclade_consensuses=get_nextclade_consensuses_for_sample,
@@ -94,7 +94,7 @@ rule aggregate__nextclade_results:
         others="results/checkpoints/for_others/{sample}.tsv",
         other_results=get_others_results,
     output:
-        "results/nextclade/{sample}/reference_summary.json",
+        "results/summary/{sample}.json",
     conda:
         "../envs/python.yaml"
     log:
