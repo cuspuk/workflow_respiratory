@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.5](https://github.com/xsitarcik/respiratory/compare/v3.1.4...v3.1.5) (2023-10-23)
+
+
+### Bug Fixes
+
+* moved reference_summary to summary dir ([de2da7c](https://github.com/xsitarcik/respiratory/commit/de2da7cbd14fd5d7cf546b230fd393b35926dfb2))
+
 ## [3.1.4](https://github.com/xsitarcik/respiratory/compare/v3.1.3...v3.1.4) (2023-10-22)
 
 
