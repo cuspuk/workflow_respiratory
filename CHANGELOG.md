@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.6](https://github.com/xsitarcik/respiratory/compare/v3.1.5...v3.1.6) (2023-11-05)
+
+
+### Performance Improvements
+
+* autobump conda envs ([f3e221f](https://github.com/xsitarcik/respiratory/commit/f3e221f82af9bbb47e761421f5b8aa0941c7e585))
+
 ## [3.1.5](https://github.com/xsitarcik/respiratory/compare/v3.1.4...v3.1.5) (2023-10-23)
 
 
