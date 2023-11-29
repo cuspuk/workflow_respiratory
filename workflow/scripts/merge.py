@@ -52,7 +52,7 @@ def process_files(files: list[str], output_tsv: str):
 
         df = pd.read_csv(file, sep="\t")
         if "type" not in df:
-            df["type"] = os.path.dirname(os.path.dirname(os.path.dirname(file)))
+            df["type"] = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(file))))
 
         df["QC"] = df["coverage"].apply(lambda x: assign_pass(x))
 
