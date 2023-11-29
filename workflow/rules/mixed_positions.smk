@@ -11,7 +11,7 @@ rule ivar__get_variants:
     log:
         "logs/variants/{sample}/ivar/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.6.0/wrappers/ivar/variants"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/variants"
 
 
 rule ivar__variants_to_vcf:
@@ -30,7 +30,7 @@ rule ivar__variants_to_vcf:
     log:
         "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/vcf_convert"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/vcf_convert"
 
 
 rule report__ivar_variants_to_html:
@@ -48,7 +48,7 @@ rule report__ivar_variants_to_html:
     log:
         "logs/report/{sample}/ivar_variants/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
 
 
 rule custom__compute_mixed_positions:
@@ -65,7 +65,7 @@ rule custom__compute_mixed_positions:
     log:
         "logs/variants/{sample}/variants/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.10.0/wrappers/ivar/mixed_positions"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/mixed_positions"
 
 
 rule report__mixed_positions_to_html:
@@ -84,7 +84,7 @@ rule report__mixed_positions_to_html:
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.9.0/wrappers/ivar/html_convert"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
 
 
 rule custom__concat_mixed_position_counts:
