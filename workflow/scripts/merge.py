@@ -51,7 +51,9 @@ def process_files(files: list[str], output_tsv: str):
             continue
 
         df = pd.read_csv(file, sep="\t")
-        df["type"] = file.split("/")[-1].split(".")[0]
+        if "type" not in df:
+            df["type"] = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(file))))
+
         df["QC"] = df["coverage"].apply(lambda x: assign_pass(x))
 
         if "index" in df.columns:

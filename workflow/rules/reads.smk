@@ -17,7 +17,7 @@ rule cutadapt__trim_reads_pe:
     log:
         "logs/cutadapt/trim_reads_pe/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.9/wrappers/cutadapt/paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/cutadapt/paired"
 
 
 rule kraken__decontaminate:
@@ -38,7 +38,7 @@ rule kraken__decontaminate:
     log:
         "logs/kraken/decontaminate/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.7.0/wrappers/kraken/decontaminate_pe"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/kraken/decontaminate_pe"
 
 
 rule fastqc__quality_report:
@@ -62,4 +62,4 @@ rule fastqc__quality_report:
     log:
         "logs/fastqc/{step}/{sample}_{strand}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.4/wrappers/fastqc/quality"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/fastqc/quality"

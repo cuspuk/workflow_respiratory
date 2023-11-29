@@ -18,7 +18,7 @@ rule bwa__build_index:
     log:
         "{reference_panel_dir}/bwa_index/logs/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/bwa/index"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/bwa/index"
 
 
 rule custom__infer_and_store_read_group:
@@ -31,7 +31,7 @@ rule custom__infer_and_store_read_group:
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.11.0/wrappers/custom/read_group"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -54,7 +54,7 @@ rule bwa__map_reads_to_reference:
     benchmark:
         "benchmarks/bwa/map_reads_to_reference/{sample}/{reference}.benchmark"
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.7/wrappers/bwa/map"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/bwa/map"
 
 
 rule samtools__bam_index:
@@ -70,7 +70,7 @@ rule samtools__bam_index:
     log:
         "logs/samtools/bam_index/{sample}/{reference}_{step}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/index"
+        "v2.13.0/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -89,7 +89,7 @@ rule picard__mark_duplicates:
     benchmark:
         "benchmarks/picard/mark_duplicates/{sample}/{reference}.benchmark"
     wrapper:
-        "v2.1.1/bio/picard/markduplicates"
+        "v2.13.0/bio/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
@@ -149,7 +149,7 @@ rule qualimap__mapping_quality_report:
     log:
         "logs/qualimap/mapping_quality_report/{sample}/{step}/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/qualimap/bamqc"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/qualimap/bamqc"
 
 
 checkpoint mapping_quality_evaluation:

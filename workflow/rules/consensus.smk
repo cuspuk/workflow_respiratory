@@ -6,7 +6,7 @@ checkpoint index_passed_references:
     log:
         "{reference_dir}/logs/samtools__prepare_fai_index/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.5.0/wrappers/samtools/faidx"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/samtools/faidx"
 
 
 rule ivar__create_consensus_per_segment:
@@ -23,7 +23,7 @@ rule ivar__create_consensus_per_segment:
     log:
         "logs/ivar/create_consensus_per_segment/{sample}/{reference}/{segment}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.11.1/wrappers/ivar/consensus"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/consensus"
 
 
 rule concat__consensus_from_segments:
