@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.1.7](https://github.com/xsitarcik/respiratory/compare/v3.1.6...v3.1.7) (2023-11-29)
+
+
+### Bug Fixes
+
+* type in merged nextclades denoted by reference ([ef4bb5a](https://github.com/xsitarcik/respiratory/commit/ef4bb5a8482af633d0fc02dbbe264792f6d1306e))
+* updated config to best practice values ([0cc78fb](https://github.com/xsitarcik/respiratory/commit/0cc78fbd2fbb5de96204bb7c0a9fb01cba45a5af))
+
+
+### Performance Improvements
+
+* bumped versions for tools to the latest ([51dcae2](https://github.com/xsitarcik/respiratory/commit/51dcae2338a931ff57938371890e0a02b52b8d25))
+
 ## [3.1.6](https://github.com/xsitarcik/respiratory/compare/v3.1.5...v3.1.6) (2023-11-05)
 
 
