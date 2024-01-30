@@ -26,6 +26,7 @@ reads__decontamination:
 consensus_params:
   reference_criteria: # Here define criteria for references so they would be considered for further analysis
     min_mean_coverage: 2 # Minimum mean coverage taken from qualimap
+    min_genome_fraction_with_10x_coverage: 0.1 # At least this fraction of genome must have coverage at least of 10x.
 
   count_orphans: false # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
   max_read_depth: 1000 # limits the number of reads to load in memory per input file

@@ -12,6 +12,8 @@ class QualimapFloatConverter:
 
 
 class AbstractQualimapParser(ABC):
+    name: str
+
     @abstractmethod
     def _evaluate_parsed_value(self, value: float | int) -> bool:
         """returns true if passed the criterion"""
@@ -29,15 +31,22 @@ class AbstractQualimapParser(ABC):
             for line in file_one:
                 if self._found_correct_line(line):
                     value = self._parse_value_from_line(line)
-                    return self._evaluate_parsed_value(value)
+                    print(f"{self.name} parsed {value=}", file=sys.stderr)
+                    result = self._evaluate_parsed_value(value)
+                    print(f"{self.name} evaluation {result=}", file=sys.stderr)
+                    return result
         return False
 
 
 @dataclass
 class MeanCoverageParser(AbstractQualimapParser):
+    name = "MeanCoverageParser"
     _REGEX_VALUE = "     mean coverageData = "
     converter = QualimapFloatConverter()
     min_coverage: float
+
+    def __post_init__(self):
+        print(f"Built MeanCoverageParser with {self.min_coverage=}", file=sys.stderr)
 
     def _evaluate_parsed_value(self, value: float) -> bool:
         return value > self.min_coverage
@@ -49,6 +58,33 @@ class MeanCoverageParser(AbstractQualimapParser):
 
     def _parse_value_from_line(self, line: str) -> float | int:
         float_str = line.removeprefix(self._REGEX_VALUE).split()[0]
+        print(f"MeanCoverageParser detected {line=} and parsed {float_str}", file=sys.stderr)
+        value = self.converter.convert(float_str)
+        return value
+
+
+@dataclass
+class GenomeFraction10xParser(AbstractQualimapParser):
+    name = "GenomeFraction10xParser"
+    _PREFIX = "     There is a "
+    _SUFFIX = "% of reference with a coverageData >= 10X"
+    converter = QualimapFloatConverter()
+    min_fraction: float
+
+    def __post_init__(self):
+        print(f"Built GenomeFraction10xParser with {self.min_fraction=}", file=sys.stderr)
+
+    def _evaluate_parsed_value(self, value: float) -> bool:
+        return value > self.min_fraction
+
+    def _found_correct_line(self, line: str) -> bool:
+        if line.startswith(self._PREFIX) and line.endswith(self._SUFFIX):
+            return True
+        return False
+
+    def _parse_value_from_line(self, line: str) -> float | int:
+        float_str = line.removeprefix(self._PREFIX).removesuffix(self._SUFFIX).strip()
+        print(f"GenomeFraction10xParser detected {line=} and parsed {float_str}", file=sys.stderr)
         return self.converter.convert(float_str)
 
 
@@ -78,6 +114,8 @@ def build_parsers(criteria: dict[str, float | int]) -> list[AbstractQualimapPars
     for criterion_name, threshold in criteria.items():
         if criterion_name == "min_mean_coverage":
             parsers.append(MeanCoverageParser(threshold))
+        elif criterion_name == "min_genome_fraction_with_10x_coverage":
+            parsers.append(GenomeFraction10xParser(threshold))
         else:
             raise ValueError(f"Unknown criterion: {criterion_name}")
 

@@ -232,8 +232,14 @@ definitions:
       min_mean_coverage:
         type: integer
         description: "Minimum mean coverage so the sample would be marked as mapped to the reference"
+        default: 50
+      min_genome_fraction_with_10x_coverage:
+        type: number
+        description: "At least this fraction of genome must have coverage at least of 10x so the sample would be marked as mapped to the reference."
+        default: 50
     required:
       - min_mean_coverage
+      - min_genome_fraction_with_10x_coverage
     title: ReferenceCriteria
 
   MixedPositionsParams:
