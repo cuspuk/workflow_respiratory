@@ -10,9 +10,9 @@ jobs:
   Formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Formatting
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
@@ -22,11 +22,11 @@ jobs:
   Linting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lint workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
-          directory: .
+          directory: .tests
           snakefile: workflow/Snakefile
           stagein: mamba install -n snakemake -c conda-forge peppy
           args: "--lint"
@@ -37,13 +37,11 @@ jobs:
       - Linting
       - Formatting
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@v1.3.0
+        uses: jlumbroso/free-disk-space@v1.3.1
         with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
           tool-cache: false
           android: true
           dotnet: true
@@ -53,15 +51,16 @@ jobs:
           swap-storage: true
 
       - name: Test workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
+          stagein: "conda config --set channel_priority flexible"
           args: "--use-conda --show-failed-logs --cores 2 --conda-cleanup-pkgs cache"
           show-disk-usage-on-error: true
 
       - name: Test report
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile

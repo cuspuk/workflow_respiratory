@@ -9,6 +9,7 @@ checkpoint select_references_for_nextclade:
         "logs/checkpoints/{sample}.log",
     conda:
         "../envs/python.yaml"
+    localrule: True
     script:
         "../scripts/prepare_nextclade.py"
 
@@ -50,6 +51,7 @@ rule nextclade__merge_results_for_sample:
         "../envs/python_pd.yaml"
     log:
         "logs/nextclade/merge_results_for_sample/{sample}.log",
+    localrule: True
     script:
         "../scripts/merge.py"
 
@@ -63,6 +65,7 @@ rule nextclade__merge_all_results:
         "../envs/python_pd.yaml"
     log:
         "logs/aggregate/nextclade__merge_all_results.log",
+    localrule: True
     script:
         "../scripts/merge.py"
 
@@ -82,6 +85,7 @@ rule nextclade__to_html:
         "../envs/python_panel.yaml"
     log:
         "logs/aggregate/nextclade__to_html.log",
+    localrule: True
     script:
         "../scripts/nextclade_tsv_into_html.py"
 
@@ -99,5 +103,6 @@ rule aggregate__all_results:
         "../envs/python.yaml"
     log:
         "logs/summary/{sample}.log",
+    localrule: True
     script:
         "../scripts/summarize_nextclade_vs_others.py"

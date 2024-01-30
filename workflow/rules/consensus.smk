@@ -40,6 +40,7 @@ rule concat__consensus_from_segments:
         ),
     log:
         "logs/concat/consensus_from_segments/{sample}/{reference}.log",
+    localrule: True
     conda:
         "../envs/coreutils.yaml"
     shell:
@@ -61,6 +62,7 @@ rule concat__consensuses_for_references:
         "logs/concat/consensuses_for_references/{reference}.log",
     conda:
         "../envs/coreutils.yaml"
+    localrule: True
     shell:
         "cat {input.consensuses} 1> {output} 2> {log}"
 
@@ -70,5 +72,6 @@ rule aggregate__all_consensuses:
         consensuses=get_all_aggregated_consensuses,
     output:
         touch("results/checkpoints/aggregated_all_consensuses.txt"),
+    localrule: True
     log:
         "logs/aggregate/all_consensuses.log",
