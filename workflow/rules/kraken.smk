@@ -11,6 +11,7 @@ rule curl__download_kraken_db:
         "{prefix_dir}/logs/download.log",
     conda:
         "../envs/curl.yaml"
+    localrule: True
     shell:
         "(mkdir -p {params.dirpath} && curl -SL {params.url} | tar zxvf - -C {params.dirpath}) > {log} 2>&1"
 
@@ -46,6 +47,7 @@ rule krona__update_taxonomy:
         "{prefix_dir}/logs/update_taxonomy.log",
     conda:
         "../envs/kraken2.yaml"
+    localrule: True
     shell:
         "ktUpdateTaxonomy.sh {params.tax_dir} 1> {log} 2>&1"
 

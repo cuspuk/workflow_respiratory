@@ -28,6 +28,7 @@ rule custom__infer_and_store_read_group:
         read_group="results/reads/original/read_group/{sample}.txt",
     params:
         sample_id=lambda wildcards: wildcards.sample,
+    localrule: True
     log:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     wrapper:
@@ -121,6 +122,7 @@ checkpoint nonempty_bams:
         "logs/checkpoints/nonempty_bams/{sample}.log",
     conda:
         "../envs/python.yaml"
+    localrule: True
     script:
         "../scripts/parse_read_counts_in_bam.py"
 
@@ -167,6 +169,7 @@ checkpoint mapping_quality_evaluation:
     params:
         reference_names=lambda wildcards, input: [os.path.basename(filename) for filename in input.qualimaps],
         criteria=config["consensus_params"]["reference_criteria"],
+    localrule: True
     log:
         "logs/checkpoints/mapping_quality_evaluation/{sample}.log",
     conda:
@@ -184,5 +187,6 @@ rule copy__passed_bams:
         "logs/copy/passed_bams/{sample}.log",
     conda:
         "../envs/python.yaml"
+    localrule: True
     script:
         "../scripts/copy_passed_bams.py"

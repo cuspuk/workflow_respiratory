@@ -29,6 +29,7 @@ rule ivar__variants_to_vcf:
         filtered="results/variants/{sample}/{reference}/passed_only.vcf",
     log:
         "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
+    localrule: True
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/vcf_convert"
 
@@ -47,6 +48,7 @@ rule report__ivar_variants_to_html:
         ),
     log:
         "logs/report/{sample}/ivar_variants/{reference}.log",
+    localrule: True
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
 
@@ -64,6 +66,7 @@ rule custom__compute_mixed_positions:
         total_depth=config["mixed_positions_params"]["filtering"]["min_total_depth"],
     log:
         "logs/variants/{sample}/variants/{reference}.log",
+    localrule: True
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/mixed_positions"
 
@@ -83,6 +86,7 @@ rule report__mixed_positions_to_html:
         ),
     log:
         "logs/report/{sample}/mixed_positions/{reference}.log",
+    localrule: True
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
 
@@ -106,6 +110,7 @@ rule custom__concat_mixed_position_counts:
         ],
     log:
         "logs/variants/{sample}/concat_mixed_position_counts.log",
+    localrule: True
     conda:
         "../envs/python.yaml"
     script:
