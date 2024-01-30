@@ -67,7 +67,7 @@ class MeanCoverageParser(AbstractQualimapParser):
 class GenomeFraction10xParser(AbstractQualimapParser):
     name = "GenomeFraction10xParser"
     _PREFIX = "     There is a "
-    _SUFFIX = "% of reference with a coverageData >= 10X"
+    _SUFFIX = "% of reference with a coverageData >= 10X\n"
     converter = QualimapFloatConverter()
     min_fraction: float
 
