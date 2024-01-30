@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/xsitarcik/respiratory/compare/v3.1.7...v3.2.0) (2024-01-30)
+
+
+### Features
+
+* added another criterion for QC mapping ([e432965](https://github.com/xsitarcik/respiratory/commit/e4329653d7255812a6d205e9fed01b4770eadf47))
+
+
+### Performance Improvements
+
+* added more rules as local ([7867d70](https://github.com/xsitarcik/respiratory/commit/7867d7087a9b8c8e7590bfd57752da4e48bae584))
+
 ## [3.1.7](https://github.com/xsitarcik/respiratory/compare/v3.1.6...v3.1.7) (2023-11-29)
 
 
