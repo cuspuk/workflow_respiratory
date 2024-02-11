@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.2.1](https://github.com/xsitarcik/respiratory/compare/v3.2.0...v3.2.1) (2024-02-11)
+
+
+### Bug Fixes
+
+* mixed positions count no longer temporary ([71ff36d](https://github.com/xsitarcik/respiratory/commit/71ff36ddef98eb22ffa193848ad0181930aac8a5))
+* turned off min mean coverage check ([0c34949](https://github.com/xsitarcik/respiratory/commit/0c349498c3e034ea20f4c6d9088dbc59e2d98066))
+
+
+### Performance Improvements
+
+* bumped wrapper versions ([337c06a](https://github.com/xsitarcik/respiratory/commit/337c06ac96e905ab29f8b983e2db97b2e16c105c))
+
 ## [3.2.0](https://github.com/xsitarcik/respiratory/compare/v3.1.7...v3.2.0) (2024-01-30)
 
 
