@@ -58,7 +58,7 @@ rule custom__compute_mixed_positions:
         "results/variants/{sample}/{reference}/all.tsv",
     output:
         mixed_positions="results/variants/{sample}/{reference}/mixed_positions.tsv",
-        readcount=temp("results/variants/{sample}/{reference}/mixed_positions_count.tsv"),
+        readcount="results/variants/{sample}/{reference}/mixed_positions_count.tsv",
     params:
         alt_depth=config["mixed_positions_params"]["filtering"]["min_alt_depth"],
         min_alt_freq=config["mixed_positions_params"]["filtering"]["min_alt_freq"],
