@@ -52,8 +52,6 @@ rule bwa__map_reads_to_reference:
         mem_mb=get_mem_mb_for_mapping,
     log:
         "logs/bwa/map_reads_to_reference/{sample}/{reference}.log",
-    benchmark:
-        "benchmarks/bwa/map_reads_to_reference/{sample}/{reference}.benchmark"
     wrapper:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/bwa/map"
 
@@ -63,8 +61,6 @@ rule samtools__bam_index:
         bam="results/mapping/{sample}/{step}/{reference}.bam",
     output:
         bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
-    benchmark:
-        "benchmarks/samtools/bam_index/{step}/{reference}/{sample}.benchmark"
     threads: min(config["threads"]["bam_index"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_bam_index,
@@ -87,8 +83,6 @@ rule picard__mark_duplicates:
         mem_mb=get_mem_mb_for_picard,
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
-    benchmark:
-        "benchmarks/picard/mark_duplicates/{sample}/{reference}.benchmark"
     wrapper:
         "v3.3.6/bio/picard/markduplicates"
 
