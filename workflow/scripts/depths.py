@@ -8,7 +8,7 @@ from dataclasses import asdict, dataclass, field
 class SegmentCoverage:
     segment: str
     length: int
-    depths: list[int]
+    depths: list[int] = field(default_factory=list)
     coverage_at_depth: dict[int, float] = field(default_factory=dict)
 
     def __post_init__(self):
@@ -18,7 +18,7 @@ class SegmentCoverage:
         return len([d for d in self.depths if d >= threshold]) / self.length
 
 
-def read_file(filename: str) -> list[SegmentCoverage]:
+def load_depths(filename: str) -> list[SegmentCoverage]:
     rows: dict[str, list[int]] = {}
     with open(filename) as f:
         for line in f.readlines():
@@ -31,9 +31,9 @@ def read_file(filename: str) -> list[SegmentCoverage]:
 
 
 def produce_depths(filename: str, output: str):
-    x = read_file(filename)
-    a = [asdict(x) for x in x]
-    json_object = json.dumps(a, indent=4)
+    depths = load_depths(filename)
+    depths_dct = [asdict(x, dict_factory=lambda x: {k: v for (k, v) in x if k != "depths"}) for x in depths]
+    json_object = json.dumps(depths_dct, indent=4)
 
     os.makedirs(os.path.dirname(os.path.abspath(output)), exist_ok=True)
     with open(output, "w") as f:
