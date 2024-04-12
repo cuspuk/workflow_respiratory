@@ -140,6 +140,13 @@ def get_all_qualimap_dirs(wildcards):
     )
 
 
+def get_all_depths_jsons(wildcards):
+    return expand(
+        f"results/mapping/{wildcards.sample}/{wildcards.step}/depths/{{reference}}.json",
+        reference=get_references_with_non_empty_bams(wildcards),
+    )
+
+
 def get_consensus_per_reference_segment(wildcards):
     with checkpoints.index_passed_references.get(
         reference_dir=get_reference_dir(), reference=wildcards.reference

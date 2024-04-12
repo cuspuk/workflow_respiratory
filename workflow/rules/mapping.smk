@@ -154,9 +154,37 @@ rule qualimap__mapping_quality_report:
         "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/qualimap/bamqc"
 
 
+rule samtools__depth:
+    input:
+        bams=["results/mapping/{sample}/{step}/{reference}.bam"],
+        bai="results/mapping/{sample}/{step}/{reference}.bam.bai",
+    output:
+        temp("results/mapping/{sample}/{step}/depths/{reference}.txt"),
+    log:
+        "logs/samtools/depth/{sample}/{step}/{reference}.log",
+    params:
+        extra="-a",
+    wrapper:
+        "v3.3.6/bio/samtools/depth"
+
+
+rule custom__depth_json:
+    input:
+        txt="results/mapping/{sample}/{step}/depths/{reference}.txt",
+    output:
+        "results/mapping/{sample}/{step}/depths/{reference}.json",
+    log:
+        "logs/custom/depth_json/{sample}/{step}/{reference}.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/depths.py"
+
+
 checkpoint mapping_quality_evaluation:
     input:
         qualimaps=get_all_qualimap_dirs,
+        jsons=get_all_depths_jsons,
     output:
         passed_refs=report(
             "results/checkpoints/passed_references/{sample}.txt",

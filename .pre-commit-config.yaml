@@ -52,3 +52,8 @@ repos:
         name: snakemake_linter
         entry: snakemake -c1 --lint --directory .tests/ --snakefile workflow/Snakefile
         language: python
+
+      - id: test_scripts
+        name: test_scripts
+        entry: python tests.py
+        language: python

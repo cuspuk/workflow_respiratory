@@ -235,7 +235,7 @@ definitions:
         default: 50
       min_genome_fraction_with_10x_coverage:
         type: number
-        description: "At least this fraction of genome must have coverage at least of 10x so the sample would be marked as mapped to the reference."
+        description: "At least this fraction of genome must have coverage at least of 10x so the sample would be marked as mapped to the reference. Taken from Qualimap."
         default: 50
     required:
       - min_mean_coverage
