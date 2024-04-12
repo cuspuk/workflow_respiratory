@@ -172,9 +172,10 @@ rule custom__depth_json:
     input:
         txt="results/mapping/{sample}/{step}/depths/{reference}.txt",
     output:
-        "results/mapping/{sample}/{step}/depths/{reference}.json",
+        json="results/mapping/{sample}/{step}/depths/{reference}.json",
     log:
         "logs/custom/depth_json/{sample}/{step}/{reference}.log",
+    localrule: True
     conda:
         "../envs/python.yaml"
     script:

@@ -142,7 +142,7 @@ def get_all_qualimap_dirs(wildcards):
 
 def get_all_depths_jsons(wildcards):
     return expand(
-        f"results/mapping/{wildcards.sample}/{wildcards.step}/depths/{{reference}}.json",
+        f"results/mapping/{wildcards.sample}/deduplicated/depths/{{reference}}.json",
         reference=get_references_with_non_empty_bams(wildcards),
     )
 
