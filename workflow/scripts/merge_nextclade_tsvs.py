@@ -31,7 +31,7 @@ def group_coverage_filter(group) -> list[int]:
     return list(results)
 
 
-def process_files(files: list[str], output_tsv: str):
+def merge_nextclade_tsvs(files: list[str], output_tsv: str):
     parent_dir = os.path.dirname(output_tsv)
     if not os.path.exists(parent_dir):
         os.makedirs(parent_dir)
@@ -107,7 +107,7 @@ def process_files(files: list[str], output_tsv: str):
 
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    process_files(
+    merge_nextclade_tsvs(
         snakemake.input.nextclade_tsvs,
         snakemake.output.merged_tsv,
     )

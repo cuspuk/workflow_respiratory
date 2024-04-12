@@ -53,7 +53,7 @@ rule nextclade__merge_results_for_sample:
         "logs/nextclade/merge_results_for_sample/{sample}.log",
     localrule: True
     script:
-        "../scripts/merge.py"
+        "../scripts/merge_nextclade_tsvs.py"
 
 
 rule nextclade__merge_all_results:
@@ -67,7 +67,7 @@ rule nextclade__merge_all_results:
         "logs/aggregate/nextclade__merge_all_results.log",
     localrule: True
     script:
-        "../scripts/merge.py"
+        "../scripts/merge_nextclade_tsvs.py"
 
 
 rule nextclade__to_html:
