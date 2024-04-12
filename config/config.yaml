@@ -1,7 +1,7 @@
 ### INPUT SECTION ###############################
-reference_panel_dirpath: "/data/genome/virus/respiratory_panel/{VERSION_TAG}" # Directory with viral fasta sequences. Take from https://github.com/xsitarcik/respiratory_panel.
-kraken_dir: "/data/genome/metagenome/kraken/{KRAKEN_TAG}" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-krona_dir: "/data/genome/taxonomy/krona/{TIMESTAMP}" # Directory where krona dataset is located or will be downloaded.
+reference_panel_dirpath: "/data/genome/virus/respiratory_panel/v2.0.0/" # Directory with viral fasta sequences. Take from https://github.com/xsitarcik/respiratory_panel.
+kraken_dir: "/data/genome/metagenome/kraken/k2_pluspf_20240112/" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+krona_dir: "/data/genome/taxonomy/krona/2024-04-12/" # Directory where krona dataset is located or will be downloaded.
 # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
 
 ### HYPERPARAMETERS #############################
