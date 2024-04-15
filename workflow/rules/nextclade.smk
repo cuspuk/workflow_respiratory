@@ -1,6 +1,6 @@
 checkpoint select_references_for_nextclade:
     input:
-        references="results/checkpoints/passed_references/{sample}.tsv",
+        references="results/checkpoints/mapping_evaluation/{sample}.tsv",
         metadata=os.path.join(config["reference_panel_dirpath"], "nextclade_mapping.csv"),
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",

@@ -163,20 +163,20 @@ checkpoint checkpoint_mapping_evaluation:
         depths=get_depths_for_nonempty_bams,
     output:
         tsv=report(
-            "results/checkpoints/passed_refs/{sample}.tsv",
+            "results/checkpoints/mapping_evaluation/{sample}.tsv",
             category="{sample}",
             labels={
                 "Type": "List of passed references",
                 "Reference": "-",
             },
         ),
-        json="results/checkpoints/passed_refs/{sample}.json",
+        json="results/checkpoints/mapping_evaluation/{sample}.json",
     params:
-        reference_names=lambda wildcards, input: [os.path.basename(filename) for filename in input.qualimaps],
+        reference_names=lambda wildcards, input: [os.path.basename(filename) for filename in input.depths],
         threshold=config["consensus_params"]["reference_criteria"]["min_genome_fraction_with_10x_coverage"],
     localrule: True
     log:
-        "logs/checkpoints/passed_refs/{sample}.log",
+        "logs/checkpoints/mapping_evaluation/{sample}.log",
     conda:
         "../envs/python.yaml"
     script:
