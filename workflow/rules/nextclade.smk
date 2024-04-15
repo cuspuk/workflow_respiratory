@@ -16,30 +16,36 @@ checkpoint select_references_for_nextclade:
 
 rule nextclade__download_nextclade_dataset:
     output:
-        directory(os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}")),
+        "{prefix_dir}/nextclade/{name}/{version}/sequences.fasta",
+    params:
+        outdir=lambda wildcards, output: os.path.dirname(output[0]),
     conda:
         "../envs/nextclade.yaml"
+    wildcard_constraints:
+        name="nextstrain\/[a-zA-Z0-9-_]*\/[a-zA-Z0-9-_]*",
+        version="\d{4}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2}Z",
     log:
-        os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}.log"),
+        "{prefix_dir}/logs/{name}/download_{version}.log",
     shell:
-        "nextclade dataset get --name {wildcards.name} --reference {wildcards.accession} --tag {wildcards.version}"
-        " --output-dir {output} 1> {log} 2>&1"
+        "nextclade dataset get --name {wildcards.name} --tag {wildcards.version}"
+        " --output-dir {params.outdir} 1> {log} 2>&1"
 
 
 rule nextclade__run_nextclade:
     input:
         fa="results/consensus/{sample}/{reference}/{segment}.fa",
-        nextclade_data=os.path.join(config["reference_panel_dirpath"], "nextclade", "{name}__{accession}__{version}"),
+        data=infer_relevant_nextclade_data,
     output:
-        "results/nextclade/{sample}/{reference}/{segment}/{name}__{accession}__{version}/nextclade.tsv",
+        tsv="results/nextclade/{sample}/{reference}/{segment}/nextclade.tsv",
     params:
-        outdir=lambda wildcards, output: os.path.dirname(output[0]),
+        outdir=lambda wildcards, output: os.path.dirname(os.path.realpath(output[0])),
+        nextclade_dir=lambda wildcards, input: os.path.dirname(input.data),
     conda:
         "../envs/nextclade.yaml"
     log:
-        "logs/nextclade/run/{sample}/{reference}/{segment}/{name}__{accession}__{version}.log",
+        "logs/nextclade/run/{sample}/{reference}/{segment}.log",
     shell:
-        "nextclade run --input-dataset={input.nextclade_data} --output-all={params.outdir} {input.fa} 1> {log} 2>&1;"
+        "nextclade run --input-dataset={params.nextclade_dir} --output-all={params.outdir} {input.fa} 1> {log} 2>&1;"
 
 
 rule nextclade__merge_results_for_sample:

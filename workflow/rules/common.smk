@@ -159,9 +159,22 @@ def get_nextclade_results_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, seg, name, acc, version = line.split()
-            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv")
+            ref, seg, name, version = line.split()
+            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/nextclade.tsv")
     return results
+
+
+def infer_relevant_nextclade_data(wildcards):
+    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
+        for line in f.readlines():
+            ref, seg, name, version = line.split()
+            if wildcards.reference == ref and wildcards.segment == seg:
+                return (
+                    os.path.join(
+                        os.path.realpath(config["reference_panel_dirpath"]),
+                        f"nextclade/{name}/{version}/sequences.fasta",
+                    ),
+                )
 
 
 def get_nextclade_consensuses_for_sample(wildcards):
