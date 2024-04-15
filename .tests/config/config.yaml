@@ -1,27 +1,53 @@
 # INPUTS
 pepfile: "config/pep/config.yaml" # here configure how to read the data
 reference_panel_dirpath: "resources/test_reference_panel/" # directory with reference fasta sequences
-kraken_dir: "resources/kraken/k2_viral_20230314" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
-krona_dir: "resources/krona/test_timestamp" # Directory where krona dataset is located or will be downloaded
+
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: null # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
+  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  deduplication: null # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
+  _generate_fastqc_for: ["decontamination"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
 
 # PARAMETERS
 
-reads__trimming:
-  shorten_to_length: 300 # OPT shorten to this length
-  max_n_bases: 10 # OPT Discard reads with more than the specified number of bases. # fifth step
-  max_expected_errors: 5 # OPT - discard reads with more expected errors than this.
-  min_length_r1: 35 # OPT, # fourth step
-  min_length_r2: 35 # OPT, # fourth step
-  quality_cutoff_from_5_end_r1: 2 # OPT cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 2 # OPT cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 2 # OPT cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 2 # OPT cutoff on 3' end of R2 read. The second step.
+reads__trimming__cutadapt:
+  # 1st stage - trimming
+  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_5_end_r1: 2 # cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 2 # cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 2 # cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 2 # cutoff on 3' end of R2 read. The second step.
 
-reads__decontamination:
-  exclude_taxa_ids: # list of taxonomy IDs to exclude
+  # 2nd stage - Adapter removal
+  adapter_removal: # OPT - set "do" to false to skip this step.
+    do: false # If true, all below options are required. Else, they are ignored/can be deleted.
+
+  # 3rd stage - post adapter trimming
+  shorten_to_length: 500 # OPT - both R1 and R2 are shortened to this length.
+  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
+
+  # 4th stage - Filtering
+  min_length_r1: 35 # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  min_length_r2: 35 # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_n_bases: 10 # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
+  max_expected_errors: 10 # OPT - Discard read if R1 or R2 has more expected errors than this.
+
+reads__decontamination__kraken:
+  kraken_dir: "resources/kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+  # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
+  exclude_taxa_ids: # list of taxonomy IDs to exclude.
     - 9606 # Homo Sapiens
-  exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
-  exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
+  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
+  generate_krona: false # If true, krona is generated from kraken report
+  krona_dir: null
 
 consensus_params:
   reference_criteria: # Here define criteria for references so they would be considered for further analysis
@@ -54,3 +80,18 @@ mixed_positions_params:
 
 max_threads: 2
 max_mem_mb: 2048
+
+resources:
+  reads__trimming_mem_mb: 4096
+  reads__fastqc_mem_mb: 2048
+  mapping_mem_mb: 4096
+  bam_index_mem_mb: 4096
+  picard_mem_mb: 4096
+  qualimap_mem_mb: 4096
+
+threads:
+  reads__trimming: 2
+  reads__fastqc: 2
+  reads__decontamination: 2
+  mapping: 2
+  bam_index: 2

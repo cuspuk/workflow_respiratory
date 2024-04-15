@@ -45,7 +45,7 @@ rule nextclade__run_nextclade:
     log:
         "logs/nextclade/run/{sample}/{reference}/{segment}.log",
     shell:
-        "nextclade run --input-dataset={params.nextclade_dir} --output-all={params.outdir} {input.fa} 1> {log} 2>&1;"
+        "nextclade run --input-dataset={params.nextclade_dir} --output-all={params.outdir} {input.fa} 1> {log} 2>&1"
 
 
 rule nextclade__merge_results_for_sample:
