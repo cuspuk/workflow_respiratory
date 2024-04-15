@@ -189,9 +189,17 @@ checkpoint mapping_quality_evaluation:
                 "Reference": "-",
             },
         ),
+        unpassed_refs=report(
+            "results/checkpoints/failed_references/{sample}.txt",
+            category="{sample}",
+            labels={
+                "Type": "List of failed references",
+                "Reference": "-",
+            },
+        ),
     params:
         reference_names=lambda wildcards, input: [os.path.basename(filename) for filename in input.qualimaps],
-        criteria=config["consensus_params"]["reference_criteria"],
+        min_genome_fraction_with_10x_coverage=config["consensus_params"]["reference_criteria"],
     localrule: True
     log:
         "logs/checkpoints/mapping_quality_evaluation/{sample}.log",

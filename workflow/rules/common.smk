@@ -78,7 +78,7 @@ def get_reference_fasta(wildcards):
 
 
 def get_passed_references_for_sample(sample_name: str):
-    with checkpoints.mapping_quality_evaluation.get(sample=sample_name).output[0].open() as f:
+    with checkpoints.mapping_quality_evaluation.get(sample=sample_name).output.passed_refs.open() as f:
         return [line.strip() for line in f.readlines()]
 
 
@@ -169,12 +169,8 @@ def infer_relevant_nextclade_data(wildcards):
         for line in f.readlines():
             ref, seg, name, version = line.split()
             if wildcards.reference == ref and wildcards.segment == seg:
-                return (
-                    os.path.join(
-                        os.path.realpath(config["reference_panel_dirpath"]),
-                        f"nextclade/{name}/{version}/sequences.fasta",
-                    ),
-                )
+                x = os.path.realpath(config["reference_panel_dirpath"])
+                return os.path.join(x, f"nextclade/{name}/{version}/sequences.fasta")
 
 
 def get_nextclade_consensuses_for_sample(wildcards):

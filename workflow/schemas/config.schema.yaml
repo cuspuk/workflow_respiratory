@@ -16,11 +16,11 @@ definitions:
         type: integer
         description: "Number of maximum threads to use in jobs"
         default: 1
-        Minimum: 1
+        minimum: 1
       max_mem_mb:
         type: integer
         description: "Maximum memory in megabytes to allocate for any job"
-        Minimum: 2048
+        minimum: 2048
         default: 2048
       kraken_dir:
         type: string
@@ -215,8 +215,8 @@ definitions:
       consensus_frequency_threshold:
         type: number
         default: 0
-        Minimum: 0
-        Maximum: 1
+        minimum: 0
+        maximum: 1
         description: "Minimum frequency threshold to call consensus."
       min_consensus_depth:
         type: integer
@@ -229,16 +229,11 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      min_mean_coverage:
-        type: integer
-        description: "Minimum mean coverage so the sample would be marked as mapped to the reference"
-        default: 50
       min_genome_fraction_with_10x_coverage:
         type: number
         description: "At least this fraction of genome must have coverage at least of 10x so the sample would be marked as mapped to the reference. Taken from Qualimap."
-        default: 50
+        default: 10
     required:
-      - min_mean_coverage
       - min_genome_fraction_with_10x_coverage
     title: ReferenceCriteria
 
@@ -269,8 +264,8 @@ definitions:
       min_frequency_threshold:
         type: number
         default: 0
-        Minimum: 0
-        Maximum: 1
+        minimum: 0
+        maximum: 1
         description: "Minimum frequency threshold to call variants."
       min_read_depth:
         type: integer

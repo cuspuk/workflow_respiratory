@@ -1,7 +1,7 @@
 ### INPUT SECTION ###############################
-reference_panel_dirpath: "/data/genome/virus/respiratory_panel/v2.0.0/" # Directory with viral fasta sequences. Take from https://github.com/xsitarcik/respiratory_panel.
+reference_panel_dirpath: "/data/genome/virus/respiratory_panel/v2.2.0/" # Directory with viral fasta sequences. Take from https://github.com/xsitarcik/respiratory_panel.
 kraken_dir: "/data/genome/metagenome/kraken/k2_pluspf_20240112/" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-krona_dir: "/data/genome/taxonomy/krona/2024-04-12/" # Directory where krona dataset is located or will be downloaded.
+krona_dir: "/data/genome/taxonomy/krona/2023-12-03/" # Directory where krona dataset is located or will be downloaded.
 # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
 
 ### HYPERPARAMETERS #############################
@@ -28,8 +28,7 @@ kraken__params:
 
 consensus_params: # See Ivar consensus at https://andersen-lab.github.io/ivar/html/manualpage.html
   reference_criteria: # Here define criteria for references so they would be considered for further analysis.
-    min_mean_coverage: 0 # Minimum mean coverage taken from qualimap.
-    min_genome_fraction_with_10x_coverage: 10 # At least this percentage of genome must have coverage at least of 10x. Taken from Qualimap.
+    min_genome_fraction_with_10x_coverage: 10 # At least this percentage of genome must have coverage at least of 10x. Taken from samtools depth.
 
   count_orphans: false # Set to true to use also anomalous read pairs, i.e. without the properly-paired flag set.
   max_read_depth: 10000 # Limits the number of reads to load in memory per input file
