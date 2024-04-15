@@ -193,7 +193,7 @@ def get_outputs():
             sample=sample_names,
         ),
         "nonempty_bams": expand(
-            "results/checkpoints/mapped_reads/{sample}.txt",
+            "results/checkpoints/mapped_reads/{sample}.tsv",
             sample=sample_names,
         ),
         "consensus": expand("results/summary/{sample}.json", sample=sample_names),
