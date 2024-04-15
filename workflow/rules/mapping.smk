@@ -189,7 +189,7 @@ checkpoint mapping_quality_evaluation:
                 "Reference": "-",
             },
         ),
-        unpassed_refs=report(
+        failed_refs=report(
             "results/checkpoints/failed_references/{sample}.txt",
             category="{sample}",
             labels={
