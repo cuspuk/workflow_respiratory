@@ -69,7 +69,7 @@ def get_reference_fasta(wildcards):
 def get_references_with_non_empty_bams(sample_name: str):
     # checkpoint produces tsv of 3 values: PASS/FAIL, reference, count
     with checkpoints.checkpoint_get_all_nonempty_bams.get(sample=sample_name).output[0].open() as f:
-        rows = f.readlines().strip().strip("\t")
+        rows: list[tuple[str, str, int]] = [row.strip().split("\t") for row in f.readlines()]
         refs = [row[1] for row in rows if row[0] == "PASS"]
         return refs
 
@@ -78,7 +78,7 @@ def get_references_with_non_empty_bams(sample_name: str):
 def get_passed_references(sample_name: str):
     # checkpoint produces tsv of 3 values: PASS/FAIL, reference, average_coverage
     with checkpoints.checkpoint_mapping_evaluation.get(sample=sample_name).output.tsv.open() as f:
-        rows = f.readlines().strip().strip("\t")
+        rows: list[tuple[str, str, float]] = [row.strip().split("\t") for row in f.readlines()]
         refs = [row[1] for row in rows if row[0] == "PASS"]
         return refs
 
