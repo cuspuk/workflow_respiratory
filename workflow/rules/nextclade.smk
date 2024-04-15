@@ -22,7 +22,7 @@ rule nextclade__download_nextclade_dataset:
     conda:
         "../envs/nextclade.yaml"
     wildcard_constraints:
-        name="nextstrain\/[a-zA-Z0-9-_]*\/[a-zA-Z0-9-_]*",
+        name="nextstrain\/.*",
         version="\d{4}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2}Z",
     log:
         "{prefix_dir}/logs/{name}/download_{version}.log",

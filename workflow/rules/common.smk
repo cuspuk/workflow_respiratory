@@ -181,7 +181,7 @@ def get_nextclade_consensuses_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, seg, name, acc, version = line.split()
+            ref, seg, name, version = line.split()
             results.append(f"results/consensus/{wildcards.sample}/{ref}.fa")
     return results
 

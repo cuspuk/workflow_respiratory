@@ -19,7 +19,7 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_
     requested_tuples: list[tuple[str, str]] = []
     with open(nextclade_refs_file, "r") as f:
         for line in f.readlines():
-            name, segment, _, _, _ = line.strip().split()
+            name, segment, _, _ = line.strip().split()
             requested_tuples.append((name, segment))
 
     other_references = []
