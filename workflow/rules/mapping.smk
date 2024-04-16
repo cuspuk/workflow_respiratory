@@ -96,6 +96,22 @@ rule samtools__view_number_of_reads:
         "samtools view -c {input} > {output} 2> {log}"
 
 
+# rule samtools_view:
+#     input:
+#         "{sample}.sam",
+#     output:
+#         bam="{sample}.bam",
+#         idx="{sample}.bai",
+#     log:
+#         "{sample}.log",
+#     params:
+#         extra="",  # optional params string
+#         region="",  # optional region string
+#     threads: 2
+#     wrapper:
+#         "master/bio/samtools/view"
+
+
 checkpoint checkpoint_get_all_nonempty_bams:
     input:
         read_counts=expand("results/mapping/{{sample}}/deduplicated/{reference}.count", reference=REFERENCES),

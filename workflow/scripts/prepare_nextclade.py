@@ -1,18 +1,11 @@
 import sys
 
 
-class InvalidMetadataFile(Exception):
-    """Raised when the metadata file cannot be parsed into 5 values"""
-
-
 def summarize_results(
-    references_file: str, nextclade_out: str, others_out: str, metadata: dict[str, list[tuple[str, str, str]]]
+    nextclade_out: str, others_out: str, metadata: dict[str, list[tuple[str, str, str]]], references: list[str]
 ):
     nextclades: list[tuple[str, str, str, str]] = []
     others: list[str] = []
-
-    references: list[str] = [line.strip() for line in open(references_file, "r").readlines()]
-    print(f"Found {len(references)} references", file=sys.stderr)
 
     for reference in references:
         if reference in metadata:
@@ -30,26 +23,11 @@ def summarize_results(
             f.write(f"{reference}\n")
 
 
-def load_metadata(metadata_file: str) -> dict[str, list[tuple[str, str, str]]]:
-    mapping: dict[str, list[tuple[str, str, str]]] = {}
-    with open(metadata_file, "r") as f:
-        for line in f.readlines():
-            try:
-                name, segment, nextclade, tag = line.strip().split(",")
-                if name not in mapping:
-                    mapping[name] = []
-                mapping[name].append((segment, nextclade, tag))
-            except ValueError:
-                raise InvalidMetadataFile("Metadata table {} does not have 5 columns".format(metadata_file))
-    return mapping
-
-
 if __name__ == "__main__":
     sys.stderr = open(snakemake.log[0], "w")
-    metadata = load_metadata(snakemake.input.metadata)
     summarize_results(
-        references_file=snakemake.input.references,
         nextclade_out=snakemake.output.nextclade,
         others_out=snakemake.output.others,
-        metadata=metadata,
+        metadata=snakemake.params.metadata,
+        references=snakemake.params.references,
     )

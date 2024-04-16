@@ -65,6 +65,27 @@ def get_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
+def load_nextclade_metadata(metadata_file: str) -> dict[str, list[tuple[str, str, str]]]:
+    mapping: dict[str, list[tuple[str, str, str]]] = {}
+    with open(metadata_file, "r") as f:
+        for line in f.readlines():
+            try:
+                name, segment, nextclade, version_tag = line.strip().split(",")
+                if name not in mapping:
+                    mapping[name] = []
+                mapping[name].append((segment, nextclade, version_tag))
+            except ValueError:
+                raise ValueError(
+                    f"Nextclade metadata file must have 4 columns: name, segment, nextclade, version_tag. Got: {line}"
+                )
+    return mapping
+
+
+@cache
+def get_nextclade_metadata():
+    return load_nextclade_metadata(os.path.join(config["reference_panel_dirpath"], "nextclade_mapping.csv"))
+
+
 @cache
 def get_references_with_non_empty_bams(sample_name: str):
     # checkpoint produces tsv of 3 values: PASS/FAIL, reference, count

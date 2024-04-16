@@ -5,6 +5,9 @@ checkpoint select_references_for_nextclade:
     output:
         nextclade="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
+    params:
+        metadata=get_nextclade_metadata(),
+        passed_references=lambda wildcards: get_passed_references(wildcards.sample),
     log:
         "logs/checkpoints/{sample}.log",
     conda:
@@ -53,13 +56,15 @@ rule nextclade__merge_results_for_sample:
         nextclade_tsvs=get_nextclade_results_for_sample,
     output:
         merged_tsv="results/nextclade/{sample}/_merged/nextclade.tsv",
-    conda:
-        "../envs/python_pd.yaml"
+    params:
+        names=lambda wildcards, input: [
+            os.path.basename(os.path.dirname(os.path.dirname(f))) for f in input.nextclade_tsvs
+        ],
     log:
         "logs/nextclade/merge_results_for_sample/{sample}.log",
     localrule: True
-    script:
-        "../scripts/merge_nextclade_tsvs.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
 
 
 rule nextclade__merge_all_results:
@@ -67,13 +72,13 @@ rule nextclade__merge_all_results:
         nextclade_tsvs=get_merged_nextclade_results(),
     output:
         merged_tsv="results/_aggregation/nextclade/nextclade.tsv",
-    conda:
-        "../envs/python_pd.yaml"
+    params:
+        names=[],
     log:
         "logs/aggregate/nextclade__merge_all_results.log",
     localrule: True
-    script:
-        "../scripts/merge_nextclade_tsvs.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
 
 
 rule nextclade__to_html:
@@ -87,13 +92,11 @@ rule nextclade__to_html:
                 "Type": "Nextclade - merged all",
             },
         ),
-    conda:
-        "../envs/python_panel.yaml"
     log:
         "logs/aggregate/nextclade__to_html.log",
     localrule: True
-    script:
-        "../scripts/nextclade_tsv_into_html.py"
+    wrapper:
+        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/to_html"
 
 
 rule aggregate__all_results:
