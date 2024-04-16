@@ -1,6 +1,6 @@
 checkpoint index_passed_references:
     input:
-        reference=get_reference_fasta,
+        reference=infer_reference_fasta,
     output:
         protected("{reference_dir}/{reference}.fa.fai"),
     log:
@@ -28,7 +28,7 @@ rule ivar__create_consensus_per_segment:
 
 rule concat__consensus_from_segments:
     input:
-        consensuses=get_consensus_per_reference_segment,
+        consensuses=infer_consensus_per_reference_segment,
     output:
         report(
             "results/consensus/{sample}/{reference}.fa",
@@ -49,7 +49,7 @@ rule concat__consensus_from_segments:
 
 rule concat__consensuses_for_references:
     input:
-        consensuses=get_consensuses_to_merge_for_reference,
+        consensuses=infer_consensuses_to_merge_for_reference,
     output:
         report(
             "results/_aggregation/consensus/{reference}.fa",
@@ -69,7 +69,7 @@ rule concat__consensuses_for_references:
 
 rule aggregate__all_consensuses:
     input:
-        consensuses=get_all_aggregated_consensuses,
+        consensuses=infer_all_aggregated_consensuses,
     output:
         touch("results/checkpoints/aggregated_all_consensuses.txt"),
     localrule: True

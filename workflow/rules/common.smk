@@ -1,5 +1,6 @@
 from snakemake.utils import validate
 from snakemake.io import glob_wildcards
+from functools import cache
 
 
 configfile: "config/config.yaml"
@@ -8,14 +9,18 @@ configfile: "config/config.yaml"
 validate(config, "../schemas/config.schema.yaml")
 
 
-pepfile: config["pepfile"]
+### Layer for adapting other workflows  ###############################################################################
 
 
-validate(pep.sample_table, "../schemas/samples.schema.yaml")
+def infer_fastq_for_mapping(wildcards):
+    return reads_workflow.get_final_fastq_for_sample(wildcards.sample)
+
+
+def get_sample_names():
+    return reads_workflow.get_sample_names()
+
 
 ## GLOBAL SPACE #################################################################
-
-MAPPING_INPUT_STEP = "decontaminated"
 
 
 def glob_references(reference_panel_dirpath: str):
@@ -32,18 +37,6 @@ def get_reference_dir():
 REFERENCES = glob_references(get_reference_dir())
 
 
-def get_sample_names():
-    return list(pep.sample_table["sample_name"].values)
-
-
-def get_one_fastq_file(wildcards):
-    return pep.sample_table.loc[wildcards.sample][["fq1"]]
-
-
-def get_fastq_paths(wildcards):
-    return pep.sample_table.loc[wildcards.sample][["fq1", "fq2"]]
-
-
 def get_constraints():
     return {
         "sample": "|".join(get_sample_names()),
@@ -54,7 +47,7 @@ def get_constraints():
 #### COMMON STUFF #################################################################
 
 
-def get_bwa_index(wildcards):
+def infer_bwa_index(wildcards):
     base_dir = os.path.join(
         config["reference_panel_dirpath"], "references", "bwa_index", wildcards.reference, wildcards.reference
     )
@@ -68,79 +61,101 @@ def get_bwa_index(wildcards):
     )
 
 
-def get_references_with_non_empty_bams(wildcards):
-    with checkpoints.nonempty_bams.get(sample=wildcards.sample).output[0].open() as f:
-        return f.read().splitlines()
-
-
-def get_reference_fasta(wildcards):
+def infer_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
-def get_passed_references_for_sample(sample_name: str):
-    with checkpoints.mapping_quality_evaluation.get(sample=sample_name).output[0].open() as f:
-        return [line.strip() for line in f.readlines()]
+def load_nextclade_metadata(metadata_file: str) -> dict[str, list[tuple[str, str, str]]]:
+    mapping: dict[str, list[tuple[str, str, str]]] = {}
+    with open(metadata_file, "r") as f:
+        for line in f.readlines():
+            try:
+                name, segment, nextclade, version_tag = line.strip().split(",")
+                if name not in mapping:
+                    mapping[name] = []
+                mapping[name].append((segment, nextclade, version_tag))
+            except ValueError:
+                raise ValueError(
+                    f"Nextclade metadata file must have 4 columns: name, segment, nextclade, version_tag. Got: {line}"
+                )
+    return mapping
 
 
-def get_passed_references(wildcards):
-    return get_passed_references_for_sample(wildcards.sample)
+@cache
+def get_nextclade_metadata():
+    return load_nextclade_metadata(os.path.join(config["reference_panel_dirpath"], "nextclade_mapping.csv"))
 
 
-def get_consensus_for_passed_references_only(wildcards):
-    return expand(f"results/consensus/{wildcards.sample}/{{reference}}.fa", reference=get_passed_references(wildcards))
+@cache
+def get_references_with_non_empty_bams(sample_name: str):
+    # checkpoint produces tsv of 3 values: PASS/FAIL, reference, count
+    with checkpoints.checkpoint_get_all_nonempty_bams.get(sample=sample_name).output[0].open() as f:
+        rows: list[tuple[str, str, int]] = [row.strip().split("\t") for row in f.readlines()]
+        refs = [row[1] for row in rows if row[0] == "PASS"]
+        return refs
 
 
-def get_deduplicated_bams_with_idxes_for_sample(wildcards):
+@cache
+def get_passed_references(sample_name: str):
+    # checkpoint produces tsv of 3 values: PASS/FAIL, reference, average_coverage
+    with checkpoints.checkpoint_mapping_evaluation.get(sample=sample_name).output.tsv.open() as f:
+        rows: list[tuple[str, str, float]] = [row.strip().split("\t") for row in f.readlines()]
+        refs = [row[1] for row in rows if row[0] == "PASS"]
+        return refs
+
+
+def infer_passed_bams_and_bais(wildcards):
     return expand(
         f"results/mapping/{wildcards.sample}/deduplicated/{{reference}}.{{ext}}",
         ext=["bam", "bam.bai"],
-        reference=get_passed_references_for_sample(wildcards.sample),
+        reference=get_passed_references(wildcards.sample),
     )
 
 
-def get_consensuses_to_merge_for_reference(wildcards):
+def infer_consensuses_to_merge_for_reference(wildcards):
     return [
         f"results/consensus/{sample}/{{reference}}.fa"
         for sample in get_sample_names()
-        if wildcards.reference in get_passed_references_for_sample(sample)
+        if wildcards.reference in get_passed_references(sample)
     ]
 
 
-def get_all_aggregated_consensuses(wildcards):
-    all_refs = [get_passed_references_for_sample(sample) for sample in get_sample_names()]
+def infer_all_aggregated_consensuses(wildcards):
+    all_refs = [get_passed_references(sample) for sample in get_sample_names()]
     all_refs_set = set([item for sublist in all_refs for item in sublist])
     return expand("results/_aggregation/consensus/{reference}.fa", reference=all_refs_set)
 
 
-def get_mixed_positions_for_passed_references_only(wildcards):
+def infer_mixed_positions_for_passed_references_only(wildcards):
     return expand(
         f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions_count.tsv",
-        reference=get_passed_references(wildcards),
+        reference=get_passed_references(wildcards.sample),
     )
 
 
-def get_variant_reports_for_passed_references_only(wildcards):
-    passed_refs = get_passed_references(wildcards)
-    lst1 = expand(
-        f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions.html",
-        reference=passed_refs,
+def infer_variant_reports_for_passed_references_only(wildcards):
+    return expand(
+        f"results/variants/{wildcards.sample}/{{reference}}/{{ext}}",
+        ext=["mixed_positions.html", "all.html", "all.vcf"],
+        reference=get_passed_references(wildcards.sample),
     )
-    lst2 = expand(
-        f"results/variants/{wildcards.sample}/{{reference}}/all.{{ext}}",
-        reference=passed_refs,
-        ext=["html", "vcf"],
-    )
-    return lst1 + lst2
 
 
-def get_all_qualimap_dirs(wildcards):
+def infer_depths_for_nonempty_bams(wildcards):
+    return expand(
+        f"results/mapping/{wildcards.sample}/deduplicated/depths/{{reference}}.txt",
+        reference=get_references_with_non_empty_bams(wildcards.sample),
+    )
+
+
+def infer_qualimaps_for_nonempty_bams(wildcards):
     return expand(
         f"results/mapping/{wildcards.sample}/deduplicated/bamqc/{{reference}}",
-        reference=get_references_with_non_empty_bams(wildcards),
+        reference=get_references_with_non_empty_bams(wildcards.sample),
     )
 
 
-def get_consensus_per_reference_segment(wildcards):
+def infer_consensus_per_reference_segment(wildcards):
     with checkpoints.index_passed_references.get(
         reference_dir=get_reference_dir(), reference=wildcards.reference
     ).output[0].open() as f:
@@ -148,20 +163,29 @@ def get_consensus_per_reference_segment(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
-def get_nextclade_results_for_sample(wildcards):
+def infer_nextclade_results_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, seg, name, acc, version = line.split()
-            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/{name}__{acc}__{version}/nextclade.tsv")
+            ref, seg, name, version = line.split()
+            results.append(f"results/nextclade/{wildcards.sample}/{ref}/{seg}/nextclade.tsv")
     return results
 
 
-def get_nextclade_consensuses_for_sample(wildcards):
+def infer_relevant_nextclade_data(wildcards):
+    with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
+        for line in f.readlines():
+            ref, seg, name, version = line.split()
+            if wildcards.reference == ref and wildcards.segment == seg:
+                x = os.path.realpath(config["reference_panel_dirpath"])
+                return os.path.join(x, f"nextclade/{name}/{version}/sequences.fasta")
+
+
+def infer_nextclade_consensuses_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
-            ref, seg, name, acc, version = line.split()
+            ref, seg, name, version = line.split()
             results.append(f"results/consensus/{wildcards.sample}/{ref}.fa")
     return results
 
@@ -170,7 +194,7 @@ def get_merged_nextclade_results():
     return expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=get_sample_names())
 
 
-def get_others_results(wildcards):
+def infer_others_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.others.open() as f:
         references = [line.strip() for line in f.readlines()]
     if references:
@@ -185,25 +209,23 @@ def get_others_results(wildcards):
 def get_outputs():
     sample_names = get_sample_names()
     outputs = {
-        "fastqc_report": expand(
-            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
-            sample=sample_names,
-            step=["decontaminated", "trimmed"],
-            orientation=[1, 2],
-        ),
         "passed_bams": expand(
             "results/checkpoints/passed_deduplicated_bams/{sample}",
             sample=sample_names,
         ),
         "nonempty_bams": expand(
-            "results/checkpoints/nonempty_bams/{sample}.txt",
+            "results/checkpoints/mapped_reads_per_reference/{sample}.tsv",
             sample=sample_names,
         ),
-        "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
+        "passed_references": expand(
+            "results/checkpoints/mapping_evaluation/{sample}.tsv",
+            sample=sample_names,
+        ),
         "consensus": expand("results/summary/{sample}.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
         "merged_nextclades": expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=sample_names),
     }
+
     if len(sample_names) > 1:
         outputs["aggregate_consensus"] = "results/checkpoints/aggregated_all_consensuses.txt"
         outputs["aggregate_nextclades"] = "results/_aggregation/nextclade/nextclade.html"
@@ -211,84 +233,6 @@ def get_outputs():
 
 
 ## PARAMETERS PARSING #################################################################
-
-
-def get_cutadapt_extra() -> list[str]:
-    args_lst = []
-    if config["reads__trimming"].get("keep_trimmed_only", False):
-        args_lst.append("--discard-untrimmed")
-    if "shorten_to_length" in config["reads__trimming"]:
-        args_lst.append(f"--length {config['reads__trimming']['shorten_to_length']}")
-    if "cut_from_start" in config["reads__trimming"]:
-        args_lst.append(f"--cut {config['reads__trimming']['cut_from_start']}")
-    if "cut_from_end" in config["reads__trimming"]:
-        args_lst.append(f"--cut -{config['reads__trimming']['cut_from_end']}")
-    if "max_n_bases" in config["reads__trimming"]:
-        args_lst.append(f"--max-n {config['reads__trimming']['max_n_bases']}")
-    if "max_expected_errors" in config["reads__trimming"]:
-        args_lst.append(f"--max-expected-errors {config['reads__trimming']['max_expected_errors']}")
-    return args_lst
-
-
-def parse_paired_cutadapt_param(pe_config, param1, param2, arg_name) -> str:
-    if param1 in pe_config:
-        if param2 in pe_config:
-            return f"{arg_name} {pe_config[param1]}:{pe_config[param2]}"
-        else:
-            return f"{arg_name} {pe_config[param1]}:"
-    elif param2 in pe_config:
-        return f"{arg_name} :{pe_config[param2]}"
-    return ""
-
-
-def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
-    if param1 in config:
-        if param2 in config:
-            return f"{arg_name} {config[param2]},{config[param1]}"
-        else:
-            return f"{arg_name} {config[param1]}"
-    elif param2 in config:
-        return f"{arg_name} {config[param2]},0"
-    return ""
-
-
-def get_cutadapt_extra_pe() -> str:
-    args_lst = get_cutadapt_extra()
-
-    if parsed_arg := parse_paired_cutadapt_param(config, "max_length_r1", "max_length_r2", "--maximum-length"):
-        args_lst.append(parsed_arg)
-    if parsed_arg := parse_paired_cutadapt_param(config, "min_length_r1", "min_length_r2", "--minimum-length"):
-        args_lst.append(parsed_arg)
-    if qual_cut_arg_r1 := parse_cutadapt_comma_param(
-        config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
-    ):
-        args_lst.append(qual_cut_arg_r1)
-    if qual_cut_arg_r2 := parse_cutadapt_comma_param(
-        config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
-    ):
-        args_lst.append(qual_cut_arg_r2)
-
-    if param_value := config["reads__trimming"].get("remove_adapter", ""):
-        filepath = config["adapters_fasta"]
-        if not os.path.exists(filepath):
-            raise ValueError(f"Requested adapters not found at {filepath}")
-
-        if param_value == "anywhere":
-            args_lst.append(f"--anywhere file:{filepath} -B file:{filepath}")
-        elif param_value == "front":
-            args_lst.append(f"--front file:{filepath} -G file:{filepath}")
-        elif param_value == "regular":
-            args_lst.append(f"--adapter file:{filepath} -A file:{filepath}")
-    return " ".join(args_lst)
-
-
-def get_kraken_decontamination_params():
-    extra = []
-    if config["reads__decontamination"]["exclude_children"]:
-        extra.append("--include-children")
-    if config["reads__decontamination"]["exclude_ancestors"]:
-        extra.append("--include-parents")
-    return " ".join(extra)
 
 
 def parse_samtools_params():
@@ -347,17 +291,9 @@ def get_mem_mb_for_qualimap(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["qualimap_mem_mb"] * attempt)
 
 
-def get_mem_mb_for_trimming(wildcards, attempt):
-    return min(config["max_mem_mb"], config["resources"]["trimming_mem_mb"] * attempt)
-
-
 def get_mem_mb_for_mapping(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["mapping_mem_mb"] * attempt)
 
 
 def get_mem_mb_for_bam_index(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["bam_index_mem_mb"] * attempt)
-
-
-def get_mem_mb_for_fastqc(wildcards, attempt):
-    return min(config["max_mem_mb"], config["resources"]["fastqc_mem_mb"] * attempt)

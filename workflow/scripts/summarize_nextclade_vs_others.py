@@ -16,11 +16,11 @@ class ConsensusResult(TypedDict):
 
 
 def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_file: str, out_summary_json: str):
-    requested_tuples: list[tuple[str, str]] = []
+    nextclade_metadata: list[tuple[str, str, str]] = []
     with open(nextclade_refs_file, "r") as f:
         for line in f.readlines():
-            name, segment, _, _, _ = line.strip().split()
-            requested_tuples.append((name, segment))
+            name, segment, nextclade, _ = line.strip().split()
+            nextclade_metadata.append((name, segment, nextclade))
 
     other_references = []
     with open(others_csv, "r") as f:
@@ -28,13 +28,19 @@ def summarize_results(others_csv: str, nextclade_tsv: list[str], nextclade_refs_
 
     results: list[ConsensusResult] = []
 
-    used_refs = set([ref for ref, _ in requested_tuples])
+    used_refs = set([ref for ref, _, _ in nextclade_metadata])
     for ref in used_refs:
         results.append({"category": "nextclade", "reference_name": ref, "nextclade_results": []})
 
     for tsv in nextclade_tsv:
-        result_ref = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(tsv))))
-        segment_nextclade = os.path.basename(os.path.dirname(tsv)).split("__")[0]
+        result_ref = os.path.basename(os.path.dirname(os.path.dirname(tsv)))
+        segment = os.path.basename(os.path.dirname(tsv))
+        for mapping in nextclade_metadata:
+            if mapping[0] == result_ref and mapping[1] == segment:
+                segment_nextclade = mapping[2]
+                break
+        else:
+            raise ValueError(f"Could not find mapping for {result_ref} {segment}")
 
         for result in results:
             if result["reference_name"] == result_ref:

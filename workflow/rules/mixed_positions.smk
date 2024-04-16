@@ -2,7 +2,7 @@ rule ivar__get_variants:
     input:
         bam="results/mapping/{sample}/deduplicated/{reference}.bam",
         bai="results/mapping/{sample}/deduplicated/{reference}.bam.bai",
-        ref=get_reference_fasta,
+        ref=infer_reference_fasta,
     output:
         tsv="results/variants/{sample}/{reference}/all.tsv",
     params:
@@ -93,8 +93,8 @@ rule report__mixed_positions_to_html:
 
 rule custom__concat_mixed_position_counts:
     input:
-        mixed_positions_counts=get_mixed_positions_for_passed_references_only,
-        reports=get_variant_reports_for_passed_references_only,
+        mixed_positions_counts=infer_mixed_positions_for_passed_references_only,
+        reports=infer_variant_reports_for_passed_references_only,
     output:
         summary=report(
             "results/variants/{sample}/mixed_positions_summary.txt",
