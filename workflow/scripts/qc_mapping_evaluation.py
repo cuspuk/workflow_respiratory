@@ -68,7 +68,7 @@ def evaluate_mapping_quality(
 
     os.makedirs(os.path.dirname(os.path.abspath(json_out)), exist_ok=True)
     with open(json_out, "w") as out_file:
-        refs_dict = [asdict(x) for x in refs]
+        refs_dict = [asdict(x) for x in refs if x.average_depth(MIN_DEPTH) >= threshold]
         json.dump(refs_dict, out_file, indent=4)
 
 
