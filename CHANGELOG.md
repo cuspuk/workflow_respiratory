@@ -1,5 +1,32 @@
 # Changelog
 
+## [4.0.0](https://github.com/xsitarcik/respiratory/compare/v3.2.1...v4.0.0) (2024-04-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* reworked to use reads module
+
+### Features
+
+* added depths calculation per segment ([39825dc](https://github.com/xsitarcik/respiratory/commit/39825dc72f2fc2f8a43b717fe7acc9208a99aed8))
+* references are now evaluated using samtools depth ([7387f20](https://github.com/xsitarcik/respiratory/commit/7387f200ee1726c205230d4299ab7cbb6d3c8b9f))
+* reworked to use reads module ([f47efc0](https://github.com/xsitarcik/respiratory/commit/f47efc02f41d446bbbe52df1094076149987fbaa))
+* updated nextclade to v3 ([4b69e5c](https://github.com/xsitarcik/respiratory/commit/4b69e5c182fc2d93b74c446e74360eda68c4f14f))
+
+
+### Bug Fixes
+
+* added default production values into config ([072ab47](https://github.com/xsitarcik/respiratory/commit/072ab471f6475b980dee0b68e132133764c13bd9))
+* depths json now contains only passed refs ([b662b1c](https://github.com/xsitarcik/respiratory/commit/b662b1cd9c9b6c3803dc837154034cec800b7f67))
+
+
+### Performance Improvements
+
+* bumped reads module to v3.2.1 ([0fedbcd](https://github.com/xsitarcik/respiratory/commit/0fedbcd2cb73a00657fc0a5dfb41a1c815df8d01))
+* depths script marked as local ([7601488](https://github.com/xsitarcik/respiratory/commit/76014886fe467252ce450a9404d1eec543849a2e))
+* removed benchmarks in rules ([b14ba4a](https://github.com/xsitarcik/respiratory/commit/b14ba4adb2a6fa4f7926904e4fb3df7aedd875d0))
+
 ## [3.2.1](https://github.com/xsitarcik/respiratory/compare/v3.2.0...v3.2.1) (2024-02-11)
 
 
