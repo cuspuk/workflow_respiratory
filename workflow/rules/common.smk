@@ -12,7 +12,7 @@ validate(config, "../schemas/config.schema.yaml")
 ### Layer for adapting other workflows  ###############################################################################
 
 
-def get_fastq_for_mapping(wildcards):
+def infer_fastq_for_mapping(wildcards):
     return reads_workflow.get_final_fastq_for_sample(wildcards.sample)
 
 
@@ -47,7 +47,7 @@ def get_constraints():
 #### COMMON STUFF #################################################################
 
 
-def get_bwa_index(wildcards):
+def infer_bwa_index(wildcards):
     base_dir = os.path.join(
         config["reference_panel_dirpath"], "references", "bwa_index", wildcards.reference, wildcards.reference
     )
@@ -61,7 +61,7 @@ def get_bwa_index(wildcards):
     )
 
 
-def get_reference_fasta(wildcards):
+def infer_reference_fasta(wildcards):
     return os.path.join(config["reference_panel_dirpath"], "references", f"{wildcards.reference}.fa")
 
 
@@ -112,7 +112,7 @@ def infer_passed_bams_and_bais(wildcards):
     )
 
 
-def get_consensuses_to_merge_for_reference(wildcards):
+def infer_consensuses_to_merge_for_reference(wildcards):
     return [
         f"results/consensus/{sample}/{{reference}}.fa"
         for sample in get_sample_names()
@@ -120,20 +120,20 @@ def get_consensuses_to_merge_for_reference(wildcards):
     ]
 
 
-def get_all_aggregated_consensuses(wildcards):
+def infer_all_aggregated_consensuses(wildcards):
     all_refs = [get_passed_references(sample) for sample in get_sample_names()]
     all_refs_set = set([item for sublist in all_refs for item in sublist])
     return expand("results/_aggregation/consensus/{reference}.fa", reference=all_refs_set)
 
 
-def get_mixed_positions_for_passed_references_only(wildcards):
+def infer_mixed_positions_for_passed_references_only(wildcards):
     return expand(
         f"results/variants/{wildcards.sample}/{{reference}}/mixed_positions_count.tsv",
         reference=get_passed_references(wildcards.sample),
     )
 
 
-def get_variant_reports_for_passed_references_only(wildcards):
+def infer_variant_reports_for_passed_references_only(wildcards):
     return expand(
         f"results/variants/{wildcards.sample}/{{reference}}/{{ext}}",
         ext=["mixed_positions.html", "all.html", "all.vcf"],
@@ -141,21 +141,21 @@ def get_variant_reports_for_passed_references_only(wildcards):
     )
 
 
-# def get_all_qualimap_dirs(wildcards):
-#     return expand(
-#         f"results/mapping/{wildcards.sample}/deduplicated/bamqc/{{reference}}",
-#         reference=get_references_with_non_empty_bams(wildcards),
-#     )
-
-
-def get_depths_for_nonempty_bams(wildcards):
+def infer_depths_for_nonempty_bams(wildcards):
     return expand(
         f"results/mapping/{wildcards.sample}/deduplicated/depths/{{reference}}.txt",
-        reference=get_references_with_non_empty_bams(wildcards),
+        reference=get_references_with_non_empty_bams(wildcards.sample),
     )
 
 
-def get_consensus_per_reference_segment(wildcards):
+def infer_qualimaps_for_nonempty_bams(wildcards):
+    return expand(
+        f"results/mapping/{wildcards.sample}/deduplicated/bamqc/{{reference}}",
+        reference=get_references_with_non_empty_bams(wildcards.sample),
+    )
+
+
+def infer_consensus_per_reference_segment(wildcards):
     with checkpoints.index_passed_references.get(
         reference_dir=get_reference_dir(), reference=wildcards.reference
     ).output[0].open() as f:
@@ -163,7 +163,7 @@ def get_consensus_per_reference_segment(wildcards):
     return expand(f"results/consensus/{wildcards.sample}/{wildcards.reference}/{{segment}}.fa", segment=segments)
 
 
-def get_nextclade_results_for_sample(wildcards):
+def infer_nextclade_results_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
@@ -181,7 +181,7 @@ def infer_relevant_nextclade_data(wildcards):
                 return os.path.join(x, f"nextclade/{name}/{version}/sequences.fasta")
 
 
-def get_nextclade_consensuses_for_sample(wildcards):
+def infer_nextclade_consensuses_for_sample(wildcards):
     results = []
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.nextclade.open() as f:
         for line in f.readlines():
@@ -194,7 +194,7 @@ def get_merged_nextclade_results():
     return expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=get_sample_names())
 
 
-def get_others_results(wildcards):
+def infer_others_results(wildcards):
     with checkpoints.select_references_for_nextclade.get(sample=wildcards.sample).output.others.open() as f:
         references = [line.strip() for line in f.readlines()]
     if references:
@@ -214,13 +214,18 @@ def get_outputs():
             sample=sample_names,
         ),
         "nonempty_bams": expand(
-            "results/checkpoints/mapped_reads/{sample}.tsv",
+            "results/checkpoints/mapped_reads_per_reference/{sample}.tsv",
+            sample=sample_names,
+        ),
+        "passed_references": expand(
+            "results/checkpoints/mapping_evaluation/{sample}.tsv",
             sample=sample_names,
         ),
         "consensus": expand("results/summary/{sample}.json", sample=sample_names),
         "mixed_positions": expand("results/variants/{sample}/mixed_positions_summary.txt", sample=sample_names),
         "merged_nextclades": expand("results/nextclade/{sample}/_merged/nextclade.tsv", sample=sample_names),
     }
+
     if len(sample_names) > 1:
         outputs["aggregate_consensus"] = "results/checkpoints/aggregated_all_consensuses.txt"
         outputs["aggregate_nextclades"] = "results/_aggregation/nextclade/nextclade.html"

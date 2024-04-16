@@ -23,7 +23,7 @@ rule bwa__build_index:
 
 rule custom__infer_read_group:
     input:
-        get_fastq_for_mapping,
+        infer_fastq_for_mapping,
     output:
         read_group="results/reads/.read_groups/{sample}.txt",
     params:
@@ -37,8 +37,8 @@ rule custom__infer_read_group:
 
 rule bwa__map_reads_to_reference:
     input:
-        reads=get_fastq_for_mapping,
-        index=get_bwa_index,
+        reads=infer_fastq_for_mapping,
+        index=infer_bwa_index,
         read_group="results/reads/.read_groups/{sample}.txt",
     output:
         bam=temp("results/mapping/{sample}/mapped/{reference}.bam"),
@@ -96,28 +96,12 @@ rule samtools__view_number_of_reads:
         "samtools view -c {input} > {output} 2> {log}"
 
 
-# rule samtools_view:
-#     input:
-#         "{sample}.sam",
-#     output:
-#         bam="{sample}.bam",
-#         idx="{sample}.bai",
-#     log:
-#         "{sample}.log",
-#     params:
-#         extra="",  # optional params string
-#         region="",  # optional region string
-#     threads: 2
-#     wrapper:
-#         "master/bio/samtools/view"
-
-
 checkpoint checkpoint_get_all_nonempty_bams:
     input:
         read_counts=expand("results/mapping/{{sample}}/deduplicated/{reference}.count", reference=REFERENCES),
     output:
         report(
-            "results/checkpoints/mapped_reads/{sample}.tsv",
+            "results/checkpoints/mapped_reads_per_reference/{sample}.tsv",
             category="{sample}",
             labels={
                 "Type": "BAMs with read counts",
@@ -125,7 +109,7 @@ checkpoint checkpoint_get_all_nonempty_bams:
             },
         ),
     log:
-        "logs/checkpoints/mapped_reads/{sample}.log",
+        "logs/checkpoints/mapped_reads_per_reference/{sample}.log",
     conda:
         "../envs/python.yaml"
     localrule: True
@@ -176,7 +160,8 @@ rule samtools__depth:
 
 checkpoint checkpoint_mapping_evaluation:
     input:
-        depths=get_depths_for_nonempty_bams,
+        depths=infer_depths_for_nonempty_bams,
+        qualimaps=infer_qualimaps_for_nonempty_bams,
     output:
         tsv=report(
             "results/checkpoints/mapping_evaluation/{sample}.tsv",
@@ -188,7 +173,9 @@ checkpoint checkpoint_mapping_evaluation:
         ),
         json="results/checkpoints/mapping_evaluation/{sample}.json",
     params:
-        reference_names=lambda wildcards, input: [os.path.basename(filename) for filename in input.depths],
+        reference_names=lambda wildcards, input: [
+            os.path.basename(os.path.splitext(filename)[0]) for filename in input.depths
+        ],
         threshold=config["consensus_params"]["reference_criteria"]["min_genome_fraction_with_10x_coverage"],
     localrule: True
     log:

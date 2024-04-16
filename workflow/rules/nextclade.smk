@@ -7,7 +7,7 @@ checkpoint select_references_for_nextclade:
         others="results/checkpoints/for_others/{sample}.tsv",
     params:
         metadata=get_nextclade_metadata(),
-        passed_references=lambda wildcards: get_passed_references(wildcards.sample),
+        references=lambda wildcards: get_passed_references(wildcards.sample),
     log:
         "logs/checkpoints/{sample}.log",
     conda:
@@ -53,7 +53,7 @@ rule nextclade__run_nextclade:
 
 rule nextclade__merge_results_for_sample:
     input:
-        nextclade_tsvs=get_nextclade_results_for_sample,
+        nextclade_tsvs=infer_nextclade_results_for_sample,
     output:
         merged_tsv="results/nextclade/{sample}/_merged/nextclade.tsv",
     params:
@@ -101,11 +101,11 @@ rule nextclade__to_html:
 
 rule aggregate__all_results:
     input:
-        nextclade_tsv=get_nextclade_results_for_sample,
-        nextclade_consensuses=get_nextclade_consensuses_for_sample,
+        nextclade_tsv=infer_nextclade_results_for_sample,
+        nextclade_consensuses=infer_nextclade_consensuses_for_sample,
         nextclade_refs="results/checkpoints/for_nextclade/{sample}.tsv",
         others="results/checkpoints/for_others/{sample}.tsv",
-        other_results=get_others_results,
+        other_results=infer_others_results,
     output:
         "results/summary/{sample}.json",
     conda:
