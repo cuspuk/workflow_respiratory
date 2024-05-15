@@ -12,42 +12,43 @@ reads: # Specify the order and methods for each read processing step. If no meth
 # PARAMETERS
 
 reads__trimming__cutadapt:
-  # 1st stage - trimming
-  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
-  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
-  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
-  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
-  quality_cutoff_from_5_end_r1: 2 # cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 2 # cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 2 # cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 2 # cutoff on 3' end of R2 read. The second step.
-
-  # 2nd stage - Adapter removal
-  adapter_removal: # OPT - set "do" to false to skip this step.
-    do: false # If true, all below options are required. Else, they are ignored/can be deleted.
-
-  # 3rd stage - post adapter trimming
-  shorten_to_length: 500 # OPT - both R1 and R2 are shortened to this length.
-  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
-
-  # 4th stage - Filtering
-  min_length_r1: 35 # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  min_length_r2: 35 # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
-  max_n_bases: 10 # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
-  max_expected_errors: 10 # OPT - Discard read if R1 or R2 has more expected errors than this.
+  cut_from_start_r1: null # null/int: Removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # null/int: Removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # null/int: Removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # null/int: Removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_3_end_r1: 2 # int(20): Removes lower quality bases from the 3' end of the R1 read.
+  quality_cutoff_from_5_end_r1: 2 # int(20): Removes lower quality bases from the 5' end of the R1 read.
+  quality_cutoff_from_3_end_r2: 2 # int(20): Removes lower quality bases from the 3' end of the R2 read.
+  quality_cutoff_from_5_end_r2: 2 # int(20): Removes lower quality bases from the 5' end of the R2 read.
+  nextseq_trimming_mode: false # bool(false): Modify quality-trimming algorithm to expect two-color chemistry data (NextSeq).
+  do_adapter_removal: false # bool(false): Whether to do adapter removal or not.
+  adapter_removal: # Relevant only if do_adapter_removal is set to true.
+    action: "trim" # enum(trim): Defines an action to perform with the found adapter. Allowed: 'retain','trim','mask','none','lowercase'.
+    overlap: 3 # int(3): Minimum number of bases required to overlap with the adapter.
+    error_rate: 0.1 # float(0.1): Error tolerance used when searching for adapter.
+    times: 1 # int(1): How many times to repeat adapter removal.
+    keep_trimmed_only: false # bool(false): Discard reads with no adapters found.
+    adapters_anywhere_file: "resources/adapters/artic_v4.fa"
+    adapters_3_end_file: null # null/str: Fasta file path with adapters to be matched at 3'end.
+    adapters_5_end_file: null # null/str: Fasta file path with adapters to be matched at 5'end.
+  shorten_to_length: 500 # null/int: Shorten each read to the specified length. Corresponds to the cutadapt length parameter.
+  trim_N_bases_on_ends: false # bool(false): Set to true to trim 'N' bases on ends.
+  min_length_r1: 35 # null/int: Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  min_length_r2: 35 # null/int: Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads.
+  max_length_r1: null # null/int: Discards R1 reads longer than this value.
+  max_length_r2: null # null/int: Discards R2 reads longer than this value.
+  max_n_bases: null # null/int: Removes reads with more 'N' bases than the specified number.
+  max_expected_errors: null # null/int: Discard reads whose expected number of errors exceeds this value.
 
 reads__decontamination__kraken:
-  kraken_dir: "resources/kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-  # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
-  exclude_taxa_ids: # list of taxonomy IDs to exclude.
+  kraken_dir: "references/kraken/k2_viral_20230605" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname
+  exclude_taxa_ids: # list of taxonomy IDs to exclude
     - 9606 # Homo Sapiens
-  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
-  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
-  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
-  generate_krona: false # If true, krona is generated from kraken report
-  krona_dir: null
+  exclude_children: false # whether to exclude reads classified at more specific levels than specified taxonomy ID levels
+  exclude_ancestors: false # whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+  save_memory: true # if true, kraken limits RAM memory usage but sacrifices speed
+  generate_krona: false # bool(false): If true, krona is generated from kraken report.
+  krona_dir: null # null/str: Directory where krona dataset is located, or where will be downloaded.
 
 consensus_params:
   reference_criteria: # Here define criteria for references so they would be considered for further analysis
