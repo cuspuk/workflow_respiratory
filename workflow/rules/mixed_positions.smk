@@ -11,7 +11,7 @@ rule ivar__get_variants:
     log:
         "logs/variants/{sample}/ivar/{reference}.log",
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.2/wrappers/ivar/variants"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/ivar/variants"
 
 
 rule ivar__variants_to_vcf:
@@ -31,7 +31,7 @@ rule ivar__variants_to_vcf:
         "logs/ivar/variants_to_vcf/{sample}/{reference}.log",
     localrule: True
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.2/wrappers/ivar/vcf_convert"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/ivar/vcf_convert"
 
 
 rule report__ivar_variants_to_html:
@@ -50,7 +50,7 @@ rule report__ivar_variants_to_html:
         "logs/report/{sample}/ivar_variants/{reference}.log",
     localrule: True
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/ivar/html_convert"
 
 
 rule custom__compute_mixed_positions:
@@ -68,7 +68,7 @@ rule custom__compute_mixed_positions:
         "logs/variants/{sample}/variants/{reference}.log",
     localrule: True
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.2/wrappers/ivar/mixed_positions"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/ivar/mixed_positions"
 
 
 rule report__mixed_positions_to_html:
@@ -88,7 +88,7 @@ rule report__mixed_positions_to_html:
         "logs/report/{sample}/mixed_positions/{reference}.log",
     localrule: True
     wrapper:
-        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.2/wrappers/ivar/html_convert"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/ivar/html_convert"
 
 
 rule custom__concat_mixed_position_counts:
