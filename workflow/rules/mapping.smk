@@ -18,7 +18,7 @@ rule bwa__build_index:
     log:
         "{reference_panel_dir}/bwa_index/logs/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/bwa/index"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/bwa/index"
 
 
 rule custom__infer_read_group:
@@ -32,7 +32,7 @@ rule custom__infer_read_group:
         "logs/custom/infer_and_store_read_group/{sample}.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.12/wrappers/custom/read_group"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.12.12/wrappers/custom/read_group"
 
 
 rule bwa__map_reads_to_reference:
@@ -50,7 +50,7 @@ rule bwa__map_reads_to_reference:
     log:
         "logs/bwa/map_reads_to_reference/{sample}/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/bwa/map"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/bwa/map"
 
 
 rule samtools__bam_index:
@@ -64,7 +64,7 @@ rule samtools__bam_index:
     log:
         "logs/samtools/bam_index/mapped/{sample}/{reference}.log",
     wrapper:
-        "v3.7.0/bio/samtools/index"
+        "v3.10.2/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -80,7 +80,7 @@ rule picard__mark_duplicates:
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
     wrapper:
-        "v3.7.0/bio/picard/markduplicates"
+        "v3.10.2/bio/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
@@ -141,7 +141,7 @@ rule qualimap__mapping_quality_report:
     log:
         "logs/qualimap/mapping_quality_report/{sample}/{step}/{reference}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.2/wrappers/qualimap/bamqc"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.4/wrappers/qualimap/bamqc"
 
 
 rule samtools__depth:
@@ -155,7 +155,7 @@ rule samtools__depth:
     params:
         extra="-a",
     wrapper:
-        "v3.7.0/bio/samtools/depth"
+        "v3.10.2/bio/samtools/depth"
 
 
 checkpoint checkpoint_mapping_evaluation:

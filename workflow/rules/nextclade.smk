@@ -64,7 +64,7 @@ rule nextclade__merge_results_for_sample:
         "logs/nextclade/merge_results_for_sample/{sample}.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
 
 
 rule nextclade__merge_all_results:
@@ -78,7 +78,7 @@ rule nextclade__merge_all_results:
         "logs/aggregate/nextclade__merge_all_results.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.2/wrappers/nextclade/merge_tsvs"
 
 
 rule nextclade__to_html:
@@ -96,7 +96,7 @@ rule nextclade__to_html:
         "logs/aggregate/nextclade__to_html.log",
     localrule: True
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.13.2/wrappers/nextclade/to_html"
+        "https://github.com/cuspuk/workflow_wrappers/raw/v1.13.2/wrappers/nextclade/to_html"
 
 
 rule aggregate__all_results:
