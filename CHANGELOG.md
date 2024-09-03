@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.5](https://github.com/cuspuk/workflow_respiratory/compare/v4.0.4...v4.0.5) (2024-09-03)
+
+
+### Performance Improvements
+
+* autobump conda envs ([5d39a9b](https://github.com/cuspuk/workflow_respiratory/commit/5d39a9ba87fe1b2045c3c194f4803cb5d416fb57))
+
 ## [4.0.4](https://github.com/cuspuk/workflow_respiratory/compare/v4.0.3...v4.0.4) (2024-08-03)
 
 
