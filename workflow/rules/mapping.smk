@@ -64,7 +64,7 @@ rule samtools__bam_index:
     log:
         "logs/samtools/bam_index/mapped/{sample}/{reference}.log",
     wrapper:
-        "v5.0.0/bio/samtools/index"
+        "v5.5.0/bio/samtools/index"
 
 
 rule picard__mark_duplicates:
@@ -80,7 +80,7 @@ rule picard__mark_duplicates:
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
     wrapper:
-        "v5.0.0/bio/picard/markduplicates"
+        "v5.5.0/bio/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
@@ -155,7 +155,7 @@ rule samtools__depth:
     params:
         extra="-a",
     wrapper:
-        "v5.0.0/bio/samtools/depth"
+        "v5.5.0/bio/samtools/depth"
 
 
 checkpoint checkpoint_mapping_evaluation:
