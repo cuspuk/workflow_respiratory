@@ -80,7 +80,7 @@ rule picard__mark_duplicates:
     log:
         "logs/picard/mark_duplicates/{sample}/{reference}.log",
     wrapper:
-        "v4.7.0/bio/picard/markduplicates"
+        "v4.0.0/bio/picard/markduplicates"
 
 
 rule samtools__view_number_of_reads:
@@ -155,7 +155,7 @@ rule samtools__depth:
     params:
         extra="-a",
     wrapper:
-        "v4.7.0/bio/samtools/depth"
+        "v4.0.0/bio/samtools/depth"
 
 
 checkpoint checkpoint_mapping_evaluation:
