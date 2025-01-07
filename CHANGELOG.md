@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/cuspuk/workflow_respiratory/compare/v4.0.6...v4.1.0) (2025-01-07)
+
+
+### Features
+
+* fixing to stable HPC version ([e6a7292](https://github.com/cuspuk/workflow_respiratory/commit/e6a729299c69ee9dce88b70a5ef49e10149bf830))
+
 ## [4.0.6](https://github.com/cuspuk/workflow_respiratory/compare/v4.0.5...v4.0.6) (2024-11-12)
 
 
