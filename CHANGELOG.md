@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/cuspuk/workflow_respiratory/compare/v4.1.0...v4.1.1) (2025-01-07)
+
+
+### Bug Fixes
+
+* downgrade picard and samtools depth due to distutils problem ([f0feaca](https://github.com/cuspuk/workflow_respiratory/commit/f0feaca2b32da94112ef7ed8fdd79653f2579f88))
+
 ## [4.1.0](https://github.com/cuspuk/workflow_respiratory/compare/v4.0.6...v4.1.0) (2025-01-07)
 
 
